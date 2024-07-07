@@ -1,17 +1,14 @@
-.DS_Store
-node_modules
+# Node modules
+/node_modules
+
+# Build output
 /dist
-
-
-# local env files
-.env.local
-.env.*.local
+/build
 
 # Log files
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 
 # Editor directories and files
 .idea
@@ -21,3 +18,42 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Mac system files
+.DS_Store
+
+# Env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Coverage directory used by tools like istanbul
+coverage
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Output of 'npm pack'
+*.tgz
+
+# IDE specific files
+*.idea
+*.vscode
+*.code-workspace
+
+# Temp files
+tmp
+temp
