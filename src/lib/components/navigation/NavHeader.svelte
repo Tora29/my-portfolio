@@ -19,8 +19,8 @@
 </script>
 
 <!-- ヘッダー -->
-<header class="bg-primary text-neutral">
-	<div class="grid h-20 grid-cols-12 items-center gap-4 px-20">
+<header class="bg-secondary text-neutral">
+	<div class="grid h-20 grid-cols-12 items-center gap-4 px-28">
 		<!-- ロゴ -->
 		<div class="col-span-2">
 			<a href="/" class="flex items-center text-4xl font-bold">
