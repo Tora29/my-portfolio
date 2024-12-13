@@ -6,6 +6,8 @@ declare module '@jamescoyle/svelte-icon' {
 		path?: string;
 		size?: string | number;
 		color?: string;
+		'aria-label'?: string;
+		role?: string;
 	}
 
 	export default class SvgIcon extends SvelteComponentTyped<SvgIconProps> {}
