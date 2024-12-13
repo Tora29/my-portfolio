@@ -5,4 +5,5 @@ declare module '@mdi/js' {
   export const mdiPost: string;
   export const mdiGithub: string;
   export const mdiCardAccountMail: string;
+  export const mdiBriefcaseOutline: string;
 }
