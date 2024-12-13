@@ -3,4 +3,10 @@
 	import { mdiCardAccountMail } from '@mdi/js';
 </script>
 
-<SvgIcon type="mdi" path={mdiCardAccountMail} color="#C7C3BB" />
+<SvgIcon
+	type="mdi"
+	path={mdiCardAccountMail}
+	color="#C7C3BB"
+	aria-label="Contact Icon"
+	role="img"
+/>

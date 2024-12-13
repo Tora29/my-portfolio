@@ -3,4 +3,4 @@
 	import { mdiPost } from '@mdi/js';
 </script>
 
-<SvgIcon type="mdi" path={mdiPost} color="#C7C3BB" />
+<SvgIcon type="mdi" path={mdiPost} color="#C7C3BB" aria-label="Blog Icon" role="img" />

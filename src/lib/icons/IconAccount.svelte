@@ -3,4 +3,4 @@
 	import { mdiAccountOutline } from '@mdi/js';
 </script>
 
-<SvgIcon type="mdi" path={mdiAccountOutline} color="#C7C3BB" />
+<SvgIcon type="mdi" path={mdiAccountOutline} color="#C7C3BB" aria-label="Account Icon" role="img" />
