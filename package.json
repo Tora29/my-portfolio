@@ -6,6 +6,7 @@
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
+		"build-p":"vite build && vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
@@ -41,6 +42,7 @@
 	},
 	"dependencies": {
 		"@jamescoyle/svelte-icon": "^0.1.1",
-		"@mdi/js": "^7.4.47"
+		"@mdi/js": "^7.4.47",
+		"swiper": "^11.1.15"
 	}
 }

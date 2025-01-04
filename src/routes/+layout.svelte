@@ -1,11 +1,12 @@
 <script>
 	import '../app.css';
 	import NavHeader from '$lib/components/navigation/NavHeader.svelte';
-	import DisplayMainLogo from '$lib/components/Display/DisplayMainLogo.svelte';
-
+	import DisplayMainLogo from '$lib/components/display/DisplayMainLogo.svelte';
 	let { children } = $props();
 </script>
 
 <NavHeader />
 <DisplayMainLogo />
-{@render children()}
+<div class="bg-primary min-h-screen">
+	{@render children()}
+</div>
