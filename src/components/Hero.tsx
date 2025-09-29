@@ -17,14 +17,14 @@ const Hero = () => {
           as="h1"
           size="xxlarge"
           font="squada"
-          className="mb-2 text-4xl sm:text-5xl md:text-6xl"
+          className="mb-2 text-5xl sm:text-6xl md:text-7xl"
         >
           {SITE_INFO.title}
         </Heading>
         <Text
           size="2xl"
           font="squada"
-          className="text-xl sm:text-2xl md:text-3xl"
+          className="text-2xl sm:text-3xl md:text-4xl"
         >
           {SITE_INFO.subtitle}
         </Text>

@@ -23,10 +23,10 @@ const Carousel = ({ children }: CarouselProps) => {
       const width = window.innerWidth
       if (width < 640) {
         // モバイル
-        setDimensions({ cardWidth: 280, gap: 16 })
+        setDimensions({ cardWidth: 280, gap: 4 })
       } else if (width < 768) {
         // タブレット
-        setDimensions({ cardWidth: 340, gap: 24 })
+        setDimensions({ cardWidth: 340, gap: 8 })
       } else {
         // デスクトップ
         setDimensions({ cardWidth: 380, gap: 40 })
@@ -41,7 +41,7 @@ const Carousel = ({ children }: CarouselProps) => {
   // 無限ループのためにアイテムを3倍に複製
   const extendedItems = items.length > 0 ? [...items, ...items, ...items] : []
 
-  // 実際の表示位置を計算（中央のセットを表示）
+  // 実際の表示位置を計算（中央のセットの最初から開始）
   const displayIndex = currentIndex + items.length
 
   const goToPrevious = () => {
@@ -101,14 +101,12 @@ const Carousel = ({ children }: CarouselProps) => {
 
   if (items.length === 0) return null
 
-  // レスポンシブ対応：3つのアイテムを中央に配置するための計算
-  const offset =
-    displayIndex * (dimensions.cardWidth + dimensions.gap) -
-    (dimensions.cardWidth + dimensions.gap)
+  // レスポンシブ対応：中央のカードを画面中央に配置するための計算
+  const offset = displayIndex * (dimensions.cardWidth + dimensions.gap)
 
   return (
     <div className="relative w-full h-48 sm:h-56 md:h-60 my-8 md:my-12">
-      <div className="absolute inset-y-12 sm:inset-y-14 md:inset-y-16 left-4 sm:left-8 md:left-14 right-4 sm:right-8 md:right-14 bg-[rgb(108,95,62)]/50 rounded-lg opacity-50"></div>
+      <div className="hidden md:block absolute inset-y-12 sm:inset-y-14 md:inset-y-16 left-4 sm:left-8 md:left-14 right-4 sm:right-8 md:right-14 bg-[rgb(108,95,62)]/50 rounded-lg opacity-50"></div>
 
       <button
         onClick={goToPrevious}
@@ -135,28 +133,38 @@ const Carousel = ({ children }: CarouselProps) => {
         <div className="flex justify-center items-center h-full">
           <div className="relative w-full max-w-[1200px] overflow-hidden">
             <div
-              className={`flex gap-4 sm:gap-6 md:gap-10 ${
+              className={`flex ${
                 isTransitioning
                   ? 'transition-transform duration-500 ease-in-out'
                   : ''
               }`}
               style={{
+                gap: `${dimensions.gap}px`,
                 transform: `translateX(calc(50% - ${offset}px - ${dimensions.cardWidth / 2}px))`,
               }}
             >
               {extendedItems.map((item, index) => {
-                // offset計算により左に1つシフトするため、displayIndexが実際に中央
+                // 中央に表示されているのは displayIndex
                 const isCenter = index === displayIndex
+                const isSide =
+                  index === displayIndex - 1 || index === displayIndex + 1
                 return (
                   <div
                     key={index}
                     className={`flex-shrink-0 w-[280px] sm:w-[340px] md:w-[380px] transition-all duration-300 ${
-                      !isCenter
-                        ? 'scale-100 opacity-100 md:scale-100 md:opacity-100'
-                        : 'scale-[0.85] opacity-30 md:scale-100 md:opacity-100'
+                      isCenter
+                        ? 'scale-100 md:scale-100 opacity-100'
+                        : isSide
+                          ? 'scale-[0.75] md:scale-100 opacity-40 md:opacity-100'
+                          : 'scale-100 md:scale-100 opacity-100'
                     }`}
                   >
-                    {item}
+                    {React.cloneElement(
+                      item as React.ReactElement<{ isCenter?: boolean }>,
+                      {
+                        isCenter,
+                      }
+                    )}
                   </div>
                 )
               })}

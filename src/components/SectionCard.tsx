@@ -4,9 +4,15 @@ interface SectionCardProps {
   title: string
   imageSrc: string
   onClick?: () => void
+  isCenter?: boolean
 }
 
-const SectionCard = ({ title, imageSrc, onClick }: SectionCardProps) => {
+const SectionCard = ({
+  title,
+  imageSrc,
+  onClick,
+  isCenter = false,
+}: SectionCardProps) => {
   return (
     <Card
       className="w-[280px] sm:w-[340px] md:w-[380px] h-48 sm:h-56 md:h-60 group"
@@ -22,7 +28,11 @@ const SectionCard = ({ title, imageSrc, onClick }: SectionCardProps) => {
         rounded="lg"
         loading="eager"
       />
-      <div className="absolute inset-0 bg-black/50 rounded-lg group-hover:bg-black/40 transition-colors"></div>
+      <div
+        className={`absolute inset-0 rounded-lg group-hover:bg-black/40 transition-colors ${
+          isCenter ? 'bg-black/50 md:bg-black/50' : 'bg-black/70 md:bg-black/50'
+        }`}
+      ></div>
       <div className="absolute inset-0 flex items-center justify-center">
         <Heading
           as="h3"
