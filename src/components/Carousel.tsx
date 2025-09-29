@@ -23,7 +23,7 @@ const Carousel = ({ children }: CarouselProps) => {
       const width = window.innerWidth
       if (width < 640) {
         // モバイル
-        setDimensions({ cardWidth: 280, gap: 4 })
+        setDimensions({ cardWidth: 280, gap: 2 })
       } else if (width < 768) {
         // タブレット
         setDimensions({ cardWidth: 340, gap: 8 })
