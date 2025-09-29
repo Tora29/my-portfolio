@@ -1,19 +1,28 @@
 import React from 'react'
+import { Card, Image, Heading } from './shared'
 
-const SectionCard = ({ title, onClick }) => {
+const SectionCard = ({ title, imageSrc, onClick }) => {
   return (
-    <div
-      className="relative w-[380px] h-60 rounded-lg cursor-pointer group"
+    <Card
+      className="w-[380px] h-60 group"
+      variant="transparent"
       onClick={onClick}
+      padding={false}
+      hover
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-[rgb(12,13,21)] via-[rgb(23,24,32)] to-[rgb(108,95,62)]/30 rounded-lg"></div>
+      <Image
+        src={imageSrc}
+        alt={`${title} section`}
+        className="absolute inset-0 w-full h-full object-cover"
+        rounded="lg"
+      />
       <div className="absolute inset-0 bg-black/50 rounded-lg group-hover:bg-black/40 transition-colors"></div>
       <div className="absolute inset-0 flex items-center justify-center">
-        <h3 className="text-[rgb(199,195,187)] text-3xl font-semibold font-['Rubik'] leading-tight">
+        <Heading as="h3" size="large" weight="semibold">
           {title}
-        </h3>
+        </Heading>
       </div>
-    </div>
+    </Card>
   )
 }
 

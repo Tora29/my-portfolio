@@ -6,6 +6,11 @@ import SectionCard from './components/SectionCard'
 import ContentCard from './components/ContentCard'
 import SectionTitle from './components/SectionTitle'
 import Footer from './components/Footer'
+import aboutMeImage from './assets/aboutMeImage.png'
+import workImage from './assets/worktImage.png'
+import historyImage from './assets/historyImage.png'
+import blogImage from './assets/blogImage.png'
+import contactImage from './assets/contactImage.png'
 
 function App() {
   const scrollToSection = (sectionId) => {
@@ -16,11 +21,11 @@ function App() {
   }
 
   const sections = [
-    { id: 'about', title: 'ABOUT ME' },
-    { id: 'work', title: 'WORK' },
-    { id: 'history', title: 'HISTORY' },
-    { id: 'blog', title: 'BLOG' },
-    { id: 'contact', title: 'CONTACT' },
+    { id: 'about', title: 'ABOUT ME', imageSrc: aboutMeImage },
+    { id: 'work', title: 'WORK', imageSrc: workImage },
+    { id: 'history', title: 'HISTORY', imageSrc: historyImage },
+    { id: 'blog', title: 'BLOG', imageSrc: blogImage },
+    { id: 'contact', title: 'CONTACT', imageSrc: contactImage },
   ]
 
   const contentData = {
@@ -28,22 +33,27 @@ function App() {
       title: 'Tora29',
       content:
         '大学卒業後、SESとしてWEB系メガベンチャーに常駐し、エンジニアのキャリアをスタート。その後、大手シンクタンクに転職し、メガバンクのシステム開発でPMを務め、300人月超えの大規模案件をリード。現在は、提案からデザインを含む要件定義、保守運用まで全工程を担当し、技術者としての力を発揮。WEB技術を通じてお客様の成功や幸せにコミットすることを目標に、自身も日々成長を追求している。くぅ～かっこいいぜ。',
+      imageSrc: aboutMeImage,
     },
     work: {
       title: 'WORK',
       content: 'Work In Progress',
+      imageSrc: workImage,
     },
     history: {
       title: 'HISTORY',
       content: 'ワイの歴史を紐解いていくで',
+      imageSrc: historyImage,
     },
     blog: {
       title: 'BLOG',
       content: 'ブログ構築し終わったらここから遷移させるやで',
+      imageSrc: blogImage,
     },
     contact: {
       title: 'CONTACT',
       content: 'ここからワイに直接コンタクト♡',
+      imageSrc: contactImage,
     },
   }
 
@@ -60,6 +70,7 @@ function App() {
               <SectionCard
                 key={section.id}
                 title={section.title}
+                imageSrc={section.imageSrc}
                 onClick={() => scrollToSection(section.id)}
               />
             ))}

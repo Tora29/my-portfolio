@@ -1,24 +1,31 @@
 import React from 'react'
+import { Card, Image, Heading, Text } from './shared'
 
 const ContentCard = ({ title, content, imageSrc }) => {
   return (
-    <div className="w-full max-w-[1000px] h-[300px] bg-[rgb(108,95,62)] rounded-lg overflow-hidden flex">
+    <Card
+      className="w-full max-w-[1000px] h-[300px] flex"
+      padding={false}
+      rounded="lg"
+      overflow="hidden"
+    >
       <div className="w-[250px] h-[300px] relative flex-shrink-0">
-        <img
-          src={imageSrc || 'https://placehold.co/250x300'}
+        <Image
+          src={imageSrc}
           alt={title}
-          className="w-full h-full object-cover rounded-l-lg"
+          placeholder="https://placehold.co/250x300"
+          rounded="l-lg"
         />
       </div>
       <div className="flex-1 p-8 relative">
-        <h3 className="text-[rgb(199,195,187)] text-3xl font-normal font-['Rubik'] leading-tight mb-4">
+        <Heading as="h3" size="large" className="mb-4">
           {title}
-        </h3>
-        <div className="text-[rgb(199,195,187)] text-lg font-light font-['Rubik'] leading-7">
+        </Heading>
+        <Text size="lg" weight="light" className="leading-7">
           {content}
-        </div>
+        </Text>
       </div>
-    </div>
+    </Card>
   )
 }
 
