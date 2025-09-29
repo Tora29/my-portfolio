@@ -127,13 +127,13 @@ const Carousel = ({ children }: CarouselProps) => {
       </button>
 
       <div
-        className="absolute inset-x-0 top-0 h-48 sm:h-56 md:h-60 overflow-visible md:overflow-hidden"
+        className="absolute inset-x-0 top-0 h-48 sm:h-56 md:h-60 overflow-hidden"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
         <div className="flex justify-center items-center h-full">
-          <div className="relative w-full max-w-[1200px] overflow-visible md:overflow-hidden">
+          <div className="relative w-full max-w-[1200px] overflow-hidden">
             <div
               className={`flex gap-4 sm:gap-6 md:gap-10 ${
                 isTransitioning
@@ -144,14 +144,21 @@ const Carousel = ({ children }: CarouselProps) => {
                 transform: `translateX(calc(50% - ${offset}px - ${dimensions.cardWidth / 2}px))`,
               }}
             >
-              {extendedItems.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex-shrink-0 w-[280px] sm:w-[340px] md:w-[380px]"
-                >
-                  {item}
-                </div>
-              ))}
+              {extendedItems.map((item, index) => {
+                const isCenter = index === displayIndex
+                return (
+                  <div
+                    key={index}
+                    className={`flex-shrink-0 w-[280px] sm:w-[340px] md:w-[380px] transition-all duration-500 ${
+                      isCenter
+                        ? 'scale-100 opacity-100'
+                        : 'scale-90 opacity-40 md:scale-100 md:opacity-100'
+                    }`}
+                  >
+                    {item}
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>
