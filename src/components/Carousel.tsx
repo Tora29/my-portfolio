@@ -145,14 +145,15 @@ const Carousel = ({ children }: CarouselProps) => {
               }}
             >
               {extendedItems.map((item, index) => {
+                // offset計算により左に1つシフトするため、displayIndexが実際に中央
                 const isCenter = index === displayIndex
                 return (
                   <div
                     key={index}
-                    className={`flex-shrink-0 w-[280px] sm:w-[340px] md:w-[380px] transition-all duration-500 ${
-                      isCenter
-                        ? 'scale-100 opacity-100'
-                        : 'scale-90 opacity-40 md:scale-100 md:opacity-100'
+                    className={`flex-shrink-0 w-[280px] sm:w-[340px] md:w-[380px] transition-all duration-300 ${
+                      !isCenter
+                        ? 'scale-100 opacity-100 md:scale-100 md:opacity-100'
+                        : 'scale-[0.85] opacity-30 md:scale-100 md:opacity-100'
                     }`}
                   >
                     {item}
