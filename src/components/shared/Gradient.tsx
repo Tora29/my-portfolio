@@ -1,4 +1,16 @@
-import React from 'react'
+import React, { HTMLAttributes } from 'react'
+
+type GradientType = 'brand' | 'dark' | 'light' | 'primary' | 'secondary'
+type GradientDirection = 't' | 'tr' | 'r' | 'br' | 'b' | 'bl' | 'l' | 'tl'
+
+interface GradientProps extends HTMLAttributes<HTMLDivElement> {
+  type?: GradientType
+  direction?: GradientDirection
+  opacity?: number
+  overlay?: boolean
+  className?: string
+  children?: React.ReactNode
+}
 
 const Gradient = ({
   type = 'brand',
@@ -8,8 +20,8 @@ const Gradient = ({
   className = '',
   children,
   ...props
-}) => {
-  const directionClasses = {
+}: GradientProps) => {
+  const directionClasses: Record<GradientDirection, string> = {
     t: 'bg-gradient-to-t',
     tr: 'bg-gradient-to-tr',
     r: 'bg-gradient-to-r',
@@ -20,7 +32,7 @@ const Gradient = ({
     tl: 'bg-gradient-to-tl',
   }
 
-  const typeClasses = {
+  const typeClasses: Record<GradientType, string> = {
     brand: 'from-[rgb(12,13,21)] via-[rgb(23,24,32)] to-[rgb(108,95,62)]/20',
     dark: 'from-black/50 to-transparent',
     light: 'from-white/10 to-transparent',

@@ -1,11 +1,10 @@
-import React from 'react'
 import { Image, Heading, Text } from './shared'
 import { SITE_INFO } from '../config/constants'
 import mainImage from '../assets/mainImage.png'
 
 const Hero = () => {
   return (
-    <section className="relative h-[400px] flex items-center justify-end">
+    <section className="relative h-[250px] md:h-[400px] flex items-center justify-end">
       <Image
         src={mainImage}
         alt="Hero background"
@@ -13,11 +12,20 @@ const Hero = () => {
         loading="eager"
       />
       <div className="absolute inset-0 bg-black/50"></div>
-      <div className="relative z-10 mr-[100px] text-right">
-        <Heading as="h1" size="xxlarge" font="squada" className="mb-2">
+      <div className="relative z-10 mr-4 sm:mr-12 md:mr-[100px] text-right px-4">
+        <Heading
+          as="h1"
+          size="xxlarge"
+          font="squada"
+          className="mb-2 text-4xl sm:text-5xl md:text-6xl"
+        >
           {SITE_INFO.title}
         </Heading>
-        <Text size="2xl" font="squada" className="md:text-3xl">
+        <Text
+          size="2xl"
+          font="squada"
+          className="text-xl sm:text-2xl md:text-3xl"
+        >
           {SITE_INFO.subtitle}
         </Text>
       </div>

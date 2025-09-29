@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
   User,
   Briefcase,
@@ -7,25 +7,28 @@ import {
   Mail,
   Github,
   Menu,
+  LucideIcon,
 } from 'lucide-react'
 import { IconButton, NavLink, Button, Heading } from './shared'
 import { NAV_ITEMS, SOCIAL_LINKS } from '../config/constants'
+import { NavItemWithIcon } from '../types/navigation'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-  const navItems = NAV_ITEMS.map((item) => {
-    const iconMap = {
-      about: User,
-      work: Briefcase,
-      history: History,
-      blog: BookOpen,
-      contact: Mail,
-    }
+  const iconMap: Record<string, LucideIcon> = {
+    about: User,
+    work: Briefcase,
+    history: History,
+    blog: BookOpen,
+    contact: Mail,
+  }
+
+  const navItems: NavItemWithIcon[] = NAV_ITEMS.map((item) => {
     return { ...item, icon: iconMap[item.id] }
   })
 
-  const scrollToSection = () => {
+  const scrollToSection = (): void => {
     setIsMenuOpen(false)
   }
 

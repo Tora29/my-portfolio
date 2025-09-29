@@ -1,11 +1,21 @@
-import { ReactNode, HTMLAttributes, ButtonHTMLAttributes, AnchorHTMLAttributes } from 'react'
+import {
+  ReactNode,
+  HTMLAttributes,
+  ButtonHTMLAttributes,
+  AnchorHTMLAttributes,
+} from 'react'
 import { LucideIcon } from 'lucide-react'
 
 // Button Component Types
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'link'
 export type ButtonSize = 'small' | 'medium' | 'large' | 'icon' | 'nav'
 
-export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement> & AnchorHTMLAttributes<HTMLAnchorElement>, 'size'> {
+export interface ButtonProps
+  extends Omit<
+    ButtonHTMLAttributes<HTMLButtonElement> &
+      AnchorHTMLAttributes<HTMLAnchorElement>,
+    'size'
+  > {
   children: ReactNode
   onClick?: () => void
   variant?: ButtonVariant
@@ -73,7 +83,15 @@ export interface DividerProps extends HTMLAttributes<HTMLDivElement> {
 
 // Gradient Component Types
 export type GradientType = 'brand' | 'dark' | 'light' | 'primary' | 'secondary'
-export type GradientDirection = 't' | 'tr' | 'r' | 'br' | 'b' | 'bl' | 'l' | 'tl'
+export type GradientDirection =
+  | 't'
+  | 'tr'
+  | 'r'
+  | 'br'
+  | 'b'
+  | 'bl'
+  | 'l'
+  | 'tl'
 
 export interface GradientProps extends HTMLAttributes<HTMLDivElement> {
   type?: GradientType
@@ -112,8 +130,23 @@ export interface TextProps extends HTMLAttributes<HTMLParagraphElement> {
 }
 
 // Image Component Types
-export type ImageRounded = 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full' | 'l-lg' | 'r-lg' | 't-lg' | 'b-lg'
-export type ImageObjectFit = 'cover' | 'contain' | 'fill' | 'none' | 'scale-down'
+export type ImageRounded =
+  | 'none'
+  | 'sm'
+  | 'md'
+  | 'lg'
+  | 'xl'
+  | 'full'
+  | 'l-lg'
+  | 'r-lg'
+  | 't-lg'
+  | 'b-lg'
+export type ImageObjectFit =
+  | 'cover'
+  | 'contain'
+  | 'fill'
+  | 'none'
+  | 'scale-down'
 
 export interface ImageProps extends HTMLAttributes<HTMLImageElement> {
   src?: string

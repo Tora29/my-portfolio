@@ -1,4 +1,32 @@
-import React, { useState } from 'react'
+import { useState, SyntheticEvent, ImgHTMLAttributes } from 'react'
+
+type ImageRounded =
+  | 'none'
+  | 'sm'
+  | 'md'
+  | 'lg'
+  | 'xl'
+  | 'full'
+  | 'l-lg'
+  | 'r-lg'
+  | 't-lg'
+  | 'b-lg'
+type ImageObjectFit = 'cover' | 'contain' | 'fill' | 'none' | 'scale-down'
+
+interface ImageProps
+  extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'onLoad' | 'onError'> {
+  src?: string
+  alt?: string
+  placeholder?: string
+  aspectRatio?: number
+  objectFit?: ImageObjectFit
+  rounded?: ImageRounded
+  loading?: 'lazy' | 'eager'
+  onLoad?: (e: SyntheticEvent<HTMLImageElement>) => void
+  onError?: (e: SyntheticEvent<HTMLImageElement>) => void
+  className?: string
+  containerClassName?: string
+}
 
 const Image = ({
   src,
@@ -13,11 +41,11 @@ const Image = ({
   className = '',
   containerClassName = '',
   ...props
-}) => {
+}: ImageProps) => {
   const [imageError, setImageError] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
 
-  const roundedClasses = {
+  const roundedClasses: Record<ImageRounded, string> = {
     none: '',
     sm: 'rounded-sm',
     md: 'rounded-md',
@@ -30,7 +58,7 @@ const Image = ({
     'b-lg': 'rounded-b-lg',
   }
 
-  const objectFitClasses = {
+  const objectFitClasses: Record<ImageObjectFit, string> = {
     cover: 'object-cover',
     contain: 'object-contain',
     fill: 'object-fill',
@@ -38,12 +66,12 @@ const Image = ({
     'scale-down': 'object-scale-down',
   }
 
-  const handleLoad = (e) => {
+  const handleLoad = (e: SyntheticEvent<HTMLImageElement>): void => {
     setImageLoaded(true)
     if (onLoad) onLoad(e)
   }
 
-  const handleError = (e) => {
+  const handleError = (e: SyntheticEvent<HTMLImageElement>): void => {
     setImageError(true)
     if (onError) onError(e)
   }

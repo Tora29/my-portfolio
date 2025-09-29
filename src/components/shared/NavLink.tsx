@@ -1,5 +1,17 @@
-import React from 'react'
+import React, { MouseEvent } from 'react'
 import Button from './Button'
+
+interface NavLinkProps {
+  to?: string
+  children?: React.ReactNode
+  onClick?: (e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void
+  scrollBehavior?: ScrollBehavior
+  scrollOffset?: number
+  external?: boolean
+  className?: string
+  buttonProps?: Record<string, unknown>
+  [key: string]: unknown
+}
 
 const NavLink = ({
   to,
@@ -11,8 +23,10 @@ const NavLink = ({
   className = '',
   buttonProps = {},
   ...props
-}) => {
-  const handleClick = (e) => {
+}: NavLinkProps) => {
+  const handleClick = (
+    e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>
+  ): void => {
     if (external) {
       return
     }
@@ -39,12 +53,26 @@ const NavLink = ({
 
   const isAnchor = external || (to && !to.startsWith('#'))
 
+  if (isAnchor) {
+    return (
+      <Button
+        as="a"
+        href={to}
+        target={external ? '_blank' : undefined}
+        rel={external ? 'noopener noreferrer' : undefined}
+        onClick={handleClick}
+        className={className}
+        {...buttonProps}
+        {...props}
+      >
+        {children}
+      </Button>
+    )
+  }
+
   return (
     <Button
-      as={isAnchor ? 'a' : 'button'}
-      href={isAnchor ? to : undefined}
-      target={external ? '_blank' : undefined}
-      rel={external ? 'noopener noreferrer' : undefined}
+      as="button"
       onClick={handleClick}
       className={className}
       {...buttonProps}

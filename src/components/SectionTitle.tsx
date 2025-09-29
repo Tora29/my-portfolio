@@ -1,6 +1,8 @@
-import React from 'react'
+interface SectionTitleProps {
+  title: string
+}
 
-const SectionTitle = ({ title }) => {
+const SectionTitle = ({ title }: SectionTitleProps) => {
   return (
     <div className="w-80 mx-auto mb-12">
       <h2 className="text-center text-[rgb(199,195,187)] text-4xl font-medium font-['Rubik'] leading-tight mb-3">

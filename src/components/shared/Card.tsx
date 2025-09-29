@@ -1,4 +1,19 @@
-import React from 'react'
+import React, { HTMLAttributes } from 'react'
+
+type CardVariant = 'default' | 'gradient' | 'transparent'
+type CardRounded = 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
+type CardOverflow = 'hidden' | 'visible' | 'auto'
+
+interface CardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onClick'> {
+  children?: React.ReactNode
+  className?: string
+  onClick?: () => void
+  variant?: CardVariant
+  padding?: boolean
+  rounded?: CardRounded
+  overflow?: CardOverflow
+  hover?: boolean
+}
 
 const Card = React.memo(
   ({
@@ -11,17 +26,17 @@ const Card = React.memo(
     overflow = 'hidden',
     hover = false,
     ...props
-  }) => {
+  }: CardProps) => {
     const baseClasses = 'relative'
 
-    const variantClasses = {
+    const variantClasses: Record<CardVariant, string> = {
       default: 'bg-[rgb(108,95,62)]',
       gradient:
         'bg-gradient-to-br from-[rgb(12,13,21)] via-[rgb(23,24,32)] to-[rgb(108,95,62)]/30',
       transparent: 'bg-transparent',
     }
 
-    const roundedClasses = {
+    const roundedClasses: Record<CardRounded, string> = {
       none: '',
       sm: 'rounded-sm',
       md: 'rounded-md',
@@ -30,7 +45,7 @@ const Card = React.memo(
       full: 'rounded-full',
     }
 
-    const overflowClasses = {
+    const overflowClasses: Record<CardOverflow, string> = {
       hidden: 'overflow-hidden',
       visible: 'overflow-visible',
       auto: 'overflow-auto',

@@ -1,4 +1,16 @@
-import React from 'react'
+import { HTMLAttributes } from 'react'
+
+type DividerOrientation = 'horizontal' | 'vertical'
+type DividerSpacing = 'none' | 'tight' | 'normal' | 'loose'
+
+interface DividerProps extends HTMLAttributes<HTMLDivElement> {
+  orientation?: DividerOrientation
+  thickness?: string
+  color?: string
+  opacity?: number
+  spacing?: DividerSpacing
+  className?: string
+}
 
 const Divider = ({
   orientation = 'horizontal',
@@ -8,15 +20,15 @@ const Divider = ({
   spacing = 'normal',
   className = '',
   ...props
-}) => {
-  const spacingClasses = {
+}: DividerProps) => {
+  const spacingClasses: Record<DividerSpacing, string> = {
     none: '',
     tight: orientation === 'horizontal' ? 'my-1' : 'mx-1',
     normal: orientation === 'horizontal' ? 'my-2' : 'mx-2',
     loose: orientation === 'horizontal' ? 'my-4' : 'mx-4',
   }
 
-  const orientationClasses = {
+  const orientationClasses: Record<DividerOrientation, string> = {
     horizontal: 'w-full',
     vertical: 'h-full self-center',
   }
