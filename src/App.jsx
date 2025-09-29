@@ -1,0 +1,119 @@
+import React from 'react'
+import Header from './components/Header'
+import Hero from './components/Hero'
+import Carousel from './components/Carousel'
+import SectionCard from './components/SectionCard'
+import ContentCard from './components/ContentCard'
+import SectionTitle from './components/SectionTitle'
+import Footer from './components/Footer'
+
+function App() {
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  const sections = [
+    { id: 'about', title: 'ABOUT ME' },
+    { id: 'work', title: 'WORK' },
+    { id: 'history', title: 'HISTORY' },
+    { id: 'blog', title: 'BLOG' },
+    { id: 'contact', title: 'CONTACT' },
+  ]
+
+  const contentData = {
+    about: {
+      title: 'Tora29',
+      content:
+        '大学卒業後、SESとしてWEB系メガベンチャーに常駐し、エンジニアのキャリアをスタート。その後、大手シンクタンクに転職し、メガバンクのシステム開発でPMを務め、300人月超えの大規模案件をリード。現在は、提案からデザインを含む要件定義、保守運用まで全工程を担当し、技術者としての力を発揮。WEB技術を通じてお客様の成功や幸せにコミットすることを目標に、自身も日々成長を追求している。くぅ～かっこいいぜ。',
+    },
+    work: {
+      title: 'WORK',
+      content: 'Work In Progress',
+    },
+    history: {
+      title: 'HISTORY',
+      content: 'ワイの歴史を紐解いていくで',
+    },
+    blog: {
+      title: 'BLOG',
+      content: 'ブログ構築し終わったらここから遷移させるやで',
+    },
+    contact: {
+      title: 'CONTACT',
+      content: 'ここからワイに直接コンタクト♡',
+    },
+  }
+
+  return (
+    <div className="min-h-screen bg-[rgb(12,13,21)] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]">
+      <Header />
+      <main className="pt-20">
+        <Hero />
+
+        <section className="py-12">
+          <SectionTitle title="WELCOME" />
+          <Carousel>
+            {sections.map((section) => (
+              <SectionCard
+                key={section.id}
+                title={section.title}
+                onClick={() => scrollToSection(section.id)}
+              />
+            ))}
+          </Carousel>
+        </section>
+
+        <section id="about" className="py-12 px-4 md:px-8">
+          <div className="max-w-7xl mx-auto">
+            <SectionTitle title="ABOUT ME" />
+            <div className="flex justify-center">
+              <ContentCard {...contentData.about} />
+            </div>
+          </div>
+        </section>
+
+        <section id="work" className="py-12 px-4 md:px-8">
+          <div className="max-w-7xl mx-auto">
+            <SectionTitle title="WORK" />
+            <div className="flex justify-center">
+              <ContentCard {...contentData.work} />
+            </div>
+          </div>
+        </section>
+
+        <section id="history" className="py-12 px-4 md:px-8">
+          <div className="max-w-7xl mx-auto">
+            <SectionTitle title="HISTORY" />
+            <div className="flex justify-center">
+              <ContentCard {...contentData.history} />
+            </div>
+          </div>
+        </section>
+
+        <section id="blog" className="py-12 px-4 md:px-8">
+          <div className="max-w-7xl mx-auto">
+            <SectionTitle title="BLOG" />
+            <div className="flex justify-center">
+              <ContentCard {...contentData.blog} />
+            </div>
+          </div>
+        </section>
+
+        <section id="contact" className="py-12 px-4 md:px-8">
+          <div className="max-w-7xl mx-auto">
+            <SectionTitle title="CONTACT" />
+            <div className="flex justify-center">
+              <ContentCard {...contentData.contact} />
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  )
+}
+
+export default App
