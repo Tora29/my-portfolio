@@ -2,6 +2,12 @@ import { Image, Heading, Text } from './shared'
 import { SITE_INFO } from '../config/constants'
 import mainImage from '../assets/mainImage.png'
 
+/**
+ * ヒーローセクションコンポーネント
+ * サイトのメインビジュアルとタイトル、サブタイトルを表示する
+ *
+ * @returns {JSX.Element} ヒーローセクションを含むReactコンポーネント
+ */
 const Hero = () => {
   return (
     <section className="relative h-[250px] md:h-[400px] flex items-center justify-end">

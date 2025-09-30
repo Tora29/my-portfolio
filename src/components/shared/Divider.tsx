@@ -12,6 +12,18 @@ interface DividerProps extends HTMLAttributes<HTMLDivElement> {
   className?: string
 }
 
+/**
+ * 水平または垂直の区切り線を表示するコンポーネント
+ *
+ * @param {Object} props - コンポーネントのプロパティ
+ * @param {DividerOrientation} props.orientation - 区切り線の向き ('horizontal' または 'vertical')
+ * @param {string} props.thickness - 区切り線の太さ (CSSの値、例: '1px', '2px')
+ * @param {string} props.color - 区切り線の色 (CSSの色値)
+ * @param {number} props.opacity - 区切り線の不透明度 (0-1の範囲)
+ * @param {DividerSpacing} props.spacing - 区切り線の上下または左右の余白 ('none' | 'tight' | 'normal' | 'loose')
+ * @param {string} props.className - 追加のCSSクラス名
+ * @returns {JSX.Element} 区切り線要素
+ */
 const Divider = ({
   orientation = 'horizontal',
   thickness = '1px',

@@ -13,6 +13,21 @@ interface NavLinkProps {
   [key: string]: unknown
 }
 
+/**
+ * ナビゲーションリンクコンポーネント
+ * ページ内スクロール、外部リンク、カスタムクリックハンドラーをサポート
+ *
+ * @param {Object} props - コンポーネントのプロパティ
+ * @param {string} props.to - リンク先URL。'#'で始まる場合はページ内アンカーとして扱われる
+ * @param {React.ReactNode} props.children - リンク内に表示する子要素
+ * @param {Function} props.onClick - クリック時に実行されるコールバック関数
+ * @param {ScrollBehavior} props.scrollBehavior - スクロールの動作 ('smooth' または 'auto')
+ * @param {number} props.scrollOffset - スクロール位置のオフセット値 (ピクセル)
+ * @param {boolean} props.external - trueの場合、外部リンクとして扱い新しいタブで開く
+ * @param {string} props.className - 追加のCSSクラス名
+ * @param {Record<string, unknown>} props.buttonProps - Buttonコンポーネントに渡す追加のプロパティ
+ * @returns {JSX.Element} ナビゲーションリンク要素
+ */
 const NavLink = ({
   to,
   children,
@@ -24,6 +39,13 @@ const NavLink = ({
   buttonProps = {},
   ...props
 }: NavLinkProps) => {
+  /**
+   * リンククリック時のハンドラー
+   * ページ内アンカーの場合はスムーススクロールを実行
+   *
+   * @param {MouseEvent<HTMLButtonElement | HTMLAnchorElement>} e - クリックイベントオブジェクト
+   * @returns {void}
+   */
   const handleClick = (
     e: MouseEvent<HTMLButtonElement | HTMLAnchorElement>
   ): void => {

@@ -23,6 +23,8 @@ const config: Config = {
         },
         background: {
           primary: 'rgb(12, 13, 21)',
+          secondary: 'rgb(23, 24, 32)',
+          tertiary: 'rgb(108, 95, 62)',
           card: 'rgba(11, 11, 11, 0.2)',
           overlay: 'rgba(0, 0, 0, 0.5)',
         },

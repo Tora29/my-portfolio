@@ -16,6 +16,20 @@ interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
   children?: React.ReactNode
 }
 
+/**
+ * 見出しテキストを表示するコンポーネント
+ * h1〜h6タグまたはdivタグとして描画でき、サイズ、フォント、太さ、色をカスタマイズ可能
+ *
+ * @param {Object} props - コンポーネントのプロパティ
+ * @param {HeadingTag} props.as - 描画するHTMLタグ ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'div')
+ * @param {HeadingSize} props.size - 見出しのサイズ ('small' | 'medium' | 'large' | 'xlarge' | 'xxlarge')
+ * @param {TypographyFont} props.font - フォントファミリー ('rubik' | 'squada')
+ * @param {TypographyWeight} props.weight - フォントの太さ ('light' | 'normal' | 'medium' | 'semibold' | 'bold')
+ * @param {TypographyColor} props.color - テキストの色 ('primary' | 'secondary' | 'dark' | 'light')
+ * @param {string} props.className - 追加のCSSクラス名
+ * @param {React.ReactNode} props.children - 見出し内に表示する子要素
+ * @returns {JSX.Element} 見出し要素
+ */
 export const Heading = ({
   as: Component = 'h2',
   size = 'medium',
@@ -87,6 +101,20 @@ interface BaseTextProps {
 
 type TextProps = BaseTextProps & HTMLAttributes<HTMLElement>
 
+/**
+ * 本文テキストを表示するコンポーネント
+ * p、span、div、labelタグとして描画でき、サイズ、フォント、太さ、色をカスタマイズ可能
+ *
+ * @param {Object} props - コンポーネントのプロパティ
+ * @param {TextTag} props.as - 描画するHTMLタグ ('p' | 'span' | 'div' | 'label')
+ * @param {TextSize} props.size - テキストのサイズ ('xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl')
+ * @param {TypographyFont} props.font - フォントファミリー ('rubik' | 'squada')
+ * @param {TypographyWeight} props.weight - フォントの太さ ('light' | 'normal' | 'medium' | 'semibold' | 'bold')
+ * @param {TypographyColor} props.color - テキストの色 ('primary' | 'secondary' | 'dark' | 'light')
+ * @param {string} props.className - 追加のCSSクラス名
+ * @param {React.ReactNode} props.children - テキスト内に表示する子要素
+ * @returns {JSX.Element} テキスト要素
+ */
 export const Text = ({
   as = 'p',
   size = 'base',

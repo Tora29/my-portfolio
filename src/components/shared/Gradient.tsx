@@ -12,6 +12,19 @@ interface GradientProps extends HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode
 }
 
+/**
+ * グラデーション背景を表示するコンポーネント
+ * ブランド、ダーク、ライトなどの様々なグラデーションタイプをサポート
+ *
+ * @param {Object} props - コンポーネントのプロパティ
+ * @param {GradientType} props.type - グラデーションのタイプ ('brand' | 'dark' | 'light' | 'primary' | 'secondary')
+ * @param {GradientDirection} props.direction - グラデーションの方向 ('t' | 'tr' | 'r' | 'br' | 'b' | 'bl' | 'l' | 'tl')
+ * @param {number} props.opacity - グラデーションの不透明度 (0-1の範囲)
+ * @param {boolean} props.overlay - trueの場合、絶対配置でオーバーレイとして表示
+ * @param {string} props.className - 追加のCSSクラス名
+ * @param {React.ReactNode} props.children - グラデーション内に表示する子要素
+ * @returns {JSX.Element} グラデーション要素
+ */
 const Gradient = ({
   type = 'brand',
   direction = 'br',

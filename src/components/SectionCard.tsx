@@ -7,6 +7,17 @@ interface SectionCardProps {
   isCenter?: boolean
 }
 
+/**
+ * セクションカードコンポーネント
+ * セクションのタイトルと背景画像を表示するカード
+ *
+ * @param {SectionCardProps} props - コンポーネントのプロパティ
+ * @param {string} props.title - カードに表示されるタイトル
+ * @param {string} props.imageSrc - 背景画像のソースURL
+ * @param {() => void} [props.onClick] - カードがクリックされた時のコールバック関数
+ * @param {boolean} [props.isCenter=false] - カードが中央に配置されているかどうか（オーバーレイの透明度に影響）
+ * @returns {JSX.Element} セクションカードを含むReactコンポーネント
+ */
 const SectionCard = ({
   title,
   imageSrc,

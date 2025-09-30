@@ -1,39 +1,33 @@
 import { useState } from 'react'
-import {
-  User,
-  Briefcase,
-  History,
-  BookOpen,
-  Mail,
-  Github,
-  Menu,
-  LucideIcon,
-} from 'lucide-react'
+import { Github, Menu } from 'lucide-react'
 import { IconButton, NavLink, Button, Heading } from './shared'
-import { NAV_ITEMS, SOCIAL_LINKS } from '../config/constants'
-import { NavItemWithIcon } from '../types/navigation'
+import { NAV_ITEMS, SOCIAL_LINKS, ICON_MAP } from '../config/constants'
+import useScrollTo from '../hooks/useScrollTo'
 
+/**
+ * ヘッダーコンポーネント
+ * サイトのナビゲーションバーを表示し、デスクトップとモバイルの両方に対応する
+ *
+ * @returns {JSX.Element} ヘッダーを含むReactコンポーネント
+ */
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { scrollToElement } = useScrollTo()
 
-  const iconMap: Record<string, LucideIcon> = {
-    about: User,
-    work: Briefcase,
-    history: History,
-    blog: BookOpen,
-    contact: Mail,
-  }
-
-  const navItems: NavItemWithIcon[] = NAV_ITEMS.map((item) => {
-    return { ...item, icon: iconMap[item.id] }
-  })
-
-  const scrollToSection = (): void => {
+  /**
+   * ナビゲーションアイテムのクリックハンドラー
+   * モバイルメニューを閉じて指定されたセクションにスクロールする
+   *
+   * @param {string} sectionId - スクロール先のセクションID
+   * @returns {void}
+   */
+  const handleNavClick = (sectionId: string): void => {
     setIsMenuOpen(false)
+    scrollToElement(sectionId)
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[rgb(23,24,32)] px-4 md:px-20 py-3">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-[rgb(23,24,32)]/60 backdrop-blur-md border-b border-[rgb(199,195,187)]/10 px-4 md:px-20 py-3">
       <div className="flex justify-between items-center">
         <Heading as="div" size="large" font="rubik">
           <span className="text-[rgb(199,195,187)]">Tora</span>
@@ -41,15 +35,15 @@ const Header = () => {
         </Heading>
 
         <nav className="hidden md:flex justify-start items-center gap-4">
-          {navItems.map((item) => (
+          {NAV_ITEMS.map((item) => (
             <NavLink
               key={item.id}
               to={`#${item.id}`}
-              onClick={() => scrollToSection()}
+              onClick={() => handleNavClick(item.id)}
               buttonProps={{ size: 'nav', variant: 'primary' }}
             >
               <IconButton
-                icon={item.icon}
+                icon={ICON_MAP[item.id]}
                 label={item.label}
                 buttonProps={{ size: 'nav', variant: 'primary' }}
               />
@@ -79,12 +73,12 @@ const Header = () => {
       </div>
 
       {isMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-[rgb(23,24,32)] border-t border-[rgb(199,195,187)]/20 py-4">
-          {navItems.map((item) => (
+        <div className="md:hidden absolute top-full left-0 right-0 bg-[rgb(23,24,32)]/95 backdrop-blur-md border-t border-[rgb(199,195,187)]/20 py-4">
+          {NAV_ITEMS.map((item) => (
             <NavLink
               key={item.id}
               to={`#${item.id}`}
-              onClick={() => scrollToSection()}
+              onClick={() => handleNavClick(item.id)}
               buttonProps={{
                 variant: 'ghost',
                 fullWidth: true,

@@ -29,7 +29,8 @@
   "homepage": "https://tora29.github.io/my-portfolio/",
   "dependencies": {
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "simple-icons": "^15.16.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
@@ -41,6 +42,7 @@
     "autoprefixer": "^10.4.21",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-jsdoc": "^60.5.0",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",

@@ -28,6 +28,24 @@ interface ImageProps
   containerClassName?: string
 }
 
+/**
+ * 画像を表示するコンポーネント
+ * プレースホルダー、アスペクト比、ローディング状態、エラーハンドリングをサポート
+ *
+ * @param {Object} props - コンポーネントのプロパティ
+ * @param {string} props.src - 画像のURL
+ * @param {string} props.alt - 画像の代替テキスト
+ * @param {string} props.placeholder - エラー時または画像未設定時に表示するプレースホルダー画像のURL
+ * @param {number} props.aspectRatio - 画像のアスペクト比 (例: 16/9)
+ * @param {ImageObjectFit} props.objectFit - 画像のフィット方法 ('cover' | 'contain' | 'fill' | 'none' | 'scale-down')
+ * @param {ImageRounded} props.rounded - 画像の角の丸み ('none' | 'sm' | 'md' | 'lg' | 'xl' | 'full' | 'l-lg' | 'r-lg' | 't-lg' | 'b-lg')
+ * @param {('lazy'|'eager')} props.loading - 画像の読み込み方法 ('lazy' または 'eager')
+ * @param {Function} props.onLoad - 画像の読み込み完了時のコールバック関数
+ * @param {Function} props.onError - 画像の読み込みエラー時のコールバック関数
+ * @param {string} props.className - 画像要素に追加するCSSクラス名
+ * @param {string} props.containerClassName - コンテナ要素に追加するCSSクラス名
+ * @returns {JSX.Element} 画像要素
+ */
 const Image = ({
   src,
   alt = '',
@@ -66,11 +84,23 @@ const Image = ({
     'scale-down': 'object-scale-down',
   }
 
+  /**
+   * 画像の読み込み完了時のハンドラー
+   *
+   * @param {SyntheticEvent<HTMLImageElement>} e - イベントオブジェクト
+   * @returns {void}
+   */
   const handleLoad = (e: SyntheticEvent<HTMLImageElement>): void => {
     setImageLoaded(true)
     if (onLoad) onLoad(e)
   }
 
+  /**
+   * 画像の読み込みエラー時のハンドラー
+   *
+   * @param {SyntheticEvent<HTMLImageElement>} e - イベントオブジェクト
+   * @returns {void}
+   */
   const handleError = (e: SyntheticEvent<HTMLImageElement>): void => {
     setImageError(true)
     if (onError) onError(e)
