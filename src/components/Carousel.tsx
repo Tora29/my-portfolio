@@ -90,16 +90,20 @@ const Carousel = ({ children }: CarouselProps) => {
   return (
     <div
       ref={ref}
-      className={`relative w-full h-48 sm:h-56 md:h-60 my-8 md:my-12 pb-8 transition-all duration-1000 ${
+      className={`relative w-full h-48 sm:h-56 md:h-60 my-8 md:my-12 pb-8 overflow-x-hidden transition-all duration-1000 ${
         isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
       }`}
     >
       <div className="flex justify-center items-center h-full">
         <div
-          className="relative overflow-hidden"
+          className={`relative ${
+            dimensions.cardsToShow === 1
+              ? 'overflow-visible'
+              : 'overflow-hidden'
+          }`}
           style={
             dimensions.cardsToShow === 1
-              ? { width: '100vw', maxWidth: '100%' }
+              ? { width: '100vw' }
               : { width: `${layoutConfig.carouselWidth}px`, maxWidth: '100vw' }
           }
         >
@@ -153,7 +157,7 @@ const Carousel = ({ children }: CarouselProps) => {
                 gap: `${dimensions.gap}px`,
                 transform:
                   dimensions.cardsToShow === 1
-                    ? `translateX(calc(50vw - ${layoutConfig.offset}px - ${dimensions.cardWidth / 2}px))`
+                    ? `translateX(calc(50% - ${layoutConfig.offset}px - ${dimensions.cardWidth / 2}px))`
                     : `translateX(calc(50% - ${layoutConfig.offset}px - ${dimensions.cardWidth / 2}px + ${layoutConfig.translateAdjustment}px))`,
               }}
             >
@@ -173,7 +177,7 @@ const Carousel = ({ children }: CarouselProps) => {
                   // 1枚表示：中央フル表示、両脇は小さく薄く
                   shouldRender = isCenter || isSide
                   if (isSide) {
-                    opacity = 0.4
+                    opacity = 0.6
                     scale = 0.75
                   }
                 } else if (dimensions.cardsToShow === 2) {
