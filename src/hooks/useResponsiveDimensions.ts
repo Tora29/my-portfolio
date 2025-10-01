@@ -35,9 +35,9 @@ export const useResponsiveDimensions = () => {
     const updateDimensions = () => {
       const width = window.innerWidth
       if (width < BREAKPOINT_VALUES.md) {
-        // モバイル/タブレット: 1枚のみ表示（両脇が見えるように少し小さめ）
-        const cardWidth = Math.min(280, width * 0.7)
-        setDimensions({ cardWidth, gap: 12, cardsToShow: 1 })
+        // モバイル/タブレット: 1枚のみ表示
+        const cardWidth = Math.min(340, width * 0.8)
+        setDimensions({ cardWidth, gap: 16, cardsToShow: 1 })
       } else if (width < CAROUSEL_BREAKPOINTS.threeCards) {
         // 中サイズデスクトップ: 2枚表示
         const cardWidth = 380
