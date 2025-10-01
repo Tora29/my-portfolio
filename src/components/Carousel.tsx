@@ -96,10 +96,10 @@ const Carousel = ({ children }: CarouselProps) => {
     >
       <div className="flex justify-center items-center h-full">
         <div
-          className="relative"
+          className="relative overflow-hidden"
           style={
             dimensions.cardsToShow === 1
-              ? { width: '100%' }
+              ? { width: '100vw', maxWidth: '100%' }
               : { width: `${layoutConfig.carouselWidth}px`, maxWidth: '100vw' }
           }
         >
