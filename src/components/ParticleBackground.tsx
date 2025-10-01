@@ -87,8 +87,91 @@ const ParticleBackground = () => {
     if (!ctx) return
 
     /**
+     * パーティクルの位置を更新する（移動と境界チェック）
+     *
+     * @param {Particle} particle - 更新するパーティクル
+     * @param {number} canvasWidth - キャンバスの幅
+     * @param {number} canvasHeight - キャンバスの高さ
+     * @param {Object} mouse - マウスの現在位置
+     * @param {number} mouse.x - マウスのX座標
+     * @param {number} mouse.y - マウスのY座標
+     * @returns {void}
+     */
+    const updateParticle = (
+      particle: Particle,
+      canvasWidth: number,
+      canvasHeight: number,
+      mouse: { x: number; y: number }
+    ) => {
+      // パーティクルの移動
+      particle.x += particle.vx
+      particle.y += particle.vy
+
+      // 画面端の処理
+      if (particle.x < 0 || particle.x > canvasWidth) particle.vx *= -1
+      if (particle.y < 0 || particle.y > canvasHeight) particle.vy *= -1
+
+      // マウスとの相互作用
+      const dx = mouse.x - particle.x
+      const dy = mouse.y - particle.y
+      const distance = Math.sqrt(dx * dx + dy * dy)
+      const maxDistance = 150
+
+      if (distance < maxDistance) {
+        const force = (maxDistance - distance) / maxDistance
+        particle.x -= (dx / distance) * force * 2
+        particle.y -= (dy / distance) * force * 2
+      }
+    }
+
+    /**
+     * パーティクルを描画する
+     *
+     * @param {CanvasRenderingContext2D} context - 描画コンテキスト
+     * @param {Particle} particle - 描画するパーティクル
+     * @returns {void}
+     */
+    const drawParticle = (
+      context: CanvasRenderingContext2D,
+      particle: Particle
+    ) => {
+      context.beginPath()
+      context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2)
+      context.fillStyle = `rgba(199, 195, 187, ${particle.opacity})`
+      context.fill()
+    }
+
+    /**
+     * パーティクル間の接続線を描画する
+     *
+     * @param {CanvasRenderingContext2D} context - 描画コンテキスト
+     * @param {Particle} particle1 - 始点のパーティクル
+     * @param {Particle} particle2 - 終点のパーティクル
+     * @returns {void}
+     */
+    const drawConnection = (
+      context: CanvasRenderingContext2D,
+      particle1: Particle,
+      particle2: Particle
+    ) => {
+      const dx = particle1.x - particle2.x
+      const dy = particle1.y - particle2.y
+      const distance = Math.sqrt(dx * dx + dy * dy)
+      const maxConnectionDistance = 120
+
+      if (distance < maxConnectionDistance) {
+        context.beginPath()
+        context.moveTo(particle1.x, particle1.y)
+        context.lineTo(particle2.x, particle2.y)
+        context.strokeStyle = `rgba(199, 195, 187, ${0.1 * (1 - distance / maxConnectionDistance)})`
+        context.lineWidth = 0.5
+        context.stroke()
+      }
+    }
+
+    /**
      * パーティクルのアニメーションループ
-     * パーティクルの移動、マウスとの相互作用、描画、線の接続を処理する
+     * 全パーティクルの更新、描画、接続線の描画を処理する
      *
      * @returns {void}
      */
@@ -96,47 +179,15 @@ const ParticleBackground = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       particlesRef.current.forEach((particle, i) => {
-        // パーティクルの移動
-        particle.x += particle.vx
-        particle.y += particle.vy
-
-        // 画面端の処理
-        if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1
-        if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1
-
-        // マウスとの相互作用
-        const dx = mouseRef.current.x - particle.x
-        const dy = mouseRef.current.y - particle.y
-        const distance = Math.sqrt(dx * dx + dy * dy)
-        const maxDistance = 150
-
-        if (distance < maxDistance) {
-          const force = (maxDistance - distance) / maxDistance
-          particle.x -= (dx / distance) * force * 2
-          particle.y -= (dy / distance) * force * 2
-        }
+        // パーティクルの更新
+        updateParticle(particle, canvas.width, canvas.height, mouseRef.current)
 
         // パーティクルの描画
-        ctx.beginPath()
-        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(199, 195, 187, ${particle.opacity})`
-        ctx.fill()
+        drawParticle(ctx, particle)
 
         // 近くのパーティクルを線で結ぶ
         for (let j = i + 1; j < particlesRef.current.length; j++) {
-          const other = particlesRef.current[j]
-          const dx = particle.x - other.x
-          const dy = particle.y - other.y
-          const distance = Math.sqrt(dx * dx + dy * dy)
-
-          if (distance < 120) {
-            ctx.beginPath()
-            ctx.moveTo(particle.x, particle.y)
-            ctx.lineTo(other.x, other.y)
-            ctx.strokeStyle = `rgba(199, 195, 187, ${0.1 * (1 - distance / 120)})`
-            ctx.lineWidth = 0.5
-            ctx.stroke()
-          }
+          drawConnection(ctx, particle, particlesRef.current[j])
         }
       })
 

@@ -100,65 +100,98 @@ const ContentCard = ({
 
       {/* モーダル */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <div>
-          <Heading
-            as="h2"
-            size="xlarge"
-            className="mb-6 text-2xl sm:text-3xl md:text-4xl"
-          >
-            {title}
-          </Heading>
-
-          {skills ? (
-            <div className="space-y-8">
-              {skills.map((skillCategory, index) => (
-                <div key={index}>
-                  <Heading
-                    as="h3"
-                    size="large"
-                    className="mb-4 text-lg sm:text-xl text-[rgb(108,95,62)]"
-                  >
-                    {skillCategory.category}
-                  </Heading>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
-                    {skillCategory.items.map((item, itemIndex) => (
-                      <CircularProgress
-                        key={itemIndex}
-                        label={item.name}
-                        level={item.level}
-                        icon={item.icon}
-                        iconType={item.iconType}
-                        size={90}
-                        delay={0}
-                      />
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : timeline ? (
-            <div>
-              <Text
-                size="lg"
-                weight="light"
-                className="mb-8 leading-7 sm:leading-8 text-base sm:text-lg"
-              >
-                {content}
-              </Text>
-              <Timeline items={timeline} />
-            </div>
-          ) : (
-            <Text
-              size="lg"
-              weight="light"
-              className="leading-7 sm:leading-8 text-base sm:text-lg whitespace-pre-line"
-            >
-              {content}
-            </Text>
-          )}
-        </div>
+        <ModalContent
+          title={title}
+          content={content}
+          skills={skills}
+          timeline={timeline}
+        />
       </Modal>
     </>
+  )
+}
+
+interface ModalContentProps {
+  title: string
+  content: string
+  skills?: SkillCategory[]
+  timeline?: TimelineItem[]
+}
+
+/**
+ * モーダル内のコンテンツコンポーネント
+ * スキル、タイムライン、または一般コンテンツを条件に応じて表示する
+ *
+ * @param {ModalContentProps} props - モーダルコンテンツのプロパティ
+ * @param {string} props.title - モーダルのタイトル
+ * @param {string} props.content - モーダルのコンテンツテキスト
+ * @param {SkillCategory[]} [props.skills] - スキルカテゴリーの配列（オプション）
+ * @param {TimelineItem[]} [props.timeline] - タイムラインアイテムの配列（オプション）
+ * @returns {JSX.Element} モーダルコンテンツを含むReactコンポーネント
+ */
+const ModalContent = ({
+  title,
+  content,
+  skills,
+  timeline,
+}: ModalContentProps) => {
+  return (
+    <div>
+      <Heading
+        as="h2"
+        size="xlarge"
+        className="mb-6 text-2xl sm:text-3xl md:text-4xl"
+      >
+        {title}
+      </Heading>
+
+      {skills ? (
+        <div className="space-y-8">
+          {skills.map((skillCategory, index) => (
+            <div key={index}>
+              <Heading
+                as="h3"
+                size="large"
+                className="mb-4 text-lg sm:text-xl text-[rgb(108,95,62)]"
+              >
+                {skillCategory.category}
+              </Heading>
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
+                {skillCategory.items.map((item, itemIndex) => (
+                  <CircularProgress
+                    key={itemIndex}
+                    label={item.name}
+                    level={item.level}
+                    icon={item.icon}
+                    size={90}
+                    delay={0}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : timeline ? (
+        <div>
+          <Text
+            size="lg"
+            weight="light"
+            className="mb-8 leading-7 sm:leading-8 text-base sm:text-lg"
+          >
+            {content}
+          </Text>
+          <Timeline items={timeline} />
+        </div>
+      ) : (
+        <Text
+          size="lg"
+          weight="light"
+          className="leading-7 sm:leading-8 text-base sm:text-lg whitespace-pre-line"
+        >
+          {content}
+        </Text>
+      )}
+    </div>
   )
 }
 

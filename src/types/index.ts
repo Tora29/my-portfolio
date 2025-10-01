@@ -1,11 +1,10 @@
-import { LucideIcon } from 'lucide-react'
+import { IconType } from 'react-icons'
 
 // スキル関連の型
 export interface SkillItem {
   name: string
   level: number // 1-5の習熟度
-  icon: string // simple-icons または lucide-reactのアイコン名
-  iconType?: 'simple' | 'lucide' // アイコンのタイプ（デフォルト: simple）
+  icon: IconType // react-icons のアイコンコンポーネント
 }
 
 export interface SkillCategory {
@@ -104,4 +103,4 @@ export interface BreakpointValues {
 }
 
 // アイコンマッピングの型
-export type IconMapType = Record<string, LucideIcon>
+export type IconMapType = Record<string, IconType>

@@ -1,7 +1,8 @@
-import { useEffect, ReactNode, useState } from 'react'
+import { useEffect, ReactNode } from 'react'
 import { createPortal } from 'react-dom'
-import { X } from 'lucide-react'
+import { IoClose } from 'react-icons/io5'
 import { Button } from './index'
+import { useModalAnimation } from '../../hooks/useModalAnimation'
 
 interface ModalProps {
   isOpen: boolean
@@ -20,30 +21,7 @@ interface ModalProps {
  * @returns {JSX.Element|null} モーダル要素またはnull
  */
 const Modal = ({ isOpen, onClose, children }: ModalProps) => {
-  const [isVisible, setIsVisible] = useState(false)
-  const [shouldRender, setShouldRender] = useState(false)
-
-  // モーダルの表示/非表示アニメーション
-  useEffect(() => {
-    if (isOpen) {
-      // 1. DOMにマウント
-      setShouldRender(true)
-      // 2. 次フレームでアニメーション開始
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setIsVisible(true)
-        })
-      })
-    } else {
-      // 1. アニメーション終了
-      setIsVisible(false)
-      // 2. アニメーション完了後にアンマウント
-      const timer = setTimeout(() => {
-        setShouldRender(false)
-      }, 200)
-      return () => clearTimeout(timer)
-    }
-  }, [isOpen])
+  const { isVisible, shouldRender } = useModalAnimation({ isOpen })
 
   // Escキーで閉じる & スクロール制御
   useEffect(() => {
@@ -96,7 +74,7 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
           size="icon"
           className="absolute top-4 right-4 z-10 hover:bg-[rgb(108,95,62)]/20"
         >
-          <X className="w-6 h-6" />
+          <IoClose className="w-6 h-6" />
         </Button>
 
         {/* コンテンツ */}

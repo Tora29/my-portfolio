@@ -24,21 +24,21 @@ export const useCarouselTouch = ({
   onSwipeLeft,
   onSwipeRight,
 }: UseCarouselTouchOptions) => {
-  // タッチ位置を単一のオブジェクトで管理
-  const [touchPosition, setTouchPosition] = useState({ start: 0, end: 0 })
+  const [touchStart, setTouchStart] = useState(0)
+  const [touchEnd, setTouchEnd] = useState(0)
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    setTouchPosition((prev) => ({ ...prev, start: e.targetTouches[0].clientX }))
+    setTouchStart(e.targetTouches[0].clientX)
   }, [])
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    setTouchPosition((prev) => ({ ...prev, end: e.targetTouches[0].clientX }))
+    setTouchEnd(e.targetTouches[0].clientX)
   }, [])
 
   const handleTouchEnd = useCallback(() => {
-    if (!touchPosition.start || !touchPosition.end) return
+    if (!touchStart || !touchEnd) return
 
-    const distance = touchPosition.start - touchPosition.end
+    const distance = touchStart - touchEnd
     const isLeftSwipe = distance > CAROUSEL_LAYOUT.swipeThreshold
     const isRightSwipe = distance < -CAROUSEL_LAYOUT.swipeThreshold
 
@@ -49,8 +49,9 @@ export const useCarouselTouch = ({
       onSwipeRight()
     }
 
-    setTouchPosition({ start: 0, end: 0 })
-  }, [touchPosition, onSwipeLeft, onSwipeRight])
+    setTouchStart(0)
+    setTouchEnd(0)
+  }, [touchStart, touchEnd, onSwipeLeft, onSwipeRight])
 
   return {
     handleTouchStart,

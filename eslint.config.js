@@ -57,6 +57,13 @@ export default [
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       'no-undef': 'off', // TypeScript handles this
+
+      // TypeScript strict rules
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-unused-expressions': 'error',
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+      '@typescript-eslint/no-inferrable-types': 'warn',
+
       // JSDoc rules
       'jsdoc/require-jsdoc': [
         'warn',

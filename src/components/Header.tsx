@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Github, Menu } from 'lucide-react'
+import { useState, useCallback } from 'react'
+import { FaGithub, FaBars } from 'react-icons/fa'
 import { IconButton, NavLink, Button, Heading } from './shared'
 import { NAV_ITEMS, SOCIAL_LINKS, ICON_MAP } from '../config/constants'
 import useScrollTo from '../hooks/useScrollTo'
@@ -21,10 +21,13 @@ const Header = () => {
    * @param {string} sectionId - スクロール先のセクションID
    * @returns {void}
    */
-  const handleNavClick = (sectionId: string): void => {
-    setIsMenuOpen(false)
-    scrollToElement(sectionId)
-  }
+  const handleNavClick = useCallback(
+    (sectionId: string): void => {
+      setIsMenuOpen(false)
+      scrollToElement(sectionId)
+    },
+    [scrollToElement]
+  )
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-[rgb(23,24,32)]/60 backdrop-blur-md border-b border-[rgb(199,195,187)]/10 px-4 md:px-20 py-3">
@@ -42,11 +45,7 @@ const Header = () => {
               onClick={() => handleNavClick(item.id)}
               buttonProps={{ size: 'nav', variant: 'primary' }}
             >
-              <IconButton
-                icon={ICON_MAP[item.id]}
-                label={item.label}
-                buttonProps={{ size: 'nav', variant: 'primary' }}
-              />
+              <IconButton icon={ICON_MAP[item.id]} label={item.label} />
             </NavLink>
           ))}
           <NavLink
@@ -54,11 +53,7 @@ const Header = () => {
             external
             buttonProps={{ size: 'nav', variant: 'primary' }}
           >
-            <IconButton
-              icon={Github}
-              label="GitHub"
-              buttonProps={{ size: 'nav', variant: 'primary' }}
-            />
+            <IconButton icon={FaGithub} label="GitHub" />
           </NavLink>
         </nav>
 
@@ -68,7 +63,7 @@ const Header = () => {
           variant="ghost"
           size="icon"
         >
-          <Menu className="w-6 h-6" />
+          <FaBars className="w-6 h-6" />
         </Button>
       </div>
 

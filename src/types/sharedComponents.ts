@@ -4,7 +4,7 @@ import {
   ButtonHTMLAttributes,
   AnchorHTMLAttributes,
 } from 'react'
-import { LucideIcon } from 'lucide-react'
+import { IconType } from 'react-icons'
 
 // Button Component Types
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'link'
@@ -50,7 +50,7 @@ export type IconDirection = 'column' | 'column-reverse' | 'row' | 'row-reverse'
 export type IconSpacing = 'none' | 'tight' | 'normal' | 'loose'
 
 export interface IconButtonProps extends Omit<ButtonProps, 'children'> {
-  icon: LucideIcon
+  icon: IconType
   label?: string
   direction?: IconDirection
   iconSize?: number

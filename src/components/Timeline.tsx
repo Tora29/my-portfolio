@@ -1,9 +1,28 @@
-import { Calendar } from 'lucide-react'
+import { FaCalendar } from 'react-icons/fa'
 import { Heading, Text } from './shared'
 import { TimelineItem } from '../config/constants'
 
 interface TimelineProps {
   items: TimelineItem[]
+}
+
+/**
+ * タイムラインアイテムのタイプに応じた色を取得する
+ *
+ * @param {string} [type] - タイムラインアイテムのタイプ（education, work, project等）
+ * @returns {string} Tailwind CSSの背景色クラス
+ */
+const getTypeColor = (type?: string): string => {
+  switch (type) {
+    case 'education':
+      return 'bg-blue-500'
+    case 'work':
+      return 'bg-green-500'
+    case 'project':
+      return 'bg-purple-500'
+    default:
+      return 'bg-[rgb(108,95,62)]'
+  }
 }
 
 /**
@@ -15,25 +34,6 @@ interface TimelineProps {
  * @returns {JSX.Element} タイムラインを含むReactコンポーネント
  */
 const Timeline = ({ items }: TimelineProps) => {
-  /**
-   * タイムラインアイテムのタイプに応じた色を取得する
-   *
-   * @param {string} [type] - タイムラインアイテムのタイプ（education, work, project等）
-   * @returns {string} Tailwind CSSの背景色クラス
-   */
-  const getTypeColor = (type?: string) => {
-    switch (type) {
-      case 'education':
-        return 'bg-blue-500'
-      case 'work':
-        return 'bg-green-500'
-      case 'project':
-        return 'bg-purple-500'
-      default:
-        return 'bg-[rgb(108,95,62)]'
-    }
-  }
-
   return (
     <div className="relative">
       {/* タイムラインの縦線 */}
@@ -51,7 +51,7 @@ const Timeline = ({ items }: TimelineProps) => {
             <div className="bg-gradient-to-br from-[rgb(23,24,32)] to-[rgb(18,19,27)] p-4 sm:p-6 rounded-lg border border-[rgb(108,95,62)]/20 hover:border-[rgb(108,95,62)]/40 transition-all duration-300 shadow-md hover:shadow-[0_0_20px_rgba(108,95,62,0.2)]">
               {/* 日付 */}
               <div className="flex items-center gap-2 mb-2 text-[rgb(199,195,187)]">
-                <Calendar className="w-4 h-4" />
+                <FaCalendar className="w-4 h-4" />
                 <Text size="sm" weight="light" className="text-sm">
                   {item.date}
                 </Text>

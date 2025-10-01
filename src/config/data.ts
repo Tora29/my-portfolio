@@ -1,4 +1,33 @@
-import { User, Briefcase, History, BookOpen, Mail } from 'lucide-react'
+import {
+  FaUser,
+  FaBriefcase,
+  FaHistory,
+  FaBook,
+  FaEnvelope,
+  FaJava,
+} from 'react-icons/fa'
+import {
+  SiSvelte,
+  SiReact,
+  SiNextdotjs,
+  SiDaisyui,
+  SiTailwindcss,
+  SiNodedotjs,
+  SiSpring,
+  SiPython,
+  SiFastapi,
+  SiPostgresql,
+  SiMysql,
+  SiGit,
+  SiDocker,
+  SiVitest,
+  SiGithubactions,
+} from 'react-icons/si'
+import { FiCloud, FiCode, FiSettings } from 'react-icons/fi'
+import { BiPalette } from 'react-icons/bi'
+import { HiUsers } from 'react-icons/hi'
+import { IoDocumentText } from 'react-icons/io5'
+import { MdTheaters } from 'react-icons/md'
 import { NavItem, SocialLinks, SiteInfo, IconMapType } from '../types'
 import aboutMeImage from '../assets/aboutMeImage.png'
 import skillImage from '../assets/skillImage.png'
@@ -55,64 +84,62 @@ export const NAV_ITEMS: readonly NavItem[] = [
       {
         category: 'Frontend',
         items: [
-          { name: 'Svelte', level: 4, icon: 'siSvelte' },
-          { name: 'SvelteKit', level: 4, icon: 'siSvelte' },
-          { name: 'React', level: 3, icon: 'siReact' },
-          { name: 'Next.js', level: 3, icon: 'siNextdotjs' },
-          { name: 'Daisy UI', level: 4, icon: 'siDaisyui' },
-          { name: 'Tailwind CSS', level: 3, icon: 'siTailwindcss' },
+          { name: 'Svelte', level: 4, icon: SiSvelte },
+          { name: 'SvelteKit', level: 4, icon: SiSvelte },
+          { name: 'React', level: 3, icon: SiReact },
+          { name: 'Next.js', level: 3, icon: SiNextdotjs },
+          { name: 'Daisy UI', level: 4, icon: SiDaisyui },
+          { name: 'Tailwind CSS', level: 3, icon: SiTailwindcss },
         ],
       },
       {
         category: 'Backend',
         items: [
-          { name: 'Node.js', level: 4, icon: 'siNodedotjs' },
-          { name: 'Java', level: 3, icon: 'siOracle' },
-          { name: 'Spring Boot', level: 3, icon: 'siSpring' },
-          { name: 'Python', level: 2, icon: 'siPython' },
-          { name: 'FastAPI', level: 2, icon: 'siFastapi' },
+          { name: 'Node.js', level: 4, icon: SiNodedotjs },
+          { name: 'Java', level: 3, icon: FaJava },
+          { name: 'Spring Boot', level: 3, icon: SiSpring },
+          { name: 'Python', level: 2, icon: SiPython },
+          { name: 'FastAPI', level: 2, icon: SiFastapi },
         ],
       },
       {
         category: 'Database',
         items: [
-          { name: 'Postgre', level: 3, icon: 'siPostgresql' },
-          { name: 'MySQL', level: 2, icon: 'siMysql' },
+          { name: 'Postgre', level: 3, icon: SiPostgresql },
+          { name: 'MySQL', level: 2, icon: SiMysql },
         ],
       },
       {
         category: 'Infrastructure & Tools',
         items: [
-          { name: 'CI/CD', level: 4, icon: 'RefreshCw', iconType: 'lucide' },
-          { name: 'Git', level: 3, icon: 'siGit' },
-          { name: 'AWS', level: 2, icon: 'Cloud', iconType: 'lucide' },
-          { name: 'Docker', level: 2, icon: 'siDocker' },
+          { name: 'CI/CD', level: 4, icon: SiGithubactions },
+          { name: 'Git', level: 3, icon: SiGit },
+          { name: 'AWS', level: 2, icon: FiCloud },
+          { name: 'Docker', level: 2, icon: SiDocker },
         ],
       },
       {
         category: 'Testing',
         items: [
-          { name: 'Vitest', level: 4, icon: 'siVitest' },
-          { name: 'Playwright', level: 3, icon: 'Drama', iconType: 'lucide' },
+          { name: 'Vitest', level: 4, icon: SiVitest },
+          { name: 'Playwright', level: 3, icon: MdTheaters },
         ],
       },
       {
         category: 'Project Management',
         items: [
-          { name: 'Development', level: 4, icon: 'Code', iconType: 'lucide' },
+          { name: 'Development', level: 4, icon: FiCode },
           {
             name: 'Operations',
             level: 4,
-            icon: 'Settings',
-            iconType: 'lucide',
+            icon: FiSettings,
           },
-          { name: 'Design', level: 3, icon: 'Palette', iconType: 'lucide' },
-          { name: 'Tech Lead', level: 3, icon: 'Users', iconType: 'lucide' },
+          { name: 'Design', level: 3, icon: BiPalette },
+          { name: 'Tech Lead', level: 3, icon: HiUsers },
           {
             name: 'Requirements',
             level: 2,
-            icon: 'FileText',
-            iconType: 'lucide',
+            icon: IoDocumentText,
           },
         ],
       },
@@ -158,9 +185,9 @@ export const SITE_INFO: SiteInfo = {
 
 // アイコンマッピング
 export const ICON_MAP: IconMapType = {
-  about: User,
-  skills: History,
-  work: Briefcase,
-  blog: BookOpen,
-  contact: Mail,
+  about: FaUser,
+  skills: FaHistory,
+  work: FaBriefcase,
+  blog: FaBook,
+  contact: FaEnvelope,
 } as const

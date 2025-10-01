@@ -150,6 +150,26 @@ export const CAROUSEL_BREAKPOINTS = {
   threeCards: 1500, // 3枚表示の閾値
 } as const
 
+// カルーセルのレスポンシブ設定
+export const CAROUSEL_RESPONSIVE_CONFIG = {
+  mobile: {
+    cardWidth: 300,
+    cardWidthRatio: 0.65, // 画面幅の65%
+    gap: 30,
+    cardsToShow: 1,
+  },
+  tablet: {
+    cardWidth: 380,
+    gap: 32,
+    cardsToShow: 2,
+  },
+  desktop: {
+    cardWidth: 380,
+    gap: 40,
+    cardsToShow: 3,
+  },
+} as const
+
 const theme = {
   colors,
   fonts,
@@ -166,6 +186,7 @@ const theme = {
   SIZES,
   BREAKPOINT_VALUES,
   CAROUSEL_BREAKPOINTS,
+  CAROUSEL_RESPONSIVE_CONFIG,
 } as const
 
 // 型定義のエクスポート

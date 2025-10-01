@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react'
-import { BREAKPOINT_VALUES, CAROUSEL_BREAKPOINTS } from '../config/theme'
+import {
+  BREAKPOINT_VALUES,
+  CAROUSEL_BREAKPOINTS,
+  CAROUSEL_RESPONSIVE_CONFIG,
+} from '../config/theme'
 
 interface Dimensions {
   cardWidth: number
@@ -34,18 +38,23 @@ export const useResponsiveDimensions = () => {
      */
     const updateDimensions = () => {
       const width = window.innerWidth
+
       if (width < BREAKPOINT_VALUES.md) {
         // モバイル/タブレット: 1枚のみ表示
-        const cardWidth = Math.min(340, width * 0.8)
-        setDimensions({ cardWidth, gap: 16, cardsToShow: 1 })
+        const {
+          cardWidth: baseWidth,
+          cardWidthRatio,
+          gap,
+          cardsToShow,
+        } = CAROUSEL_RESPONSIVE_CONFIG.mobile
+        const cardWidth = Math.min(baseWidth, width * cardWidthRatio)
+        setDimensions({ cardWidth, gap, cardsToShow })
       } else if (width < CAROUSEL_BREAKPOINTS.threeCards) {
         // 中サイズデスクトップ: 2枚表示
-        const cardWidth = 380
-        setDimensions({ cardWidth, gap: 32, cardsToShow: 2 })
+        setDimensions(CAROUSEL_RESPONSIVE_CONFIG.tablet)
       } else {
         // 大サイズデスクトップ: 3枚表示
-        const cardWidth = 380
-        setDimensions({ cardWidth, gap: 40, cardsToShow: 3 })
+        setDimensions(CAROUSEL_RESPONSIVE_CONFIG.desktop)
       }
     }
 
