@@ -1,0 +1,12 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-bg: #06060b;
+
+  --color-about: rgb(255 255 255);
+  --color-career: rgb(244 114 182);
+  --color-works: rgb(56 189 248);
+  --color-tech: rgb(129 140 248);
+  --color-notes: rgb(52 211 153);
+  --color-activity: rgb(251 191 36);
+}
