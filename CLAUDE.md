@@ -30,7 +30,8 @@
 | `npm run preview` | ビルド結果の確認 |
 | `npm run test` | 単体テスト（Vitest） |
 | `npm run test:e2e` | E2Eテスト（Playwright） |
-| `npm run lint` / `npm run format` | ESLint / Prettier |
+| `npm run lint` / `npm run format` | ESLint / Prettier（`npm run format:check` は確認のみ） |
+| `npm run semgrep` | 静的解析（Semgrep。`brew install semgrep` が必要） |
 | `npm run activity` | GitHub Activityの取得・生成（通常はGitHub Actionsから実行） |
 
 ## 作業時の注意

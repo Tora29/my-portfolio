@@ -49,6 +49,7 @@ my-portfolio/
 - Content Collectionsの読み込み対象に `content/_drafts/` を含めない
 - 書き方（id・frontmatter・画像・下書きから公開までの流れ）は `content-authoring.md` に従う
 - スキーマは `src/content.config.ts` に集約する。コンテンツの項目を増やすときはスキーマも同時に更新する
+- Zod は `astro/zod` から import する（`scripts/` を含む。`zod` は依存に入れていない）
 - Techは必ず `data/tech.yml` に定義されたものを参照する（未定義のTechはビルドエラー）
 - `data/activity.json` は `scripts/activity/` が生成する。main ブランチで直接編集しない。要約の修正・除外は確認用PR（`bot/activity`）上で行う（`.users/design/activity-pipeline.md` §6）
 
