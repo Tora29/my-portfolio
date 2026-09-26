@@ -1,0 +1,8 @@
+## users
+.users/
+
+## drafts (local only; move to content/notes or content/works to publish)
+content/_drafts/
+
+## macOS
+.DS_Store
