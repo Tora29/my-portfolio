@@ -20,18 +20,18 @@ Tailwind CSS v4 を使う。デザインの基準はモック（`.users/mock/por
 
 ### セクションの色
 
-各セクションのアクセント色は、RGBの3値をCSS変数で持つ（透明度を変えて使うため）。
+各セクションのアクセント色を `@theme` に色として定義する。透明度は Tailwind の修飾子（例：`bg-works/20`）で指定する。
 
 | セクション | 変数 | 値 |
 | --- | --- | --- |
-| About | `--color-about` | `255 255 255` |
-| Career | `--color-career` | `244 114 182` |
-| Works | `--color-works` | `56 189 248` |
-| Tech | `--color-tech` | `129 140 248` |
-| Notes | `--color-notes` | `52 211 153` |
-| Activity | `--color-activity` | `251 191 36` |
+| About | `--color-about` | `rgb(255 255 255)` |
+| Career | `--color-career` | `rgb(244 114 182)` |
+| Works | `--color-works` | `rgb(56 189 248)` |
+| Tech | `--color-tech` | `rgb(129 140 248)` |
+| Notes | `--color-notes` | `rgb(52 211 153)` |
+| Activity | `--color-activity` | `rgb(251 191 36)` |
 
-- セクション内の共通部品は、上記を直接参照せず `--accent` を参照する。`SectionLayout` がセクションに応じて `--accent` を設定する
+- セクション内の共通部品は、上記を直接参照せず `--accent` を参照する（例：`text-(--accent)`、`border-(--accent)/50`）。`SectionLayout` がセクションに応じて `--accent` に上記のいずれかを設定する
 
 ### 背景・文字
 

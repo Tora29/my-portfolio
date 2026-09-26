@@ -61,5 +61,5 @@ const { name, href } = Astro.props;
 
 ## データの受け渡し
 
-- ビルド時の値をスクリプトへ渡すときは `data-*` 属性、または `define:vars` を使う
+- ビルド時の値をスクリプトへ渡すときは `data-*` 属性を使う（`define:vars` はスクリプトがバンドル・TypeScript変換されなくなるため使わない）
 - Engineering Graph などのビルド時処理（`lib/graph/`）をブラウザ向けスクリプトからimportしない

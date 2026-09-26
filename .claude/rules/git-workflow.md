@@ -28,7 +28,7 @@ Conventional Commits形式で書く。
 | build / ci | ビルド設定・ワークフロー |
 | chore | 上記以外の雑務（依存関係の更新など） |
 
-- scope は機能名（`home` / `works` / `notes` / `career` / `tech` / `activity` / `graph` / `content` 等）
+- scope は機能名（`home` / `works` / `notes` / `career` / `tech` / `activity` / `graph` / `content` 等）。Repository全体の設定・ルールは `repo`
 - 内容は日本語で簡潔に書く
 
 ## Pull Request

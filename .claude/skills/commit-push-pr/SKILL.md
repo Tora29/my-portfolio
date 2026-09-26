@@ -92,6 +92,8 @@ gh pr create --base main --head <branch-name> --title "<title>" --body "<body>"
 
 ### 1. マージを確認する
 
+フェーズ1の「1-2. gh のアカウント確認」と同じ確認を先に行う。
+
 ```bash
 gh pr view <branch-name> --json number,state,mergedAt,url
 ```

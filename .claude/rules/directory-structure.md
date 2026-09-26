@@ -13,7 +13,7 @@ my-portfolio/
 │  └─ career/*.yml             #   職歴（1社1ファイル）
 ├─ data/                       # 構造化データ
 │  ├─ profile.yml              #   名前・職種・Values・Next・資格・外部リンク
-│  ├─ tech.yml                 #   Tech一覧（別名・親子関係・ジャンル）
+│  ├─ tech.yml                 #   Tech一覧（id・表示名・親子関係・ジャンル）
 │  ├─ tech-categories.yml      #   ジャンルの定義と表示順
 │  ├─ activity.json            #   生成物（GitHub Activity）。修正は確認用PR上でのみ行う
 │  └─ activity-excluded.yml    #   掲載しないActivityの id（手で編集する）
