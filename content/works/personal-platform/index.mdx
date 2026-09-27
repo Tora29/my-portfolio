@@ -1,0 +1,20 @@
+---
+title: Personal Platform
+summary: このポートフォリオ自体。Works・Notes・Techを関連付けて静的生成する。
+status: developing
+github:
+  owner: Tora29
+  repo: my-portfolio
+tech: [typescript, astro, tailwind-css, github-actions]
+---
+
+## Overview
+
+日々の開発・発信・経歴を一つの場所に集め、技術を軸に相互に辿れるようにしたポートフォリオ。完成させて終わりではなく、開発を続けることでサイト自体が育っていく。
+
+## Architecture
+
+- Static-first：常時稼働のサーバーやデータベースを持たず、ビルド時にすべて生成する
+- Git を唯一の正とし、コンテンツは Markdown / YAML で管理する
+- Engineering Graph：各コンテンツの Tech をビルド時に逆引きし、関連を生成する
+- GitHub Actions で公開リポジトリの活動を取得し、Activity として反映する
