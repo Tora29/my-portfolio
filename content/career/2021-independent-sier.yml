@@ -1,0 +1,5 @@
+period: { start: 2021, end: 2023 }
+org: 独立系SIer
+role: Software Engineer
+summary: サービスのヘルプデスク対応、Webアプリケーションの小規模な機能開発・保守運用を担当。
+tech: [java, spring-boot, php, sql]

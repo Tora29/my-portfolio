@@ -1,0 +1,120 @@
+# Techの唯一の定義元。コンテンツからは id で参照する（.users/design/engineering-graph.md §3.1）
+# category：tech-categories.yml の id / parent：上位Techの id（1階層のみ）
+
+# Language
+- id: typescript
+  name: TypeScript
+  category: language
+- id: javascript
+  name: JavaScript
+  category: language
+- id: python
+  name: Python
+  category: language
+- id: java
+  name: Java
+  category: language
+- id: php
+  name: PHP
+  category: language
+- id: sql
+  name: SQL
+  category: language
+
+# Frontend
+- id: react
+  name: React
+  category: frontend
+- id: nextjs
+  name: Next.js
+  category: frontend
+- id: sveltekit
+  name: SvelteKit
+  category: frontend
+- id: astro
+  name: Astro
+  category: frontend
+- id: tailwind-css
+  name: Tailwind CSS
+  category: frontend
+
+# Backend
+- id: nestjs
+  name: NestJS
+  category: backend
+- id: fastapi
+  name: FastAPI
+  category: backend
+- id: spring-boot
+  name: Spring Boot
+  category: backend
+- id: prisma
+  name: Prisma
+  category: backend
+- id: sqlalchemy
+  name: SQLAlchemy
+  category: backend
+
+# Database
+- id: postgresql
+  name: PostgreSQL
+  category: database
+- id: cosmos-db
+  name: Cosmos DB
+  category: database
+  parent: azure
+
+# Generative AI
+- id: rag
+  name: RAG
+  category: generative-ai
+- id: azure-openai
+  name: Azure OpenAI Service
+  category: generative-ai
+  parent: azure
+- id: azure-ai-search
+  name: Azure AI Search
+  category: generative-ai
+  parent: azure
+- id: langfuse
+  name: Langfuse
+  category: generative-ai
+
+# Cloud / Infra
+- id: azure
+  name: Azure
+  category: cloud-infra
+- id: cloudflare
+  name: Cloudflare
+  category: cloud-infra
+- id: terraform
+  name: Terraform
+  category: cloud-infra
+- id: docker
+  name: Docker
+  category: cloud-infra
+- id: github-actions
+  name: GitHub Actions
+  category: cloud-infra
+
+# Testing
+- id: vitest
+  name: Vitest
+  category: testing
+- id: playwright
+  name: Playwright
+  category: testing
+- id: pytest
+  name: Pytest
+  category: testing
+
+# AI Dev
+- id: claude-code
+  name: Claude Code
+  category: ai-dev
+- id: codex
+  name: Codex
+  category: ai-dev
+- id: cursor
+  name: Cursor
+  category: ai-dev

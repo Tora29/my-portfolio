@@ -1,0 +1,22 @@
+profile:
+  name: Taiga Kawakami
+  role: Web Engineer
+  current: Tech Lead
+  intro: 未経験からエンジニアになり、フロントエンド、バックエンド、インフラ、生成AIへと領域を広げてきました。現在はテックリードとして、技術選定とアーキテクチャ設計を担っています。
+  strengths: [typescript, azure, rag, claude-code]
+  values:
+    - 作って終わりではなく、使われ続けるプロダクトを届ける
+    - PoC で技術を確かめてから、何をどう作るかを判断する
+  next: Solution Architect / AI・LLM Architect
+  links:
+    - label: GitHub
+      href: https://github.com/Tora29
+  certifications:
+    - 生成AIパスポート
+    - 基本情報技術者
+    - 情報セキュリティマネジメント
+    - Oracle認定Javaプログラマ SE 11 Silver
+    - ITパスポート
+  extraCertifications:
+    - 日商簿記検定3級
+    - 秘書技能検定

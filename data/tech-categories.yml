@@ -1,0 +1,17 @@
+# Techのジャンル。記述順が表示順になる
+- id: language
+  name: Language
+- id: frontend
+  name: Frontend
+- id: backend
+  name: Backend
+- id: database
+  name: Database
+- id: generative-ai
+  name: Generative AI
+- id: cloud-infra
+  name: Cloud / Infra
+- id: testing
+  name: Testing
+- id: ai-dev
+  name: AI Dev

@@ -1,0 +1,28 @@
+period: { start: 2024, end: null }
+org: コンサルティング・開発会社
+role: Tech Lead
+summary: 要件定義から技術選定・設計までを担い、フロントエンドチームをリード。AI駆動開発ガイドラインを策定し、全社に展開。
+tech:
+  [
+    typescript,
+    nextjs,
+    python,
+    azure,
+    rag,
+    claude-code,
+    nestjs,
+    sveltekit,
+    fastapi,
+    postgresql,
+    azure-openai,
+    azure-ai-search,
+    cosmos-db,
+    langfuse,
+    terraform,
+    docker,
+    github-actions,
+    vitest,
+    playwright,
+    codex,
+    cursor,
+  ]
