@@ -1,0 +1,40 @@
+---
+/**
+ * Tech 一覧の1行。行全体が Tech 詳細へのリンク
+ *
+ * 関連するコンテンツ名は常に1行で表示し、はみ出した分は省略する。
+ * ホバーで行の高さが変わらないよう、ホバー時は色だけを変える（styling.md）
+ */
+import Icon from '@/components/ui/Icon.astro';
+import type { TechListItem } from './load-tech';
+import TechCounts from './TechCounts.astro';
+
+interface Props {
+  tech: TechListItem;
+}
+
+const { tech } = Astro.props;
+---
+
+<li>
+  <a href={tech.href} class="group block py-4">
+    <span class="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+      <span class="flex items-center gap-2 text-base text-white/90 group-hover:text-white sm:text-lg">
+        {tech.name}
+        {tech.childNames.length > 0 && (
+          <span class="text-[11px] text-white/35">+ {tech.childNames.join(' · ')}</span>
+        )}
+        <Icon
+          name="arrow-right"
+          class="text-sm text-transparent transition-colors group-hover:text-white/60"
+        />
+      </span>
+      <TechCounts counts={tech.counts} />
+    </span>
+    {tech.relatedContents.length > 0 && (
+      <span class="mt-2 block truncate text-xs leading-relaxed text-white/40 transition-colors group-hover:text-white/75">
+        {tech.relatedContents.join(' · ')}
+      </span>
+    )}
+  </a>
+</li>

@@ -1,0 +1,48 @@
+---
+/**
+ * アイコン（Phosphor Icons の regular）。文字と同じ大きさ（1em）・同じ色（currentColor）で表示する。
+ * 大きさはフォントサイズのクラス（text-lg 等）、色は文字色のクラスで指定する
+ *
+ * SVG をビルド時にインライン化するため、アイコン用の JavaScript やフォントを配信しない。
+ * 使うアイコンだけを ICONS に登録する（登録したものだけがバンドルに含まれる）。
+ */
+import ArrowLeft from '@phosphor-icons/core/regular/arrow-left.svg';
+import ArrowRight from '@phosphor-icons/core/regular/arrow-right.svg';
+import ArrowUpRight from '@phosphor-icons/core/regular/arrow-up-right.svg';
+import Code from '@phosphor-icons/core/regular/code.svg';
+import Cpu from '@phosphor-icons/core/regular/cpu.svg';
+import GithubLogo from '@phosphor-icons/core/regular/github-logo.svg';
+import Notebook from '@phosphor-icons/core/regular/notebook.svg';
+import Path from '@phosphor-icons/core/regular/path.svg';
+import Pulse from '@phosphor-icons/core/regular/pulse.svg';
+import UserCircle from '@phosphor-icons/core/regular/user-circle.svg';
+import X from '@phosphor-icons/core/regular/x.svg';
+
+const ICONS = {
+  'arrow-left': ArrowLeft,
+  'arrow-right': ArrowRight,
+  'arrow-up-right': ArrowUpRight,
+  code: Code,
+  cpu: Cpu,
+  'github-logo': GithubLogo,
+  notebook: Notebook,
+  path: Path,
+  pulse: Pulse,
+  'user-circle': UserCircle,
+  x: X,
+};
+
+/** 使えるアイコンの名前。.ts からは import type で参照する（例：lib/sections.ts） */
+export type IconName = keyof typeof ICONS;
+
+interface Props {
+  name: IconName;
+  class?: string;
+}
+
+const { name, class: className } = Astro.props;
+const Svg = ICONS[name];
+---
+
+<!-- 装飾として扱う。意味を持たせる場合は、隣にテキストか aria-label を置く -->
+<Svg width="1em" height="1em" class:list={['shrink-0', className]} aria-hidden="true" />

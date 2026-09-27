@@ -20,9 +20,9 @@ paths:
 
 ### ファイルの先頭
 
-`src/lib/`・`scripts/`・`src/content.config.ts` のように処理を持つファイルには、先頭に JSDoc で次を書く。
+すべてのファイル（`src/pages/`・`src/layouts/`・`src/components/`・`src/features/`・`src/lib/`・`scripts/`・`src/content.config.ts`）の先頭に JSDoc で次を書く。`.astro` は frontmatter の先頭に書く。テストファイルは除く。
 
-- そのファイルの役割（1〜2文）
+- そのファイルの役割（1〜2文）。ページは URL と画面名、対応する `screens.md` の節
 - 他のファイルとの分担（例：集計は `build-graph.ts`、読み込みは `load-graph.ts`）
 - 実行されるタイミングの制約（例：ビルド時のみ。ブラウザ向けのコードから import しない）
 - 関係する設計書
@@ -37,6 +37,19 @@ paths:
  *
  * 設計：.users/design/engineering-graph.md §5〜§7
  */
+```
+
+ページでは、生成するページの条件（例：実績のない Tech のページは作らない）と、その理由も書く。
+
+```astro
+---
+/**
+ * Tech 詳細（/tech/[id]）
+ *
+ * 1つの技術について、使った作品・書いた記事・職歴・開発活動を種類別に並べる（screens.md §5.6）。
+ * 実績が1件もない Tech のページは作らない（どこからもリンクされないため）
+ */
+---
 ```
 
 ### 関数

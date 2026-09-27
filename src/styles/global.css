@@ -1,8 +1,18 @@
 @import 'tailwindcss';
 
+/*
+ * デザイントークン（.claude/rules/styling.md）
+ * 色・フォントはここで定義し、クラスではトークン名で参照する
+ */
 @theme {
+  /* 英字は Montserrat、日本語は OS 標準のゴシック体（Montserrat に日本語の字形がないため自動で切り替わる） */
+  --font-sans:
+    var(--font-montserrat), 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI',
+    'Yu Gothic', Meiryo, sans-serif;
+
   --color-bg: #06060b;
 
+  /* セクションのアクセント色。セクション内の部品はこれを直接参照せず --accent を使う */
   --color-about: rgb(255 255 255);
   --color-career: rgb(244 114 182);
   --color-works: rgb(56 189 248);

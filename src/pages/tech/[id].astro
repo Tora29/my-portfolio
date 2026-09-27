@@ -1,0 +1,35 @@
+---
+/**
+ * Tech 詳細（/tech/[id]）
+ *
+ * 1つの技術について、使った作品・書いた記事・職歴・開発活動を種類別に並べる（screens.md §5.6）。
+ * id は data/tech.yml の id。実績（下位の技術を含む）が1件もない Tech のページは作らない
+ * （どこからもリンクされず、「実績 0」だけのページになるため。判定は load-tech.ts）
+ */
+import type { GetStaticPaths } from 'astro';
+import { loadTechDetails, type TechDetail as TechDetailData } from '@/features/tech/load-tech';
+import TechDetail from '@/features/tech/TechDetail.astro';
+import SectionLayout from '@/layouts/SectionLayout.astro';
+
+// ビルド時に、詳細ページを作る Tech の一覧を返す。表示用のデータもここで渡す（ページごとに集計し直さない）
+export const getStaticPaths = (async () => {
+  const details = await loadTechDetails();
+  return details.map((tech) => ({ params: { id: tech.id }, props: { tech } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  tech: TechDetailData;
+}
+
+const { tech } = Astro.props;
+---
+
+<!-- 戻り先は常に一覧。閲覧履歴に応じて戻り先を変える仕組みは未決（screens.md §7） -->
+<SectionLayout
+  section="tech"
+  title={tech.name}
+  back={{ href: '/tech', label: 'All Tech' }}
+  description={`${tech.name} を使った作品・記事・職歴・開発活動`}
+>
+  <TechDetail tech={tech} />
+</SectionLayout>

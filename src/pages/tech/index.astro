@@ -1,0 +1,17 @@
+---
+/**
+ * Tech 一覧（/tech）
+ *
+ * 使ってきた技術を、ジャンルごとに実績の多い順で並べる（.users/requirements/screens.md §5.5）。
+ * 表示用のデータの組み立ては features/tech/load-tech.ts が行い、ページは受け渡しだけをする
+ */
+import { loadTechList } from '@/features/tech/load-tech';
+import TechList from '@/features/tech/TechList.astro';
+import SectionLayout from '@/layouts/SectionLayout.astro';
+
+const genres = await loadTechList();
+---
+
+<SectionLayout section="tech">
+  <TechList genres={genres} />
+</SectionLayout>
