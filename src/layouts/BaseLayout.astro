@@ -27,6 +27,7 @@ const canonical = new URL(
   Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/'),
   Astro.site,
 );
+const ogImage = new URL('/og.png', Astro.site);
 ---
 
 <!doctype html>
@@ -50,9 +51,12 @@ const canonical = new URL(
     </script>
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="canonical" href={canonical} />
     <!--
-      SNS で共有したときの表示（OGP）。画像はまだ用意していないため、文字だけのカード（summary）にする
+      SNS・Slack で共有したときの表示（OGP）。画像は全ページ共通の public/og.png（1200×630）。
+      og:image は絶対 URL でないと読まれないサービスがあるため、site を基準に組み立てる。
+      SVG は多くのサービスで表示されないため PNG にしている
     -->
     <meta property="og:type" content={ogType} />
     <meta property="og:title" content={title} />
@@ -60,7 +64,11 @@ const canonical = new URL(
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={SITE_NAME} />
     <meta property="og:locale" content="ja_JP" />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${SITE_NAME} – Web Engineer`} />
+    <meta name="twitter:card" content="summary_large_image" />
     <Font cssVariable="--font-montserrat" preload />
     <ClientRouter />
   </head>
