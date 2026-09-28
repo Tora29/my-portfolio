@@ -3,6 +3,7 @@
 # 1. main の最新の状態に、確認用ブランチ（bot/activity）上の手直し（activity.json・除外リスト）を持ち込む
 # 2. 作品に紐付く Repository の PR・Release から Activity を生成する
 # 3. 変更があれば bot/activity へ push し、確認用 PR を作成（既にあれば本文を更新）する
+# 4. 確認用 PR が作成から7日たち、hold ラベルがなければ squash でマージし、続けてデプロイする
 #
 # GITHUB_TOKEN で作った PR・push では他のワークフロー（ci.yml）が起動しないため、
 # フォーマットの確認とビルドはこのワークフローの中で行い、通ったものだけを push する。
@@ -111,3 +112,49 @@ jobs:
               --label activity-update \
               --body-file "$RUNNER_TEMP/summary.md"
           fi
+
+  # 確認期限を過ぎた確認用 PR を公開する（activity-pipeline.md §6.3）。
+  # 期限は PR の作成日時から数える（毎日上書きされるため、最終更新日時で数えると永久にマージされない）
+  auto-merge:
+    name: Auto merge
+    needs: update
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      merged: ${{ steps.merge.outputs.merged }}
+    steps:
+      - id: merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          REVIEW_DAYS: 7
+        run: |
+          pr=$(gh pr list --repo "$REPO" --head "$BRANCH" --state open --json number,createdAt,labels --jq '.[0]')
+          if [ -z "$pr" ]; then
+            echo '確認用 PR はありません'
+            exit 0
+          fi
+          number=$(jq -r .number <<< "$pr")
+          if jq -e '.labels | any(.name == "hold")' <<< "$pr" > /dev/null; then
+            echo "#$number は hold のため公開しません"
+            exit 0
+          fi
+          age=$(( ($(date +%s) - $(date -d "$(jq -r .createdAt <<< "$pr")" +%s)) / 86400 ))
+          if [ "$age" -lt "$REVIEW_DAYS" ]; then
+            echo "#$number は作成から ${age} 日（${REVIEW_DAYS} 日で公開）"
+            exit 0
+          fi
+          gh pr merge "$number" --repo "$REPO" --squash --delete-branch
+          echo "merged=true" >> "$GITHUB_OUTPUT"
+
+  # GITHUB_TOKEN によるマージでは deploy.yml が起動しないため、ここでデプロイする（activity-pipeline.md §7）
+  deploy:
+    needs: auto-merge
+    if: needs.auto-merge.outputs.merged == 'true'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/pages.yml
