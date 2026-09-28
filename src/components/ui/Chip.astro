@@ -1,18 +1,24 @@
 ---
 /**
- * 丸い枠のタグ（Tech タグなど）。すべてリンクとして使う
+ * 丸い枠のタグ（Tech タグなど）。
+ * href があればリンクにする。リンク先のページがないもの（実績0件の Tech）は、押せないタグとして表示する
  */
 interface Props {
-  href: string;
+  href?: string;
   label: string;
 }
 
 const { href, label } = Astro.props;
+const base = 'rounded-full border border-white/10 px-2.5 py-1 text-[11px] tracking-wide';
 ---
 
-<a
-  href={href}
-  class="rounded-full border border-white/10 px-2.5 py-1 text-[11px] tracking-wide text-white/60 transition-colors hover:border-white/40 hover:text-white"
->
-  {label}
-</a>
+{href ? (
+  <a
+    href={href}
+    class:list={[base, 'text-white/60 transition-colors hover:border-white/40 hover:text-white']}
+  >
+    {label}
+  </a>
+) : (
+  <span class:list={[base, 'text-white/40']}>{label}</span>
+)}

@@ -1,0 +1,116 @@
+---
+/**
+ * 作品詳細（.users/requirements/screens.md §5.4）
+ *
+ * 状態・Repository → サムネイル → 本文（Overview / Architecture）→ Tech → Development Timeline → Related Notes。
+ * Development Timeline と Related Notes は、Activity・記事がまだないうちは表示しない
+ * （「まだありません」が並ぶと、作品そのものの情報が埋もれるため）
+ */
+import Icon from '@/components/ui/Icon.astro';
+import Prose from '@/components/ui/Prose.astro';
+import Subheading from '@/components/ui/Subheading.astro';
+import TechTags from '@/components/ui/TechTags.astro';
+import type { WorkDetail } from './load-works';
+import WorkThumb from './WorkThumb.astro';
+
+interface Props {
+  work: WorkDetail;
+}
+
+const { work } = Astro.props;
+const { Content } = work;
+---
+
+<div class="-mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-white/50">
+  <span class="flex items-center gap-2">
+    <span class="size-1.5 rounded-full bg-(--accent)"></span>
+    {work.status}
+  </span>
+  {work.github && (
+    <a
+      href={work.github.href}
+      target="_blank"
+      rel="noopener"
+      class="flex items-center gap-1.5 transition-colors hover:text-white"
+    >
+      <Icon name="github-logo" class="text-sm" />
+      {work.github.label}
+      <Icon name="arrow-up-right" class="text-[10px]" />
+    </a>
+  )}
+</div>
+
+<WorkThumb
+  cover={work.cover}
+  width={768}
+  class="mt-8 aspect-video w-full rounded-2xl"
+  iconClass="text-5xl"
+/>
+
+<Prose class="mt-12">
+  <Content />
+</Prose>
+
+<section class="mt-12">
+  <Subheading label="Tech" />
+  <TechTags list={work.tags} class="mt-3" />
+</section>
+
+{work.timeline.length > 0 && (
+  <section class="mt-12">
+    <Subheading label="Development Timeline" count={work.timeline.length} />
+    <ol class="relative mt-6 ml-1.5 space-y-6 border-l border-white/10">
+      {work.timeline.map((item, i) => (
+        <li class="relative pl-7">
+          {/* 最新のものだけを塗りつぶし、いまも続いていることを示す */}
+          <span
+            class:list={[
+              'absolute top-1.5 -left-[4.5px] size-2 rounded-full',
+              i === 0 ? 'bg-(--accent)' : 'border border-white/30 bg-bg',
+            ]}
+          />
+          <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-5">
+            <time datetime={item.date} class="w-14 shrink-0 text-xs text-white/40">
+              {item.label}
+            </time>
+            <div class="min-w-0">
+              <p class="flex items-center gap-2 text-sm text-white">
+                <Icon name={item.icon} class="text-white/40" />
+                {item.headline}
+              </p>
+              <p class="mt-1 text-xs leading-relaxed text-white/50">{item.summary}</p>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ol>
+    <a
+      href={work.activityHref}
+      class="mt-8 inline-flex items-center gap-2 text-xs tracking-[0.2em] text-white/60 uppercase transition-colors hover:text-white"
+    >
+      この作品の Activity を見る
+      <Icon name="arrow-right" />
+    </a>
+  </section>
+)}
+
+{work.relatedNotes.length > 0 && (
+  <section class="mt-12">
+    <Subheading label="Related Notes" />
+    <ul class="mt-4 divide-y divide-white/10 border-y border-white/10">
+      {work.relatedNotes.map((note) => (
+        <li class="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:gap-6">
+          <time datetime={note.date} class="w-28 shrink-0 text-xs text-white/40">
+            {note.date}
+          </time>
+          <div class="min-w-0">
+            <a href={note.href} class="text-base text-white/90 hover:text-white">
+              {note.title}
+            </a>
+            <p class="mt-1 text-[11px] text-white/35">{note.reason}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}

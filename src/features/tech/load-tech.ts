@@ -8,12 +8,12 @@ import { getCollection } from 'astro:content';
 import { groupByCategory, totalCount } from '@/lib/graph/build-graph';
 import { loadGraph, loadTechCategories } from '@/lib/graph/load-graph';
 import type { ContentKind, Graph, TechNode } from '@/lib/graph/types';
+import { toDateString } from '@/lib/format-date';
 import { formatPeriod } from '@/lib/format-period';
+import { techHref } from '@/lib/load-tech-tags';
 
 /** Tech 一覧の関連コンテンツ名は1行で省略表示するため、それ以上は渡さない */
 const LIST_RELATED_CONTENTS = 4;
-
-export const techHref = (id: string) => `/tech/${id}`;
 
 export interface TechListItem {
   id: string;
@@ -133,7 +133,7 @@ export async function loadTechDetails(): Promise<TechDetail[]> {
       .map((e) => ({
         href: `/notes/${e.id}`,
         title: e.data.title,
-        date: e.data.date.toISOString().slice(0, 10),
+        date: toDateString(e.data.date),
       })),
     career: node.total.career
       .map((id) => index.career.get(id)!)

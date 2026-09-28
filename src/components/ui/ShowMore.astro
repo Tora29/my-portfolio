@@ -1,0 +1,60 @@
+---
+/**
+ * 「もっと見る（残り N 件）」（.users/requirements/screens.md §3.6）
+ *
+ * 一覧は全件を HTML に出力し、初期表示件数を超える項目（呼び出し側で data-extra を付ける）を
+ * JavaScript で畳む。押すと同じ場所に残りを展開する。JavaScript が無効なときは全件を表示する。
+ *
+ * どの項目を畳むか（例：Activity は同じ日付の途中で区切らない）は呼び出し側が決める。
+ */
+interface Props {
+  /** 畳まれる項目の数。0 のときはボタンを出さない */
+  rest: number;
+}
+
+const { rest } = Astro.props;
+---
+
+<div data-show-more>
+  <slot />
+  {rest > 0 && (
+    <button
+      type="button"
+      data-show-more-button
+      class="mt-8 hidden w-full rounded-full border border-white/10 py-3 text-xs tracking-[0.2em] text-white/55 transition-colors hover:border-white/30 hover:text-white js:block"
+    >
+      もっと見る<span class="ml-2 text-white/35">残り {rest} 件</span>
+    </button>
+  )}
+</div>
+
+<style is:global>
+  /* 畳む対象は呼び出し側の要素のため、コンポーネント外の要素に効くグローバルなスタイルにする */
+  [data-js] [data-show-more]:not([data-expanded]) [data-extra] {
+    display: none;
+  }
+</style>
+
+<script>
+  /**
+   * 押したら残りを展開し、ボタンを消す。
+   * 押したボタンが消えるため、展開した最初の項目へフォーカスを移す
+   */
+  function setupShowMore() {
+    for (const root of document.querySelectorAll<HTMLElement>('[data-show-more]')) {
+      const button = root.querySelector<HTMLElement>('[data-show-more-button]');
+      // 要素ごと遷移で破棄されるため、解除は不要
+      button?.addEventListener('click', () => {
+        root.dataset.expanded = '';
+        button.hidden = true;
+        const first = root.querySelector<HTMLElement>('[data-extra]');
+        if (first) {
+          first.tabIndex = -1;
+          first.focus({ preventScroll: true });
+        }
+      });
+    }
+  }
+
+  document.addEventListener('astro:page-load', setupShowMore);
+</script>

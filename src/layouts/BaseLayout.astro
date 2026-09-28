@@ -24,6 +24,20 @@ const { title, description } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      JavaScript が動くことを CSS に伝える（global.css の js: バリアント）。
+      描画前に付けるため is:inline で <head> に直接書く。
+      ClientRouter は遷移のたびに <html> の属性を新しいページのものに置き換えるため、遷移後にも付け直す
+    -->
+    <script is:inline>
+      document.documentElement.dataset.js = '';
+      if (!window.__jsFlagListener) {
+        window.__jsFlagListener = true;
+        document.addEventListener('astro:after-swap', () => {
+          document.documentElement.dataset.js = '';
+        });
+      }
+    </script>
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     <Font cssVariable="--font-montserrat" preload />

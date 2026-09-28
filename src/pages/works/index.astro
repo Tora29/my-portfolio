@@ -1,0 +1,17 @@
+---
+/**
+ * 作品一覧（/works）
+ *
+ * 作った作品を、最近 Activity があった順に並べる（.users/requirements/screens.md §5.3）。
+ * 表示用のデータの組み立ては features/works/load-works.ts が行い、ページは受け渡しだけをする
+ */
+import { loadWorksList } from '@/features/works/load-works';
+import WorkList from '@/features/works/WorkList.astro';
+import SectionLayout from '@/layouts/SectionLayout.astro';
+
+const works = await loadWorksList();
+---
+
+<SectionLayout section="works">
+  <WorkList works={works} />
+</SectionLayout>

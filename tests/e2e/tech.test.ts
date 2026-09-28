@@ -8,7 +8,9 @@ test('Tech 一覧が表示され、現在のタブが Tech になっている', 
 
   await expect(page.getByRole('heading', { level: 1, name: 'Tech' })).toBeVisible();
   await expect(
-    page.getByRole('navigation', { name: 'セクション' }).getByRole('link', { name: 'Tech' }),
+    page
+      .getByRole('navigation', { name: 'セクション', exact: true })
+      .getByRole('link', { name: 'Tech' }),
   ).toHaveAttribute('aria-current', 'page');
   await expect(page.locator('section[id^="tech-genre-"]').first()).toBeVisible();
 });
@@ -23,7 +25,10 @@ test('一覧の Tech から詳細へ移動し、戻るリンクで一覧へ戻�
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await expect(page.getByRole('heading', { level: 2, name: /Works/ })).toBeVisible();
 
-  await page.getByRole('link', { name: 'All Tech' }).click();
+  // 一覧から来たので、戻るボタンは直前のページ（一覧）を指す
+  const back = page.locator('[data-back]');
+  await expect(back).toHaveText('Tech');
+  await back.click();
   await expect(page).toHaveURL('/tech');
 });
 
