@@ -36,6 +36,28 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
 ---
 
 <div class="group/home fixed inset-0 overflow-hidden" data-home>
+  <!--
+    イントロを再生するかを、最初の描画より前に決める（名前が一瞬見えてから暗転しないように）。
+    同じタブでは1回だけ（サイト内の移動で Home に戻ったときは再生しない）。2回目以降の訪問は短縮版にする。
+    prefers-reduced-motion のときは再生しない
+  -->
+  <script is:inline>
+    (() => {
+      const root = document.currentScript.parentElement;
+      if (window.__homeIntroPlayed || matchMedia('(prefers-reduced-motion: reduce)').matches)
+        return;
+      window.__homeIntroPlayed = true;
+      let returning = false;
+      try {
+        returning = localStorage.getItem('intro-seen') === '1';
+        localStorage.setItem('intro-seen', '1');
+      } catch {
+        // 保存できない環境では、毎回はじめから再生する
+      }
+      root.dataset.intro = 'dark';
+      if (returning) root.dataset.introSpeed = 'quick';
+    })();
+  </script>
   <!-- 星と銀河 -->
   <canvas
     aria-hidden="true"
@@ -77,6 +99,7 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
           {/* ラベルは惑星の真下に下げる（惑星と一緒に動き、左右に跳ばないように） */}
           <span
             aria-hidden="true"
+            data-intro-hide
             class="pointer-events-none absolute top-full left-1/2 -translate-x-1/2 pt-4 group-data-scene/home:top-[calc(50%+var(--r)+6px)] group-data-scene/home:opacity-(--depth-opacity) pl-[0.35em] text-[11px] leading-none font-semibold tracking-[0.35em] whitespace-nowrap text-white/88 uppercase text-shadow-bg/90 text-shadow-md transition-colors duration-500 peer-hover:text-white peer-focus-visible:text-white sm:text-xs"
           >
             <span class="absolute top-0 left-1/2 h-2.5 w-px bg-linear-to-b from-transparent to-white/60" />
@@ -99,10 +122,22 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
         href="/about"
         class="group flex flex-col items-center justify-center rounded-full bg-radial-[closest-side] from-bg/90 via-bg/75 via-60% to-transparent px-8 py-7 transition-transform duration-500 hover:scale-104 focus:outline-none focus-visible:scale-104 motion-reduce:transition-none sm:px-12 sm:py-9"
       >
-        <h1 class="pl-[0.25em] text-center text-lg leading-snug font-light tracking-[0.25em] text-white uppercase text-shadow-white/40 text-shadow-lg sm:text-2xl lg:text-3xl lg:tracking-[0.3em]">
-          {page.name}
+        <h1
+          data-home-title
+          class="grid pl-[0.25em] text-center text-lg leading-snug font-light tracking-[0.25em] text-white uppercase text-shadow-white/40 text-shadow-lg sm:text-2xl lg:text-3xl lg:tracking-[0.3em]"
+        >
+          {/* イントロでは WELCOME が先に浮かび、ビッグバンで名前に入れ替わる（同じ位置に重ねる） */}
+          <span aria-hidden="true" class="col-start-1 row-start-1 self-center" data-home-welcome>
+            Welcome
+          </span>
+          <span class="col-start-1 row-start-1" data-home-name>
+            {page.name}
+          </span>
         </h1>
-        <span class="mt-3 flex items-center gap-2 pl-[0.35em] text-[10px] font-medium tracking-[0.35em] text-white/70 uppercase transition-colors group-hover:text-white group-focus-visible:text-white sm:mt-4 sm:text-[11px]">
+        <span
+          data-intro-hide
+          class="mt-3 flex items-center gap-2 pl-[0.35em] text-[10px] font-medium tracking-[0.35em] text-white/70 uppercase transition-colors group-hover:text-white group-focus-visible:text-white sm:mt-4 sm:text-[11px]"
+        >
           <span class="h-px w-3 bg-current"></span>About Me<span class="h-px w-3 bg-current"></span>
         </span>
       </a>
@@ -110,7 +145,10 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
   </main>
 
   <!-- 左下：職種と GitHub（Activity の出どころ）。スマートフォンでは右下の Activity の上に中央寄せ -->
-  <div class="fixed right-4 bottom-12 left-4 z-10 flex items-center justify-center text-[11px] tracking-[0.25em] text-white/45 uppercase sm:right-auto sm:bottom-10 sm:left-10 sm:justify-start">
+  <div
+    data-intro-hide
+    class="fixed right-4 bottom-12 left-4 z-10 flex items-center justify-center text-[11px] tracking-[0.25em] text-white/45 uppercase sm:right-auto sm:bottom-10 sm:left-10 sm:justify-start"
+  >
     <span>{page.role}</span>
     {page.github && (
       <>
@@ -135,6 +173,7 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
       href="/activity"
       data-latest={page.latest.date}
       data-freshness={initialFreshness}
+      data-intro-hide
       class="group fixed right-4 bottom-5 left-4 z-10 flex items-center justify-center gap-2.5 text-[11px] text-white/60 transition-colors hover:text-white sm:right-10 sm:bottom-10 sm:left-auto sm:justify-end"
     >
       <span class="size-1.5 shrink-0 rounded-full bg-emerald-400 group-data-[freshness=live]:animate-live group-data-[freshness=stale]:bg-white/30 motion-reduce:animate-none" />
@@ -150,8 +189,70 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
   )}
 </div>
 
+<style is:global>
+  /*
+   * イントロ（screens.md §4.5）。ルートの data-intro が dark → charge → bang と進み、終わると消える
+   * （進め方は scene/intro.ts）。状態ごとに多くの要素の見え方が変わるため、ユーティリティではなくここにまとめる
+   */
+  @keyframes welcome-emerge {
+    from {
+      opacity: 0;
+      filter: blur(16px);
+      transform: scale(0.94);
+    }
+  }
+  [data-home][data-intro] [data-home-title] {
+    animation: welcome-emerge 1.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+  }
+  [data-home][data-intro-speed='quick'] [data-home-title] {
+    animation-duration: 0.5s;
+    animation-delay: 0s;
+  }
+  /* ビッグバンの直前に名前が強く光る */
+  [data-home][data-intro='charge'] [data-home-title] {
+    text-shadow:
+      0 0 30px white,
+      0 0 90px rgb(255 255 255 / 0.6);
+    transition: text-shadow 0.4s ease-in;
+  }
+
+  /* WELCOME と名前のクロスフェード */
+  [data-home-welcome],
+  [data-home-name] {
+    transition:
+      opacity 0.8s ease,
+      filter 0.8s ease;
+  }
+  [data-home-welcome],
+  [data-home][data-intro='dark'] [data-home-name],
+  [data-home][data-intro='charge'] [data-home-name] {
+    opacity: 0;
+    filter: blur(8px);
+  }
+  [data-home][data-intro='dark'] [data-home-welcome],
+  [data-home][data-intro='charge'] [data-home-welcome] {
+    opacity: 1;
+    filter: none;
+  }
+
+  /* ビッグバンまでは惑星を出さず、イントロの間はラベル・補足・四隅を隠して押せないようにする */
+  [data-home][data-intro='dark'] [data-planet],
+  [data-home][data-intro='charge'] [data-planet],
+  [data-home][data-intro] [data-intro-hide] {
+    opacity: 0;
+  }
+  [data-home][data-intro] main,
+  [data-home][data-intro] [data-intro-hide] {
+    pointer-events: none;
+  }
+  [data-intro-hide] {
+    transition: opacity 1s ease;
+  }
+</style>
+
 <script>
   import { daysSince, freshnessOf } from '@/lib/freshness';
+  import { createIntro, runIntro } from './scene/intro';
   import { startScene } from './scene/scene';
 
   /**
@@ -168,19 +269,23 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
     }
   }
 
-  /** 動いているシーンを止める関数。Home 以外のページでは undefined */
-  let stopScene: (() => void) | undefined;
+  /** 動いているシーン・イントロを止める関数。Home 以外のページでは空 */
+  let stops: (() => void)[] = [];
 
   document.addEventListener('astro:page-load', () => {
     const root = document.querySelector<HTMLElement>('[data-home]');
     if (!root) return;
     updateFreshness();
-    stopScene = startScene(root);
+    // イントロを再生するかは、<head> 直後のスクリプトが data-intro で決めている
+    const intro = root.dataset.intro
+      ? createIntro(root.dataset.introSpeed === 'quick', performance.now() / 1000)
+      : undefined;
+    stops = [startScene(root, { intro }), ...(intro ? [runIntro(root, intro)] : [])];
   });
 
-  // Home から離れるときに、描画とイベントリスナーを止める（遷移のたびに重複させない）
+  // Home から離れるときに、描画・タイマー・イベントリスナーを止める（遷移のたびに重複させない）
   document.addEventListener('astro:before-swap', () => {
-    stopScene?.();
-    stopScene = undefined;
+    for (const stop of stops) stop();
+    stops = [];
   });
 </script>

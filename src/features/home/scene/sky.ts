@@ -8,7 +8,8 @@
  */
 import { introElapsed, type IntroTimeline } from './intro';
 import { clamp01, easeOutCubic, lerp, pixelRatio } from './math';
-import { orbitPoint, type Orbit, type Planet } from './planets';
+import { orbitPoint } from '@/lib/orbit';
+import type { Orbit, Planet } from './planets';
 
 /** 星の流れる速さ（px/s。奥 → 手前）と向き（ほぼ横、少し下へ） */
 const STAR_DRIFT = { min: 0.6, max: 3.2, dx: -0.96, dy: 0.28 };
