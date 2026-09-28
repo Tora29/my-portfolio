@@ -141,7 +141,7 @@ export async function loadTechDetails(): Promise<TechDetail[]> {
       .map((e) => ({ org: e.data.org, role: e.data.role, period: formatPeriod(e.data.period) })),
     activity: node.total.activity
       .map((id) => index.activity.get(id)!)
-      .toSorted((a, b) => b.data.date.localeCompare(a.data.date))
+      .toSorted((a, b) => a.data.order - b.data.order)
       .map((e) => ({
         date: e.data.date,
         work: index.works.get(e.data.work.id)!.data.title,

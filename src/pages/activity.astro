@@ -1,0 +1,17 @@
+---
+/**
+ * Activity（/activity、/activity?work=[id]）
+ *
+ * GitHub 上の公開された開発活動を、日付ごとに新しい順で並べる（.users/requirements/screens.md §5.9）。
+ * ?work= による作品の絞り込みはブラウザ側で行う（1ページだけを生成する。features/activity/ActivityList.astro）
+ */
+import { loadActivityPage } from '@/features/activity/load-activity-page';
+import ActivityList from '@/features/activity/ActivityList.astro';
+import SectionLayout from '@/layouts/SectionLayout.astro';
+
+const page = await loadActivityPage();
+---
+
+<SectionLayout section="activity">
+  <ActivityList page={page} />
+</SectionLayout>

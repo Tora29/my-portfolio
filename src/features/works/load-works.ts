@@ -61,11 +61,11 @@ export interface WorkDetail extends WorkListItem {
   relatedNotes: RelatedNote[];
 }
 
-/** 作品ごとの Activity（新しい順）。同じ日付の中は activity.json の並び（生成時に新しい順）を保つ */
+/** 作品ごとの Activity（新しい順。activity.json の並び） */
 async function loadActivityByWork(): Promise<Map<string, Activity[]>> {
   const activity = await getCollection('activity');
   const byWork = new Map<string, Activity[]>();
-  for (const entry of activity.toSorted((a, b) => b.data.date.localeCompare(a.data.date))) {
+  for (const entry of activity.toSorted((a, b) => a.data.order - b.data.order)) {
     const list = byWork.get(entry.data.work.id) ?? [];
     list.push(entry);
     byWork.set(entry.data.work.id, list);

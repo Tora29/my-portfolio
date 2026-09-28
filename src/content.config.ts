@@ -134,10 +134,19 @@ const career = defineCollection({
 /**
  * Activity（data/activity.json）。GitHub のマージ済み PR・Release から自動生成する。
  * 手で編集するのは確認用 PR（bot/activity）上のみ
+ *
+ * ファイルは新しい順（同じ日付の中もマージした時刻の新しい順）に並んでいる。
+ * getCollection は記述順を保証しない（id の順で返り、同じ日付の中の前後が入れ替わる）ため、
+ * 読み込み時に順番を order として記録し、表示ではこれで並べる
  */
 const activity = defineCollection({
-  loader: file('data/activity.json'),
+  loader: file('data/activity.json', {
+    parser: (text) =>
+      (JSON.parse(text) as Record<string, unknown>[]).map((item, order) => ({ ...item, order })),
+  }),
   schema: z.object({
+    // ファイル内の順番（0 が最新）
+    order: z.number(),
     // 日本時間の日付（YYYY-MM-DD）
     date: z.iso.date(),
     type: z.enum(['feature', 'fix', 'improvement', 'docs', 'pr', 'release']),

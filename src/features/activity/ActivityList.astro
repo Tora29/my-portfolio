@@ -1,0 +1,137 @@
+---
+/**
+ * Activity 一覧（.users/requirements/screens.md §5.9）
+ *
+ * - 上部に作品ごとの絞り込み（All / 各作品）。URL の ?work= で絞り込んだ状態を共有できる
+ * - 日付ごとにまとめ、初期表示は20件。同じ日付の途中では区切らない（残りは「もっと見る」）
+ *
+ * 絞り込みは JavaScript で行う（静的サイトのため、?work= ごとのページは作らない）。
+ * JavaScript が無効なときは、絞り込みを出さずに全件を表示する。
+ * 切り替えは URL を書き換えるだけで、戻るボタンの履歴には積まない（screens.md §5.9）
+ */
+import ActivityTimeline from '@/components/ui/ActivityTimeline.astro';
+import type { ActivityPage } from './load-activity-page';
+import { ACTIVITY_LIMIT } from './load-activity-page';
+
+interface Props {
+  page: ActivityPage;
+}
+
+const { page } = Astro.props;
+const filterClass =
+  'rounded-full border px-3 py-1.5 text-[11px] tracking-wide transition-colors border-white/10 text-white/50 hover:border-white/40 hover:text-white aria-[current=true]:border-(--accent)/60 aria-[current=true]:bg-(--accent)/12 aria-[current=true]:text-white';
+---
+
+{page.total === 0 ? (
+  <p class="text-sm text-white/40">まだありません</p>
+) : (
+  <div data-activity-list data-limit={ACTIVITY_LIMIT}>
+    {page.filters.length > 0 && (
+      <nav
+        aria-label="作品で絞り込む"
+        class="mb-10 hidden flex-wrap gap-2 js:flex"
+        data-back-ignore
+      >
+        <a href="/activity" class={filterClass} data-activity-filter="" aria-current="true">
+          All
+        </a>
+        {page.filters.map((filter) => (
+          <a href={filter.href} class={filterClass} data-activity-filter={filter.workId}>
+            {filter.label}
+          </a>
+        ))}
+      </nav>
+    )}
+    <ActivityTimeline groups={page.groups} extraFrom={page.initialGroups} />
+    <button
+      type="button"
+      data-activity-more
+      hidden={page.total <= ACTIVITY_LIMIT}
+      class="mt-8 hidden w-full rounded-full border border-white/10 py-3 text-xs tracking-[0.2em] text-white/55 transition-colors hover:border-white/30 hover:text-white js:block"
+    >
+      もっと見る
+      <span class="ml-2 text-white/35" data-activity-rest />
+    </button>
+  </div>
+)}
+
+<style is:global>
+  /* JavaScript が読み込まれるまでの間も、初期表示件数を超える分を畳んでおく（全件が一瞬見えないように） */
+  [data-js] [data-activity-list]:not([data-ready]) [data-extra] {
+    display: none;
+  }
+</style>
+
+<script>
+  /**
+   * 絞り込みと「もっと見る」。
+   * 絞り込むと表示する件数が変わるため、共通の ShowMore は使わず、ここで区切り位置を計算し直す
+   */
+  function setupActivityList() {
+    const root = document.querySelector<HTMLElement>('[data-activity-list]');
+    if (!root) return;
+    const limit = Number(root.dataset.limit);
+    const filters = [...root.querySelectorAll<HTMLAnchorElement>('[data-activity-filter]')];
+    const dates = [...root.querySelectorAll<HTMLElement>('[data-activity-date]')];
+    const more = root.querySelector<HTMLElement>('[data-activity-more]')!;
+    let expanded = false;
+
+    // URL の作品が存在しない（削除された等）ときは All として扱う
+    const workFromUrl = () => {
+      const work = new URLSearchParams(location.search).get('work') ?? '';
+      return filters.some((f) => f.dataset.activityFilter === work) ? work : '';
+    };
+
+    /**
+     * 1. 選んだ作品の Activity だけを表示し、1件もない日付は見出しごと隠す
+     * 2. 表示する Activity が limit 件に達した日付までを初期表示にし（その日の途中では切らない）、残りを畳む
+     */
+    function render(work: string) {
+      for (const filter of filters) {
+        filter.setAttribute('aria-current', String(filter.dataset.activityFilter === work));
+      }
+
+      let shown = 0;
+      let rest = 0;
+      for (const date of dates) {
+        // 1.
+        let count = 0;
+        for (const item of date.querySelectorAll<HTMLElement>('[data-activity-item]')) {
+          const match = work === '' || item.dataset.work === work;
+          item.hidden = !match;
+          if (match) count++;
+        }
+        // 2. この日付より前ですでに limit 件に達していれば、この日付からは畳む
+        const folded = !expanded && shown >= limit;
+        date.hidden = count === 0 || folded;
+        if (folded) rest += count;
+        else shown += count;
+      }
+      more.hidden = rest === 0;
+      more.querySelector('[data-activity-rest]')!.textContent = `残り ${rest} 件`;
+    }
+
+    for (const filter of filters) {
+      // 要素ごと遷移で破棄されるため、解除は不要
+      filter.addEventListener('click', (event) => {
+        event.preventDefault();
+        const work = filter.dataset.activityFilter!;
+        const url = work ? `/activity?work=${encodeURIComponent(work)}` : '/activity';
+        // 履歴に積まない。ClientRouter が history.state に持つ情報は引き継ぐ
+        history.replaceState(history.state, '', url);
+        expanded = false;
+        render(work);
+      });
+    }
+    more.addEventListener('click', () => {
+      expanded = true;
+      render(workFromUrl());
+    });
+
+    render(workFromUrl());
+    // 以降の表示は hidden 属性で制御するため、読み込み中の畳み（<style>）を外す
+    root.dataset.ready = '';
+  }
+
+  document.addEventListener('astro:page-load', setupActivityList);
+</script>
