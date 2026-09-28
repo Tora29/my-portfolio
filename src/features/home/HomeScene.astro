@@ -1,0 +1,156 @@
+---
+/**
+ * Home の入口（.users/requirements/screens.md §4.1）
+ *
+ * 中央の名前（About へ）と、その周りの4つの惑星（Career / Works / Tech / Notes）、
+ * 左下の職種と GitHub、右下の最新 Activity。
+ *
+ * ここは HTML と CSS だけで成り立つ入口で、JavaScript が無効でもすべてのセクションへ移動できる。
+ * 惑星は四隅に並べて置き、宇宙のシーン（Canvas）が動き始めたら、その位置と見た目をシーンが引き継ぐ。
+ */
+import Icon from '@/components/ui/Icon.astro';
+import { freshnessOf, daysSince } from '@/lib/freshness';
+import type { HomePage, PlanetId } from './load-home';
+
+interface Props {
+  page: HomePage;
+}
+
+const { page } = Astro.props;
+
+/**
+ * JavaScript が動くまでの惑星の位置（screens.md §4.1 の図）。
+ * 惑星の中心がこの位置に来るよう、-translate-1/2 でずらす
+ */
+const STATIC_POSITION: Record<PlanetId, string> = {
+  career: 'left-[24%] top-[26%] sm:left-[27%]',
+  tech: 'left-[76%] top-[26%] sm:left-[73%]',
+  works: 'left-[24%] top-[70%] sm:left-[27%]',
+  notes: 'left-[76%] top-[70%] sm:left-[73%]',
+};
+
+// JavaScript が無効なときの表示。有効なときは閲覧した日で判定し直す（下の <script>）
+const buildDate = new Date();
+const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, buildDate));
+---
+
+<div class="fixed inset-0 overflow-hidden" data-home>
+  <main class="absolute inset-0 z-10">
+    <nav aria-label="セクション">
+      {page.planets.map((planet) => (
+        <div
+          class:list={[
+            'absolute flex size-[clamp(64px,18vw,150px)] -translate-1/2 items-center justify-center',
+            STATIC_POSITION[planet.id],
+          ]}
+          style={`--p: ${planet.color}`}
+          data-planet={planet.id}
+          data-moons={planet.moons}
+        >
+          <a
+            href={planet.href}
+            class="peer relative z-1 block size-full rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+          >
+            {/* シーンが動くまでの惑星の代わり。シーンが Canvas に描いたら消す */}
+            <span
+              aria-hidden="true"
+              class="absolute inset-0 rounded-full border border-(--p)/40 bg-radial from-(--p)/30 via-(--p)/8 to-transparent"
+              data-planet-placeholder
+            />
+            <span class="sr-only">{planet.title}</span>
+          </a>
+          {/* ラベルは惑星の真下に下げる（惑星と一緒に動き、左右に跳ばないように） */}
+          <span
+            aria-hidden="true"
+            class="pointer-events-none absolute top-full left-1/2 -translate-x-1/2 pt-4 pl-[0.35em] text-[11px] leading-none font-semibold tracking-[0.35em] whitespace-nowrap text-white/88 uppercase text-shadow-bg/90 text-shadow-md transition-colors duration-500 peer-hover:text-white peer-focus-visible:text-white sm:text-xs"
+          >
+            <span class="absolute top-0 left-1/2 h-2.5 w-px bg-linear-to-b from-transparent to-white/60" />
+            {planet.title}
+            {planet.updated && (
+              <span
+                hidden
+                data-fresh={planet.updated}
+                class="ml-[0.2em] inline-block size-[5px] animate-live rounded-full bg-emerald-400 align-middle motion-reduce:animate-none"
+              />
+            )}
+          </span>
+        </div>
+      ))}
+    </nav>
+
+    <!-- 中央：名前。押すと About へ -->
+    <div class="absolute top-1/2 left-1/2 z-20 -translate-1/2">
+      <a
+        href="/about"
+        class="group flex flex-col items-center justify-center rounded-full bg-radial-[closest-side] from-bg/90 via-bg/75 via-60% to-transparent px-8 py-7 transition-transform duration-500 hover:scale-104 focus:outline-none focus-visible:scale-104 motion-reduce:transition-none sm:px-12 sm:py-9"
+      >
+        <h1 class="pl-[0.25em] text-center text-lg leading-snug font-light tracking-[0.25em] text-white uppercase text-shadow-white/40 text-shadow-lg sm:text-2xl lg:text-3xl lg:tracking-[0.3em]">
+          {page.name}
+        </h1>
+        <span class="mt-3 flex items-center gap-2 pl-[0.35em] text-[10px] font-medium tracking-[0.35em] text-white/70 uppercase transition-colors group-hover:text-white group-focus-visible:text-white sm:mt-4 sm:text-[11px]">
+          <span class="h-px w-3 bg-current"></span>About Me<span class="h-px w-3 bg-current"></span>
+        </span>
+      </a>
+    </div>
+  </main>
+
+  <!-- 左下：職種と GitHub（Activity の出どころ）。スマートフォンでは右下の Activity の上に中央寄せ -->
+  <div class="fixed right-4 bottom-12 left-4 z-10 flex items-center justify-center text-[11px] tracking-[0.25em] text-white/45 uppercase sm:right-auto sm:bottom-10 sm:left-10 sm:justify-start">
+    <span>{page.role}</span>
+    {page.github && (
+      <>
+        <span class="mx-3 text-white/25">·</span>
+        <a
+          href={page.github}
+          target="_blank"
+          rel="noopener"
+          class="flex items-center gap-1.5 text-white/60 transition-colors hover:text-white"
+        >
+          <Icon name="github-logo" class="text-sm" />
+          GitHub
+          <Icon name="arrow-up-right" class="text-[10px]" />
+        </a>
+      </>
+    )}
+  </div>
+
+  <!-- 右下：最新の Activity。経過日数で点の色・ラベルを変える（screens.md §4.3） -->
+  {page.latest && (
+    <a
+      href="/activity"
+      data-latest={page.latest.date}
+      data-freshness={initialFreshness}
+      class="group fixed right-4 bottom-5 left-4 z-10 flex items-center justify-center gap-2.5 text-[11px] text-white/60 transition-colors hover:text-white sm:right-10 sm:bottom-10 sm:left-auto sm:justify-end"
+    >
+      <span class="size-1.5 shrink-0 rounded-full bg-emerald-400 group-data-[freshness=live]:animate-live group-data-[freshness=stale]:bg-white/30 motion-reduce:animate-none" />
+      <span class="shrink-0 tracking-[0.25em] text-white/40 uppercase">
+        <span class="group-data-[freshness=stale]:hidden">Latest</span>
+        <span class="hidden group-data-[freshness=stale]:inline">Last update</span>
+      </span>
+      <span class="truncate tracking-wide">
+        <time datetime={page.latest.date}>{page.latest.label}</time> · {page.latest.text}
+      </span>
+      <Icon name="arrow-right" class="shrink-0 text-white/40" />
+    </a>
+  )}
+</div>
+
+<script>
+  /**
+   * 経過日数による表示を、閲覧した日で判定し直す。
+   * ページはビルドした日の状態で生成されるため、そのままだと日がたっても「7日以内」の表示が残る
+   */
+  import { daysSince, freshnessOf } from '@/lib/freshness';
+
+  function updateFreshness() {
+    const today = new Date();
+    const latest = document.querySelector<HTMLElement>('[data-latest]');
+    if (latest) latest.dataset.freshness = freshnessOf(daysSince(latest.dataset.latest!, today));
+    // 惑星のラベルの点は、7日以内に更新があったときだけ出す
+    for (const dot of document.querySelectorAll<HTMLElement>('[data-fresh]')) {
+      dot.hidden = daysSince(dot.dataset.fresh!, today) > 7;
+    }
+  }
+
+  document.addEventListener('astro:page-load', updateFreshness);
+</script>
