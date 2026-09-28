@@ -22,3 +22,28 @@ export const ACTIVITY_ICONS: Record<ActivityType, IconName> = {
 /** Activity を作品で絞り込んだ一覧の URL */
 export const activityHref = (workId?: string) =>
   workId ? `/activity?work=${encodeURIComponent(workId)}` : '/activity';
+
+/**
+ * 日付ごとにまとめる。items は新しい順に並んでいる前提で、日付の並びもその順を保つ
+ */
+export function groupByDate<T extends { date: string }>(
+  items: T[],
+): { date: string; items: T[] }[] {
+  const groups: { date: string; items: T[] }[] = [];
+  for (const item of items) {
+    const last = groups.at(-1);
+    if (last && last.date === item.date) last.items.push(item);
+    else groups.push({ date: item.date, items: [item] });
+  }
+  return groups;
+}
+
+/**
+ * 初期表示の件数。limit 件で区切るが、同じ日付の途中では区切らず、その日の最後まで含める
+ * （screens.md §3.6。1日の活動が「もっと見る」の前後に分かれると、同じ日付の見出しが2回出るため）
+ */
+export function initialCount(items: { date: string }[], limit: number): number {
+  let count = Math.min(limit, items.length);
+  while (count > 0 && count < items.length && items[count].date === items[count - 1].date) count++;
+  return count;
+}

@@ -1,0 +1,17 @@
+---
+/**
+ * About（/about）
+ *
+ * 人物像（職種・得意な技術・大切にしていること・目指す方向）と最新の Activity（screens.md §5.1）。
+ * リード文は profile.yml の intro（About にはセクション共通のリード文がないため）
+ */
+import { loadAboutPage } from '@/features/about/load-about';
+import AboutProfile from '@/features/about/AboutProfile.astro';
+import SectionLayout from '@/layouts/SectionLayout.astro';
+
+const page = await loadAboutPage();
+---
+
+<SectionLayout section="about" lead={page.intro}>
+  <AboutProfile page={page} />
+</SectionLayout>
