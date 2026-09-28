@@ -1,1 +1,178 @@
-[]
+[
+  {
+    "id": "Tora29/my-portfolio#20",
+    "date": "2026-09-28",
+    "type": "fix",
+    "work": "personal-platform",
+    "headline": "セクションを開いた位置に、そのセクションの色の光を残す",
+    "summary": "トップページからセクションを開いたあと、ページの背景の、開いた惑星（名前・最新の開発活動）の位置に、そのセクションの色の光がうっすら残るようにした。どこから開いたかが伝わり、閉じたときに縮んで戻る先とも一致する。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/20"
+  },
+  {
+    "id": "Tora29/my-portfolio#19",
+    "date": "2026-09-28",
+    "type": "docs",
+    "work": "personal-platform",
+    "headline": "表示名とセクションの説明を見直し",
+    "summary": "サイトの表示名をハンドルネーム（Tora29）に変え、各セクションの見出しの下の説明を、短く言い切る形にそろえた。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/19"
+  },
+  {
+    "id": "Tora29/my-portfolio#18",
+    "date": "2026-09-28",
+    "type": "feature",
+    "work": "personal-platform",
+    "headline": "イントロとセクションを開く・閉じる演出を追加",
+    "summary": "トップページを開くと、暗闇に浮かぶ「WELCOME」からビッグバンで宇宙が広がるイントロを再生するようにした。惑星を押すと、その惑星から粒子が広がってページが現れ、閉じると惑星へ縮んで戻る。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/18"
+  },
+  {
+    "id": "Tora29/my-portfolio#17",
+    "date": "2026-09-28",
+    "type": "feature",
+    "work": "personal-platform",
+    "headline": "トップページに宇宙のシーンを追加",
+    "summary": "トップページを、名前を中心に4つの惑星が公転する宇宙のシーンにした。惑星はセクションごとに模様を持ち、衛星の数はそのセクションの件数に連動するため、コンテンツが増えるほどシーンがにぎやかになる。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/17"
+  },
+  {
+    "id": "Tora29/my-portfolio#16",
+    "date": "2026-09-28",
+    "type": "feature",
+    "work": "personal-platform",
+    "headline": "トップページに各セクションへの入口を追加",
+    "summary": "トップページの中央の名前と、その周りの4つの惑星（Career / Works / Tech / Notes）から、各セクションへ移動できるようにした。左下に職種と GitHub、右下に最新の開発活動を表示し、開かなくても最近の動きが分かる。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/16"
+  },
+  {
+    "id": "Tora29/my-portfolio#15",
+    "date": "2026-09-28",
+    "type": "feature",
+    "work": "personal-platform",
+    "headline": "記事一覧と記事詳細のページを追加",
+    "summary": "技術記事を一覧・詳細で読めるようにし、記事から関連する作品や技術へ移動できるようにした。最初の記事として、このポートフォリオの設計について書いた。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/15"
+  },
+  {
+    "id": "Tora29/my-portfolio#14",
+    "date": "2026-09-28",
+    "type": "feature",
+    "work": "personal-platform",
+    "headline": "開発活動の一覧ページを追加",
+    "summary": "GitHub 上の公開された開発活動を日付ごとに一覧でき、作品ごとに絞り込めるようにした。絞り込んだ状態は URL（?work=）で共有でき、作品のページから、その作品の開発の過程へ直接移動できる。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/14"
+  },
+  {
+    "id": "Tora29/my-portfolio#11",
+    "date": "2026-09-28",
+    "type": "feature",
+    "work": "personal-platform",
+    "headline": "GitHub の PR から Activity を生成する処理を追加",
+    "summary": "作品に紐付けた GitHub Repository のマージ済み PR と Release から、閲覧者が読める開発活動（Activity）を自動で生成できるようにした。依存関係の更新や CI の調整などの雑務は除外し、機能の追加・修正・ドキュメントの変更だけを載せる。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/11"
+  },
+  {
+    "id": "Tora29/my-portfolio#10",
+    "date": "2026-09-28",
+    "type": "feature",
+    "work": "personal-platform",
+    "headline": "自己紹介のページを追加",
+    "summary": "職種・現在の役割・経験年数、得意な技術、大切にしていること、目指す方向を1ページで読めるようにした。最新の開発活動も3件まで表示し、Activity の一覧へ続けて移動できる。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/10"
+  },
+  {
+    "id": "Tora29/my-portfolio#9",
+    "date": "2026-09-28",
+    "type": "feature",
+    "work": "personal-platform",
+    "headline": "職歴と資格のページを追加",
+    "summary": "これまでの職歴を新しい順のタイムラインで読めるようにし、各職歴で使った技術から Tech のページへ移動できるようにした。IT 系の資格と、それ以外の資格も載せている。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/9"
+  },
+  {
+    "id": "Tora29/my-portfolio#8",
+    "date": "2026-09-28",
+    "type": "feature",
+    "work": "personal-platform",
+    "headline": "作品一覧と作品詳細のページを追加",
+    "summary": "作ったものを一覧でき、各作品のページで概要・構成・使った技術を読めるようにした。Tech のページから作品へ、作品から Tech へと行き来でき、戻るボタンは直前に見ていたページへ戻る。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/8"
+  },
+  {
+    "id": "Tora29/my-portfolio#7",
+    "date": "2026-09-28",
+    "type": "fix",
+    "work": "personal-platform",
+    "headline": "ページを開くたびに発生するリダイレクトを解消",
+    "summary": "ページの URL を末尾スラッシュなしの形に揃え、ページを開くたびに発生していた転送（301）をなくした。ページの表示が速くなり、共有される URL も一つに揃う。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/7"
+  },
+  {
+    "id": "Tora29/my-portfolio#6",
+    "date": "2026-09-28",
+    "type": "feature",
+    "work": "personal-platform",
+    "headline": "Tech 一覧と Tech 詳細のページを追加",
+    "summary": "使ってきた技術をジャンルごとに実績の多い順で一覧でき、各技術のページでは、その技術を使った作品・記事・職歴・開発活動を確認できるようにした。熟練度を自己申告ではなく、実績から辿れる。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/6"
+  },
+  {
+    "id": "Tora29/my-portfolio#5",
+    "date": "2026-09-27",
+    "type": "feature",
+    "work": "personal-platform",
+    "headline": "Tech ごとの実績と関連 Tech をビルド時に集計",
+    "summary": "作品・記事・職歴・Activity に付けた Tech をビルド時に逆引きし、Tech ごとの実績件数（下位の技術を含む）と、よく一緒に使われる関連 Tech を求められるようにした。技術の熟練度を自己申告ではなく実績で示すための土台になる。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/5"
+  },
+  {
+    "id": "Tora29/my-portfolio#4",
+    "date": "2026-09-27",
+    "type": "feature",
+    "work": "personal-platform",
+    "headline": "作品・記事・職歴・Tech のデータ構造を定義",
+    "summary": "作品・記事・職歴・Activity が参照する Tech を一か所で定義し、未定義の Tech や存在しない作品への参照をビルド時にエラーにするようにした。これにより、Tech を軸にしたコンテンツ同士のつながりが表記ゆれなく保たれる。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/4"
+  },
+  {
+    "id": "Tora29/my-portfolio#1",
+    "date": "2026-09-26",
+    "type": "docs",
+    "work": "personal-platform",
+    "headline": "開発ルールとプロジェクトの概要を整備",
+    "summary": "ポートフォリオの実装を始めるにあたり、ディレクトリ構成・コンテンツの書き方・スタイル・コンポーネント・Git運用・テストの開発ルールと、プロジェクトの概要を整備した。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/1"
+  }
+]
