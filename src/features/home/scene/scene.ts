@@ -7,36 +7,11 @@
  *
  * このシーンは Home だけで動き、他の機能から import しない（directory-structure.md）。
  */
+import { loadOrbitAngle, saveOrbitAngle } from '@/lib/orbit';
 import { finishedIntro, type IntroTimeline } from './intro';
 import { createMoons, updateMoons } from './moons';
 import { createOrbit, createPlanets, drawPlanets, layoutPlanets, updateOrbit } from './planets';
 import { createSky } from './sky';
-
-/** 公転の角度の保存先。Home に戻ったとき、惑星が前回の位置から動き続けているように見せる */
-const ORBIT_KEY = 'home-orbit';
-
-function loadOrbitAngle(): number | undefined {
-  try {
-    const saved = JSON.parse(sessionStorage.getItem(ORBIT_KEY) ?? 'null') as {
-      angle: number;
-      at: number;
-    } | null;
-    if (!saved) return undefined;
-    // 離れていた間も公転していたことにする（1周 110 秒。planets.ts の period と揃える）
-    return saved.angle + ((Date.now() - saved.at) / 1000) * ((Math.PI * 2) / 110);
-  } catch {
-    // 保存できない環境では、既定の位置から始める
-    return undefined;
-  }
-}
-
-function saveOrbitAngle(angle: number) {
-  try {
-    sessionStorage.setItem(ORBIT_KEY, JSON.stringify({ angle, at: Date.now() }));
-  } catch {
-    // 上と同じ理由で無視する
-  }
-}
 
 export interface SceneOptions {
   /** イントロ。省略すると、完成した状態から始める */

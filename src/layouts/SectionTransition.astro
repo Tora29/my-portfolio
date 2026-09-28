@@ -1,0 +1,218 @@
+---
+/**
+ * Home とセクションの間を移動するときの演出（.users/requirements/screens.md §4.6）
+ *
+ * - 開く（Home → セクション）：押した惑星（名前・最新 Activity）から、セクションの色の粒子が画面全体へ広がり、
+ *   その後ろから縁のぼけた円でページが現れる。Home は少し縮みながら消える
+ * - 閉じる（セクション → Home）：開く演出の逆再生。ページが戻り先の惑星へ縮み、粒子が惑星へ集まる
+ *
+ * ページの切り替えは View Transitions（ClientRouter）に任せ、その見せ方だけをここで変える。
+ * 粒子の Canvas はページ遷移をまたいで残し（transition:persist）、切り替えの間も動き続けるようにする。
+ * それ以外の移動（タブ・本文のリンク）は、ブラウザ標準のクロスフェードのまま。
+ * prefers-reduced-motion のときは演出を行わない。
+ */
+---
+
+<canvas
+  aria-hidden="true"
+  class="pointer-events-none fixed inset-0 z-50 size-full"
+  data-burst
+  transition:persist
+  transition:name="burst"
+  transition:animate="none"
+></canvas>
+
+<style is:global>
+  /*
+   * 円の半径を少しずつ変えるため、カスタムプロパティを長さとして登録する（登録しないとアニメーションしない）。
+   * ::view-transition の擬似要素はユーティリティで指定できないため、ここに書く
+   */
+  @property --vt-reveal {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 0px;
+  }
+
+  @keyframes vt-reveal {
+    from {
+      --vt-reveal: 0px;
+    }
+    to {
+      --vt-reveal: var(--vt-full);
+    }
+  }
+  @keyframes vt-conceal {
+    from {
+      --vt-reveal: var(--vt-full);
+    }
+    to {
+      --vt-reveal: 0px;
+    }
+  }
+  @keyframes vt-recede {
+    to {
+      transform: scale(0.92);
+      opacity: 0;
+    }
+  }
+  @keyframes vt-emerge {
+    from {
+      transform: scale(0.92);
+      opacity: 0;
+    }
+  }
+
+  /* 縁のぼけた円。内側 55% は完全に見え、外側に向かって消える（輪郭の硬い円のワイプにしない） */
+  html[data-vt]::view-transition-old(root),
+  html[data-vt]::view-transition-new(root) {
+    mask-image: radial-gradient(
+      circle at var(--vt-x) var(--vt-y),
+      #000 calc(var(--vt-reveal) * 0.55),
+      transparent var(--vt-reveal)
+    );
+  }
+  /* 開く：新しいページは粒子を追うように広がり、Home は縮みながら消える */
+  html[data-vt='open']::view-transition-old(root) {
+    mask-image: none;
+    animation: vt-recede 0.7s cubic-bezier(0.76, 0, 0.24, 1) both;
+  }
+  html[data-vt='open']::view-transition-new(root) {
+    animation: vt-reveal 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  /* 閉じる：セクションのページを Home の上に重ね、惑星へ向かって加速しながら縮める */
+  html[data-vt='close']::view-transition-old(root) {
+    z-index: 1;
+    animation: vt-conceal 0.7s cubic-bezier(0.64, 0, 0.78, 0) both;
+  }
+  html[data-vt='close']::view-transition-new(root) {
+    mask-image: none;
+    animation: vt-emerge 0.7s cubic-bezier(0.76, 0, 0.24, 1) both;
+  }
+  /* 粒子の Canvas は動き続けている新しい側だけを見せる（古い側は切り替えた瞬間の静止画のため） */
+  ::view-transition-old(burst) {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html[data-vt]::view-transition-old(root),
+    html[data-vt]::view-transition-new(root) {
+      mask-image: none;
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { coverRadius, playBurst, type Circle } from '@/lib/burst';
+  import { toRgbTriplet } from '@/lib/color';
+  import {
+    PLANET_ORDER,
+    depthScale,
+    loadOrbitAngle,
+    orbitGeometry,
+    orbitPoint,
+    planetAngle,
+    DEFAULT_ORBIT_ANGLE,
+  } from '@/lib/orbit';
+
+  /** 演出の長さ（ミリ秒）。CSS のアニメーションと揃える。粒子は少し長く残す */
+  const DURATION = { open: 1000, close: 700 };
+
+  interface Pending {
+    kind: 'open' | 'close';
+    circle: Circle;
+  }
+
+  /** 準備中の演出。before-preparation で決め、before-swap で新しいページに引き継ぐ */
+  let pending: Pending | undefined;
+  let stopBurst: (() => void) | undefined;
+
+  const isHome = (url: URL) => url.pathname === '/';
+  /** URL の先頭の階層（/works/foo → works）。セクションの色と戻り先の惑星を決めるのに使う */
+  const sectionOf = (url: URL) => url.pathname.split('/')[1] ?? '';
+
+  /** セクションの色（global.css の --color-<セクション>） */
+  const colorOf = (section: string) =>
+    toRgbTriplet(
+      getComputedStyle(document.documentElement).getPropertyValue(`--color-${section}`) || 'white',
+    );
+
+  /**
+   * 閉じるときの戻り先。Home はまだ表示されていないため、保存してある公転の角度から惑星の位置を求める
+   * （Home のシーンも同じ角度から再開する。lib/orbit.ts）
+   */
+  function targetOf(section: string): Circle {
+    const index = PLANET_ORDER.indexOf(section as (typeof PLANET_ORDER)[number]);
+    if (index >= 0) {
+      const orbit = orbitGeometry(innerWidth, innerHeight);
+      const angle = planetAngle(loadOrbitAngle() ?? DEFAULT_ORBIT_ANGLE, index);
+      const point = orbitPoint(orbit, angle);
+      return { x: point.x, y: point.y, r: (orbit.size / 2) * depthScale(point.depth) };
+    }
+    // Activity は右下（スマートフォンでは下の中央）の最新 Activity、それ以外（About）は中央の名前
+    if (section === 'activity') {
+      const wide = innerWidth >= 640;
+      return {
+        x: wide ? innerWidth - 160 : innerWidth / 2,
+        y: innerHeight - (wide ? 44 : 26),
+        r: 12,
+      };
+    }
+    return { x: innerWidth / 2, y: innerHeight / 2, r: 60 };
+  }
+
+  /** 押した要素の位置と大きさ（惑星の円・名前の楕円は、短い辺を直径とみなす） */
+  function circleOfElement(el: Element): Circle {
+    const rect = el.getBoundingClientRect();
+    return {
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2,
+      r: Math.min(rect.width, rect.height) / 2,
+    };
+  }
+
+  // document への登録はページ遷移をまたいで残るため、モジュールの読み込み時に1回だけ登録する
+
+  document.addEventListener('astro:before-preparation', (event) => {
+    stopBurst?.();
+    pending = undefined;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const { from, to, sourceElement } = event;
+    const canvas = document.querySelector<HTMLCanvasElement>('[data-burst]');
+    if (!canvas) return;
+
+    if (isHome(from) && !isHome(to)) {
+      // Home の中の入口（惑星・名前・最新 Activity）から開いたときだけ。ブラウザの進むボタンなどでは行わない
+      const link = sourceElement?.closest('a');
+      if (!link || !link.closest('[data-home]')) return;
+      const circle = circleOfElement(link);
+      pending = { kind: 'open', circle };
+      stopBurst = playBurst(canvas, circle, colorOf(sectionOf(to)), 'out', DURATION.open + 200);
+    } else if (!isHome(from) && isHome(to)) {
+      const section = sectionOf(from);
+      const circle = targetOf(section);
+      pending = { kind: 'close', circle };
+      stopBurst = playBurst(canvas, circle, colorOf(section), 'in', DURATION.close);
+    }
+  });
+
+  document.addEventListener('astro:before-swap', (event) => {
+    if (!pending) return;
+    // 切り替えで <html> の属性は新しいページのものに置き換わるため、新しいページの側に設定しておく
+    const html = event.newDocument.documentElement;
+    const { circle, kind } = pending;
+    html.dataset.vt = kind;
+    html.style.setProperty('--vt-x', `${circle.x}px`);
+    html.style.setProperty('--vt-y', `${circle.y}px`);
+    // 円の内側（半径の 55%）が画面全体を覆う大きさ
+    html.style.setProperty('--vt-full', `${coverRadius(circle) / 0.55 + 20}px`);
+    pending = undefined;
+
+    event.viewTransition.finished.finally(() => {
+      const root = document.documentElement;
+      delete root.dataset.vt;
+      for (const name of ['--vt-x', '--vt-y', '--vt-full']) root.style.removeProperty(name);
+    });
+  });
+</script>

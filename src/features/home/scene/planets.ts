@@ -8,7 +8,17 @@
  * 惑星の位置は、HTML のリンク（HomeScene.astro の [data-planet]）を動かして表す。
  * リンクそのものが押せる領域になるため、Canvas の上で当たり判定を計算しなくて済む。
  */
-import { clamp01, easeOutCubic, pixelRatio, toRgbTriplet } from './math';
+import { toRgbTriplet } from '@/lib/color';
+import { clamp01, easeOutCubic, pixelRatio } from './math';
+import {
+  DEFAULT_ORBIT_ANGLE,
+  ORBIT_PERIOD,
+  depthScale,
+  orbitGeometry,
+  orbitPoint,
+  planetAngle,
+  type OrbitGeometry,
+} from '@/lib/orbit';
 import { introElapsed, type IntroTimeline } from './intro';
 
 export interface Planet {
@@ -275,53 +285,21 @@ function drawPlanet(p: Planet, t: number, intro: IntroTimeline) {
 
 // ─── 公転 ───────────────────────────────────────────────────
 
-/**
- * 軌道。中心の周りの傾いた楕円で、下半分が手前。
- * period：1周の秒数 / tilt：画面内での傾き / flatten：横長の画面での縦横比
- */
-export interface Orbit {
-  period: number;
-  tilt: number;
-  flatten: number;
+/** 軌道の形（lib/orbit.ts）に、公転の状態を加えたもの */
+export interface Orbit extends OrbitGeometry {
   /** 公転の角度。ページを離れても続きから再開できるよう、保存・復元する（scene.ts） */
   angle: number;
   /** 公転の速さの倍率（ホバー中はほぼ止める） */
   speed: number;
-  a: number;
-  b: number;
-  cx: number;
-  cy: number;
-  /** 惑星の大きさ（px） */
-  size: number;
   last: number | null;
 }
 
-export const createOrbit = (angle = 0.5): Orbit => ({
-  period: 110,
-  tilt: -0.1,
-  flatten: 0.48,
+export const createOrbit = (angle = DEFAULT_ORBIT_ANGLE): Orbit => ({
+  ...orbitGeometry(innerWidth, innerHeight),
   angle,
   speed: 1,
-  a: 0,
-  b: 0,
-  cx: 0,
-  cy: 0,
-  size: 0,
   last: null,
 });
-
-/** 軌道上の点。depth は 0 が奥、1 が手前 */
-export function orbitPoint(orbit: Orbit, th: number) {
-  const cosT = Math.cos(orbit.tilt);
-  const sinT = Math.sin(orbit.tilt);
-  const ox = Math.cos(th) * orbit.a;
-  const oy = Math.sin(th) * orbit.b;
-  return {
-    x: orbit.cx + ox * cosT - oy * sinT,
-    y: orbit.cy + ox * sinT + oy * cosT,
-    depth: (Math.sin(th) + 1) / 2,
-  };
-}
 
 /** 惑星の要素を読み取り、描画の状態を作る */
 export function createPlanets(root: HTMLElement): Planet[] {
@@ -361,20 +339,7 @@ export function createPlanets(root: HTMLElement): Planet[] {
 /** 画面の大きさに合わせて、軌道と惑星の大きさを決める */
 export function layoutPlanets(orbit: Orbit, planets: Planet[]) {
   const dpr = pixelRatio();
-  orbit.cx = innerWidth / 2;
-  orbit.cy = innerHeight / 2;
-  if (innerHeight > innerWidth * 1.15) {
-    // 縦長の画面：縦に長い軌道にして、画面の上下の余白を使う（横長の軌道だと中央の細い帯に惑星が詰まる）
-    orbit.a = Math.min(innerWidth * 0.34, 300);
-    orbit.b = Math.min(innerHeight * 0.26, orbit.a * 1.6);
-    orbit.size = Math.max(64, Math.min(150, innerWidth * 0.2));
-  } else {
-    // 軌道と惑星の大きさを一緒に変え、どの画面の大きさでもラベルが名前に重ならないようにする
-    orbit.a = Math.min(innerWidth * 0.36, innerHeight * 0.6, 560);
-    // 幅の狭い画面では、名前が軌道に対して大きいため、丸い軌道にする
-    orbit.b = orbit.a * (innerWidth < 900 ? 0.66 : orbit.flatten);
-    orbit.size = Math.max(70, Math.min(170, orbit.a * 0.34));
-  }
+  Object.assign(orbit, orbitGeometry(innerWidth, innerHeight));
   for (const p of planets) {
     p.wrap.style.width = p.wrap.style.height = `${orbit.size}px`;
     p.dpr = dpr;
@@ -395,12 +360,12 @@ export function updateOrbit(orbit: Orbit, planets: Planet[], t: number, coarsePo
   const hovering = planets.some((p) => p.target > 0);
   const target = hovering ? 0.06 : coarsePointer ? 0.12 : 1;
   orbit.speed += (target - orbit.speed) * 0.06;
-  orbit.angle += dt * ((Math.PI * 2) / orbit.period) * orbit.speed;
+  orbit.angle += dt * ((Math.PI * 2) / ORBIT_PERIOD) * orbit.speed;
 
   planets.forEach((p, i) => {
-    const th = orbit.angle + (i * Math.PI) / 2;
+    const th = planetAngle(orbit.angle, i);
     const { x, y, depth } = orbitPoint(orbit, th);
-    p.ds = 0.7 + 0.45 * depth;
+    p.ds = depthScale(depth);
     p.x = x;
     p.y = y;
     p.th = th;

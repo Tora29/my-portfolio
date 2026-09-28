@@ -10,6 +10,7 @@ import '@/styles/global.css';
 import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 import { SITE_NAME } from '@/lib/site';
+import SectionTransition from './SectionTransition.astro';
 
 interface Props {
   /** <title> にそのまま使う（pageTitle() で組み立てる） */
@@ -65,5 +66,6 @@ const canonical = new URL(
   </head>
   <body class="min-h-dvh bg-bg font-sans text-white/80 antialiased selection:bg-white/20">
     <slot />
+    <SectionTransition />
   </body>
 </html>
