@@ -1,0 +1,34 @@
+---
+/**
+ * 作品詳細（/works/[id]）
+ *
+ * 1つの作品の概要・構成・使った技術・開発の過程・関連する記事を並べる（screens.md §5.4）。
+ * id は content/works/<id>/ のフォルダ名。すべての作品についてページを作る
+ */
+import type { GetStaticPaths } from 'astro';
+import { loadWorkDetails, type WorkDetail as WorkDetailData } from '@/features/works/load-works';
+import WorkDetail from '@/features/works/WorkDetail.astro';
+import SectionLayout from '@/layouts/SectionLayout.astro';
+
+// ビルド時に、すべての作品のページを作る。表示用のデータもここで渡す
+export const getStaticPaths = (async () => {
+  const details = await loadWorkDetails();
+  return details.map((work) => ({ params: { id: work.id }, props: { work } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  work: WorkDetailData;
+}
+
+const { work } = Astro.props;
+---
+
+<SectionLayout
+  section="works"
+  title={work.title}
+  lead={work.summary}
+  back={{ href: '/works', label: 'All Works' }}
+  description={work.summary}
+>
+  <WorkDetail work={work} />
+</SectionLayout>

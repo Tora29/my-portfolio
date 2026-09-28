@@ -1,0 +1,39 @@
+---
+/**
+ * Markdown / MDX の本文の書式（作品の Overview・Architecture、記事の本文）
+ *
+ * 本文の要素（h2・p・ul 等）には直接クラスを付けられないため、外側から子孫セレクタのユーティリティで整える。
+ * 見出し（h2）はセクション内の小見出し（Subheading）と同じ見た目にし、ページ内の見出しの階層を揃える。
+ * 長い日本語を読むため、本文には大文字化・広い字間を使わない（styling.md）
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div
+  class:list={[
+    'text-sm leading-relaxed text-white/70 sm:text-base',
+    // 見出し
+    '[&_h2]:mt-12 [&_h2]:mb-4 [&_h2]:text-[11px] [&_h2]:tracking-[0.3em] [&_h2]:text-white/40 [&_h2]:uppercase [&_h2:first-child]:mt-0',
+    '[&_h3]:mt-8 [&_h3]:mb-3 [&_h3]:text-base [&_h3]:text-white',
+    // 段落・リンク
+    '[&_p]:mt-4 [&_p:first-child]:mt-0',
+    '[&_a]:text-white [&_a]:underline [&_a]:decoration-white/30 [&_a]:underline-offset-4 [&_a:hover]:decoration-white',
+    // 箇条書きは、行頭に短い線を置く（モックの Architecture）
+    '[&_ul]:mt-4 [&_ul]:space-y-3 [&_ul>li]:relative [&_ul>li]:pl-6',
+    "[&_ul>li]:before:absolute [&_ul>li]:before:top-[0.8em] [&_ul>li]:before:left-0 [&_ul>li]:before:h-px [&_ul>li]:before:w-3 [&_ul>li]:before:bg-(--accent)/60 [&_ul>li]:before:content-['']",
+    '[&_ol]:mt-4 [&_ol]:list-decimal [&_ol]:space-y-2 [&_ol]:pl-5',
+    // コード
+    '[&_:not(pre)>code]:rounded [&_:not(pre)>code]:bg-white/8 [&_:not(pre)>code]:px-1.5 [&_:not(pre)>code]:py-0.5 [&_:not(pre)>code]:text-[0.9em]',
+    '[&_pre]:mt-4 [&_pre]:overflow-x-auto [&_pre]:rounded-xl [&_pre]:border [&_pre]:border-white/10 [&_pre]:p-4 [&_pre]:text-xs [&_pre]:leading-relaxed',
+    // 引用・画像
+    '[&_blockquote]:mt-4 [&_blockquote]:border-l [&_blockquote]:border-white/20 [&_blockquote]:pl-4 [&_blockquote]:text-white/55',
+    '[&_img]:mt-6 [&_img]:rounded-xl',
+    className,
+  ]}
+>
+  <slot />
+</div>

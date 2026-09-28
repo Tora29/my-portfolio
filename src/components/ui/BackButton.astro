@@ -1,0 +1,117 @@
+---
+/**
+ * 見出しの上の戻るボタン（.users/requirements/screens.md §3.4）
+ *
+ * - 本文中のリンク（data-back-scope の中）でサイト内を移動してきたときは、直前のページへ戻る
+ * - それ以外（URL を直接開いた・タブや Prev / Next で来た・JavaScript が無効）は fallback へ戻る。
+ *   fallback がないページ（一覧ページ）では表示しない
+ *
+ * 移動の記録は sessionStorage に持つ（タブを閉じれば消え、他のタブと混ざらない）。
+ * 記録の読み方（どこへ戻るか）の判断は lib/back-history.ts が行う
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  /** 直前のページが分からないときの戻り先（所属する一覧） */
+  fallback?: { href: string; label: string };
+}
+
+const { fallback } = Astro.props;
+---
+
+<a
+  href={fallback?.href ?? '/'}
+  hidden={!fallback}
+  data-back
+  class="mb-6 flex max-w-full items-center gap-2 text-[11px] tracking-[0.25em] text-white/50 uppercase transition-colors hover:text-white"
+>
+  <Icon name="arrow-left" />
+  <span class="truncate" data-back-label>
+    {fallback?.label}
+  </span>
+</a>
+
+<script>
+  import { popEntry, pushEntry, resolveBack, type BackEntry } from '@/lib/back-history';
+
+  const STORAGE_KEY = 'back-history';
+
+  // 保存に失敗しても（プライベートブラウズ等）戻るボタンが fallback になるだけなので、例外は握りつぶす
+  function load(): BackEntry[] {
+    try {
+      const value: unknown = JSON.parse(sessionStorage.getItem(STORAGE_KEY) ?? '[]');
+      return Array.isArray(value) ? value : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function save(stack: BackEntry[]) {
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(stack));
+    } catch {
+      // 上と同じ理由で無視する
+    }
+  }
+
+  const currentUrl = () => location.pathname + location.search;
+
+  /**
+   * サイト内のリンクが押されたときに記録を更新する。
+   * - 戻るボタン：記録の先頭を取り除く
+   * - 本文中のリンク：移動元を積む
+   * - それ以外（タブ・Prev / Next・閉じるボタン）：記録を消す（戻るボタンの対象にしないため）
+   *
+   * document への登録はページ遷移をまたいで残るため、ここ（モジュールの読み込み時に1回だけ）で登録する。
+   * ClientRouter が遷移のために preventDefault するため、defaultPrevented は見ない
+   */
+  document.addEventListener('click', (event) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      // 新しいタブで開く操作では、今のタブの閲覧は続くため記録しない
+      return;
+    }
+    const link = (event.target as Element).closest('a');
+    if (!link || link.target === '_blank') return;
+    const url = new URL(link.href, location.href);
+    if (url.origin !== location.origin) return;
+    const to = url.pathname + url.search;
+    // 同じページ内のジャンプ（#…）は移動に数えない
+    if (to === currentUrl()) return;
+
+    if (link.closest('[data-back]')) {
+      save(popEntry(load()));
+      return;
+    }
+    const scope = link.closest<HTMLElement>('[data-back-scope]');
+    save(
+      scope
+        ? pushEntry(load(), { from: currentUrl(), label: scope.dataset.backScope ?? '', to })
+        : [],
+    );
+  });
+
+  /**
+   * 最初の読み込みが URL の直接入力・外部からのリンク・ブックマークによるものか。
+   * サイト内の移動は ClientRouter が読み込みなしで行うため、読み込みが起きるのは
+   * 外から来たとき（navigate）・再読み込み（reload）・ブラウザの戻る / 進む（back_forward）だけになる。
+   * 外から来たときは、同じタブに残っている記録があっても使わない（直接開いたら一覧へ戻る。screens.md §3.4）
+   */
+  let openedFromOutside =
+    (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined)
+      ?.type === 'navigate';
+
+  /** ページを開いたときに、記録から戻り先を決めて戻るボタンに反映する */
+  function setupBackButton() {
+    const { stack, back } = resolveBack(openedFromOutside ? [] : load(), currentUrl());
+    openedFromOutside = false;
+    save(stack);
+
+    const button = document.querySelector<HTMLAnchorElement>('[data-back]');
+    if (!button || !back) return;
+    button.href = back.from;
+    button.querySelector('[data-back-label]')!.textContent = back.label;
+    button.hidden = false;
+  }
+
+  document.addEventListener('astro:page-load', setupBackButton);
+</script>

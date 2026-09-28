@@ -1,0 +1,89 @@
+---
+/**
+ * Tech タグの列（.users/requirements/screens.md §3.7）
+ *
+ * 7個以上あるときは先頭6個と「+N」を表示し、「+N」でジャンル別の全件表示に切り替える。
+ * JavaScript が無効なときは、切り替えずにジャンル別の全件を表示する（js: バリアント。global.css）。
+ * タグの並び・ジャンル分けは lib/tech-tags.ts がビルド時に作る（ここでは受け取った値を並べるだけ）
+ */
+import type { TechTagList } from '@/lib/tech-tags';
+import Chip from './Chip.astro';
+
+interface Props {
+  list: TechTagList;
+  class?: string;
+}
+
+const { list, class: className } = Astro.props;
+---
+
+{list.hiddenCount === 0 ? (
+  <div class:list={['flex flex-wrap gap-2', className]}>
+    {list.tags.map((tag) => (
+      <Chip href={tag.href} label={tag.label} />
+    ))}
+  </div>
+) : (
+  // 開閉の状態は data-expanded で持ち、表示の切り替えは CSS に任せる
+  <div class:list={['group/tags', className]} data-tech-tags>
+    <div class="hidden flex-wrap gap-2 js:flex js:group-data-expanded/tags:hidden">
+      {list.visible.map((tag) => (
+        <Chip href={tag.href} label={tag.label} />
+      ))}
+      <button
+        type="button"
+        data-tech-tags-open
+        aria-label={`残り ${list.hiddenCount} 件の技術も表示する`}
+        class="rounded-full px-2.5 py-1 text-[11px] tracking-wide text-white/40 transition-colors hover:text-white"
+      >
+        +{list.hiddenCount}
+      </button>
+    </div>
+    <div class="js:hidden js:group-data-expanded/tags:block" data-tech-tags-full tabindex="-1">
+      <div class="space-y-3">
+        {list.groups.map((group) => (
+          <div class="grid items-baseline gap-1.5 sm:grid-cols-[7.5rem_1fr] sm:gap-3">
+            <span class="text-[10px] tracking-[0.2em] text-white/35 uppercase">{group.name}</span>
+            <div class="flex flex-wrap gap-2">
+              {group.tags.map((tag) => (
+                <Chip href={tag.href} label={tag.label} />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <button
+        type="button"
+        data-tech-tags-close
+        class="mt-3 hidden text-[11px] tracking-wide text-white/40 transition-colors hover:text-white js:inline-block"
+      >
+        閉じる
+      </button>
+    </div>
+  </div>
+)}
+
+<script>
+  /**
+   * 「+N」と「閉じる」の切り替え。
+   * 押したボタンが消えるため、フォーカスを切り替え先へ移す（キーボード操作で位置を見失わないように）
+   */
+  function setupTechTags() {
+    for (const root of document.querySelectorAll<HTMLElement>('[data-tech-tags]')) {
+      const open = root.querySelector<HTMLElement>('[data-tech-tags-open]')!;
+      const close = root.querySelector<HTMLElement>('[data-tech-tags-close]')!;
+      const full = root.querySelector<HTMLElement>('[data-tech-tags-full]')!;
+      // 要素ごと遷移で破棄されるため、解除は不要
+      open.addEventListener('click', () => {
+        root.dataset.expanded = '';
+        full.focus({ preventScroll: true });
+      });
+      close.addEventListener('click', () => {
+        delete root.dataset.expanded;
+        open.focus({ preventScroll: true });
+      });
+    }
+  }
+
+  document.addEventListener('astro:page-load', setupTechTags);
+</script>

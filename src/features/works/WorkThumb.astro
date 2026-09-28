@@ -1,0 +1,40 @@
+---
+/**
+ * 作品のサムネイル。cover があれば画像を、なければアクセント色のプレースホルダーを表示する
+ *
+ * 画像の縮小・形式の変換は Astro の <Image /> に任せる（content-authoring.md「画像」）
+ */
+import { Image } from 'astro:assets';
+import Icon from '@/components/ui/Icon.astro';
+import type { WorkListItem } from './load-works';
+
+interface Props {
+  cover: WorkListItem['cover'];
+  /** 表示幅（px）。画像の生成サイズにも使う */
+  width: number;
+  class?: string;
+  iconClass?: string;
+}
+
+const { cover, width, class: className, iconClass } = Astro.props;
+---
+
+{cover ? (
+  <Image
+    src={cover.src}
+    alt={cover.alt}
+    width={width}
+    class:list={['rounded-xl border border-white/10 object-cover', className]}
+  />
+) : (
+  // 画像の代わりの装飾。作品名はすぐ隣にあるため、読み上げない
+  <div
+    aria-hidden="true"
+    class:list={[
+      'flex items-center justify-center rounded-xl border border-(--accent)/25 bg-radial-[at_30%_25%] from-(--accent)/35 via-(--accent)/6 via-60% to-white/2',
+      className,
+    ]}
+  >
+    <Icon name="code" class:list={['text-(--accent)', iconClass]} />
+  </div>
+)}

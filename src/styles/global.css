@@ -20,3 +20,10 @@
   --color-notes: rgb(52 211 153);
   --color-activity: rgb(251 191 36);
 }
+
+/*
+ * JavaScript が動いているときだけ効くスタイル（js:hidden など）。
+ * 「もっと見る」「+N」などは、JS なしでは全件を表示し、JS があるときだけ畳む。
+ * 目印の data-js は BaseLayout の <head> のスクリプトが <html> に付ける（描画前に付くため、全件が一瞬見えることがない）
+ */
+@custom-variant js (&:where([data-js] *));

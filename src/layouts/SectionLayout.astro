@@ -9,6 +9,7 @@
  *
  * セクションのアクセント色を --accent に設定する。ページ内の部品は --accent を参照する。
  */
+import BackButton from '@/components/ui/BackButton.astro';
 import Icon from '@/components/ui/Icon.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { SECTION_IDS, SECTIONS, adjacentSections, type SectionId } from '@/lib/sections';
@@ -21,8 +22,8 @@ interface Props {
   /** 見出しの下の説明。省略時は一覧ページならセクションのリード文、詳細ページなら表示しない */
   lead?: string;
   /**
-   * 見出しの上に出す戻るリンク。
-   * 閲覧履歴に応じて戻り先を変える仕組みは未決（screens.md §7）のため、今は所属する一覧へ戻る
+   * 見出しの上の戻るボタンの既定の戻り先（所属する一覧）。詳細ページで指定する。
+   * 本文のリンクから来た場合は、直前のページへ戻る（BackButton.astro）
    */
   back?: { href: string; label: string };
   description?: string;
@@ -77,15 +78,7 @@ const { prev, next } = adjacentSections(sectionId);
 
     <main class="mx-auto max-w-3xl px-6 pt-8 pb-24 sm:px-10 sm:pt-12">
       <div class="mb-10 sm:mb-14">
-        {back && (
-          <a
-            href={back.href}
-            class="mb-6 flex max-w-full items-center gap-2 text-[11px] tracking-[0.25em] text-white/50 uppercase transition-colors hover:text-white"
-          >
-            <Icon name="arrow-left" />
-            <span class="truncate">{back.label}</span>
-          </a>
-        )}
+        <BackButton fallback={back} />
         <div class="flex items-center gap-3 sm:gap-4">
           <Icon name={section.icon} class="text-2xl text-(--accent) sm:text-4xl" />
           {isDetail ? (
@@ -104,7 +97,13 @@ const { prev, next } = adjacentSections(sectionId);
         )}
       </div>
 
-      <slot />
+      <!--
+        本文。ここに置いたリンクで移動したときだけ、戻るボタンが直前のページ（このページ）へ戻る。
+        値は戻るボタンのラベルになる（詳細ページはタイトル、一覧ページはセクション名）
+      -->
+      <div data-back-scope={title ?? section.title}>
+        <slot />
+      </div>
 
       <nav
         aria-label="前後のセクション"
