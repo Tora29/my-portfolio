@@ -1,0 +1,27 @@
+---
+/**
+ * 種類別の実績件数（Works 2 · Notes 0 · …）。0件は薄く表示する
+ */
+import { CONTENT_KINDS, type ContentKind } from '@/lib/graph/types';
+
+interface Props {
+  counts: Record<ContentKind, number>;
+}
+
+const { counts } = Astro.props;
+const LABELS: Record<ContentKind, string> = {
+  works: 'Works',
+  notes: 'Notes',
+  career: 'Career',
+  activity: 'Activity',
+};
+---
+
+<span class="flex flex-wrap gap-x-4 gap-y-1 text-xs tracking-wide sm:gap-x-5">
+  {CONTENT_KINDS.map((kind) => (
+    <span class:list={[counts[kind] ? 'text-white/70' : 'text-white/20']}>
+      {LABELS[kind]}
+      <span class:list={['ml-1', counts[kind] && 'text-(--accent)']}>{counts[kind]}</span>
+    </span>
+  ))}
+</span>

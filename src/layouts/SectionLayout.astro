@@ -1,0 +1,188 @@
+---
+/**
+ * Home 以外のページの外枠（.users/requirements/screens.md §3）
+ *
+ * - 上部に固定のタブ（About → … → Activity）と、Home へ戻る閉じるボタン
+ * - 見出し（アイコン・セクション名・リード文）。詳細ページではタイトルを大文字化しない
+ * - 詳細ページでは見出しの上に戻るリンク
+ * - 下部にタブ順で前後のセクションへのリンク（Prev / Next）
+ *
+ * セクションのアクセント色を --accent に設定する。ページ内の部品は --accent を参照する。
+ */
+import Icon from '@/components/ui/Icon.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { SECTION_IDS, SECTIONS, adjacentSections, type SectionId } from '@/lib/sections';
+import { pageTitle } from '@/lib/site';
+
+interface Props {
+  section: SectionId;
+  /** 詳細ページのタイトル。指定するとセクション名の代わりに見出しにする */
+  title?: string;
+  /** 見出しの下の説明。省略時は一覧ページならセクションのリード文、詳細ページなら表示しない */
+  lead?: string;
+  /**
+   * 見出しの上に出す戻るリンク。
+   * 閲覧履歴に応じて戻り先を変える仕組みは未決（screens.md §7）のため、今は所属する一覧へ戻る
+   */
+  back?: { href: string; label: string };
+  description?: string;
+}
+
+const { section: sectionId, title, lead, back, description } = Astro.props;
+const section = SECTIONS[sectionId];
+const isDetail = title !== undefined;
+const leadText = lead ?? (isDetail ? '' : section.lead);
+const { prev, next } = adjacentSections(sectionId);
+---
+
+<BaseLayout
+  title={isDetail ? pageTitle(title, section.title) : pageTitle(section.title)}
+  description={description ?? (leadText || undefined)}
+>
+  <div style={`--accent: ${section.color}`}>
+    <header class="sticky top-0 z-10 flex items-center gap-3 border-b border-white/5 bg-bg/55 px-4 py-4 backdrop-blur-md sm:px-8">
+      <!-- 画面幅に収まらない場合は横スクロール。続きがある側の端をフェードさせる（下の <style> と <script>） -->
+      <nav
+        aria-label="セクション"
+        data-tabs
+        class="relative min-w-0 flex-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        <ul class="flex">
+          {SECTION_IDS.map((id) => {
+            const tab = SECTIONS[id];
+            const isCurrent = id === sectionId;
+            return (
+              <li class="shrink-0">
+                <a
+                  href={tab.href}
+                  aria-current={isCurrent ? 'page' : undefined}
+                  style={`--tab: ${tab.color}`}
+                  class="relative block px-3 py-2 text-[11px] tracking-[0.25em] text-white/45 uppercase transition-colors after:absolute after:inset-x-3 after:bottom-0.5 after:h-px after:scale-x-0 after:bg-(--tab) after:transition-transform after:duration-400 hover:text-white/85 aria-[current=page]:text-white aria-[current=page]:after:scale-x-100 motion-reduce:after:transition-none"
+                >
+                  {tab.title}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+      <a
+        href="/"
+        aria-label="閉じて Home に戻る"
+        class="flex size-11 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/5 text-lg text-white/70 transition-colors hover:border-white/40 hover:text-white"
+      >
+        <Icon name="x" />
+      </a>
+    </header>
+
+    <main class="mx-auto max-w-3xl px-6 pt-8 pb-24 sm:px-10 sm:pt-12">
+      <div class="mb-10 sm:mb-14">
+        {back && (
+          <a
+            href={back.href}
+            class="mb-6 flex max-w-full items-center gap-2 text-[11px] tracking-[0.25em] text-white/50 uppercase transition-colors hover:text-white"
+          >
+            <Icon name="arrow-left" />
+            <span class="truncate">{back.label}</span>
+          </a>
+        )}
+        <div class="flex items-center gap-3 sm:gap-4">
+          <Icon name={section.icon} class="text-2xl text-(--accent) sm:text-4xl" />
+          {isDetail ? (
+            // 詳細ページは長いタイトルに対応するため、大文字化せず通常の字間にする
+            <h1 class="min-w-0 text-[clamp(1.25rem,3.2vw,2rem)] leading-snug font-light tracking-[0.02em] text-white">
+              {title}
+            </h1>
+          ) : (
+            <h1 class="min-w-0 text-2xl font-light tracking-[0.18em] text-white uppercase sm:text-4xl">
+              {section.title}
+            </h1>
+          )}
+        </div>
+        {leadText && (
+          <p class="mt-4 text-sm leading-relaxed text-white/60 sm:text-base">{leadText}</p>
+        )}
+      </div>
+
+      <slot />
+
+      <nav
+        aria-label="前後のセクション"
+        class="mt-16 flex justify-between gap-4 border-t border-white/10 pt-8"
+      >
+        {prev ? (
+          <a href={prev.href} class="group flex flex-col items-start gap-1">
+            <span class="text-[10px] tracking-[0.3em] text-white/35 uppercase">Prev</span>
+            <span class="flex items-center gap-2 text-sm tracking-[0.2em] text-white/70 uppercase transition-colors group-hover:text-white">
+              <Icon name="arrow-left" />
+              {prev.title}
+            </span>
+          </a>
+        ) : (
+          <span />
+        )}
+        {next && (
+          <a href={next.href} class="group flex flex-col items-end gap-1 text-right">
+            <span class="text-[10px] tracking-[0.3em] text-white/35 uppercase">Next</span>
+            <span class="flex items-center gap-2 text-sm tracking-[0.2em] text-white/70 uppercase transition-colors group-hover:text-white">
+              {next.title}
+              <Icon name="arrow-right" />
+            </span>
+          </a>
+        )}
+      </nav>
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  /* タブの行の端のフェード。マスクはユーティリティで表現しにくいためここに書く */
+  [data-tabs][data-fade-right] {
+    mask-image: linear-gradient(to right, #000 80%, transparent);
+  }
+  [data-tabs][data-fade-left] {
+    mask-image: linear-gradient(to left, #000 80%, transparent);
+  }
+  [data-tabs][data-fade-left][data-fade-right] {
+    mask-image: linear-gradient(to right, transparent, #000 20%, #000 80%, transparent);
+  }
+</style>
+
+<script>
+  /**
+   * タブの行の横スクロールの補助
+   * - 現在のタブを表示範囲の中央へ寄せる（スマートフォンで見切れないように）
+   * - 続きがある側の端をフェードさせる
+   *
+   * JavaScript が無効でもタブ自体は横スクロールで使える（ここは見た目の補助のみ）
+   */
+  function setupTabs() {
+    const nav = document.querySelector<HTMLElement>('[data-tabs]');
+    if (!nav) return;
+
+    const current = nav.querySelector<HTMLElement>('[aria-current="page"]');
+    if (current) {
+      // nav は relative なので offsetLeft は nav の左端からの位置になる
+      nav.scrollLeft = current.offsetLeft - (nav.clientWidth - current.offsetWidth) / 2;
+    }
+
+    const updateFade = () => {
+      const max = nav.scrollWidth - nav.clientWidth;
+      // 2px の余裕：拡大率によってはスクロール位置が端ちょうどにならないため
+      nav.toggleAttribute('data-fade-left', nav.scrollLeft > 2);
+      nav.toggleAttribute('data-fade-right', nav.scrollLeft < max - 2);
+    };
+    updateFade();
+
+    // nav への登録は要素と一緒に破棄されるが、window への登録は残るため遷移前に解除する
+    nav.addEventListener('scroll', updateFade, { passive: true });
+    window.addEventListener('resize', updateFade);
+    document.addEventListener(
+      'astro:before-swap',
+      () => window.removeEventListener('resize', updateFade),
+      { once: true },
+    );
+  }
+
+  document.addEventListener('astro:page-load', setupTabs);
+</script>

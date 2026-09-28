@@ -1,0 +1,20 @@
+---
+/**
+ * セクション内の小見出し（例：WORKS 3、Related Tech）。
+ * count を渡すと、見出しの後ろにアクセント色で件数を出す
+ */
+interface Props {
+  label: string;
+  count?: number;
+  /** 見出しのレベル。ページの h1 の下に置くので既定は h2 */
+  as?: 'h2' | 'h3';
+  id?: string;
+}
+
+const { label, count, as: Tag = 'h2', id } = Astro.props;
+---
+
+<Tag id={id} class="flex items-center gap-3 text-[11px] tracking-[0.3em] text-white/40 uppercase">
+  {label}
+  {count !== undefined && <span class="text-(--accent)">{count}</span>}
+</Tag>

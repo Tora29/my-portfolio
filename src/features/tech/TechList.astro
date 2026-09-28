@@ -1,0 +1,44 @@
+---
+/**
+ * Tech 一覧（.users/requirements/screens.md §5.5）
+ *
+ * 上部にジャンルへのジャンプ（ページ内リンク）を置き、ジャンルごとに区切って表示する。
+ * ジャンル内の並び（実績の多い順）は load-tech.ts で決めてある
+ */
+import Subheading from '@/components/ui/Subheading.astro';
+import type { TechGenre } from './load-tech';
+import TechRow from './TechRow.astro';
+
+interface Props {
+  genres: TechGenre[];
+}
+
+const { genres } = Astro.props;
+const anchorOf = (genre: TechGenre) => `tech-genre-${genre.id}`;
+---
+
+<nav aria-label="ジャンル" class="mb-10 flex flex-wrap gap-2">
+  {genres.map((genre) => (
+    <a
+      href={`#${anchorOf(genre)}`}
+      class="rounded-full border border-white/10 px-3 py-1.5 text-[11px] tracking-wide text-white/50 transition-colors hover:border-white/40 hover:text-white"
+    >
+      {genre.name}
+      <span class="ml-1 text-(--accent)">{genre.tech.length}</span>
+    </a>
+  ))}
+</nav>
+
+<div class="space-y-14">
+  {genres.map((genre) => (
+    // scroll-mt：固定ヘッダーの下に見出しが隠れないようにする
+    <section id={anchorOf(genre)} class="scroll-mt-24" aria-labelledby={`${anchorOf(genre)}-title`}>
+      <Subheading id={`${anchorOf(genre)}-title`} label={genre.name} count={genre.tech.length} />
+      <ul class="mt-4 divide-y divide-white/10 border-t border-white/10">
+        {genre.tech.map((tech) => (
+          <TechRow tech={tech} />
+        ))}
+      </ul>
+    </section>
+  ))}
+</div>
