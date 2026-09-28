@@ -9,14 +9,23 @@
 import '@/styles/global.css';
 import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
+import { SITE_NAME } from '@/lib/site';
 
 interface Props {
   /** <title> にそのまま使う（pageTitle() で組み立てる） */
   title: string;
   description?: string;
+  /** OGP の種類。記事は article、それ以外は website */
+  ogType?: 'website' | 'article';
 }
 
-const { title, description } = Astro.props;
+const { title, description, ogType = 'website' } = Astro.props;
+// 共有・検索で同じページが別の URL として扱われないよう、正規の URL を示す。
+// ビルド時の Astro.url は出力ファイル名（/notes/foo.html、/index.html）になるため、公開される URL の形に直す
+const canonical = new URL(
+  Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/'),
+  Astro.site,
+);
 ---
 
 <!doctype html>
@@ -40,6 +49,17 @@ const { title, description } = Astro.props;
     </script>
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonical} />
+    <!--
+      SNS で共有したときの表示（OGP）。画像はまだ用意していないため、文字だけのカード（summary）にする
+    -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:locale" content="ja_JP" />
+    <meta name="twitter:card" content="summary" />
     <Font cssVariable="--font-montserrat" preload />
     <ClientRouter />
   </head>
