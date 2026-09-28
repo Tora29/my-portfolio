@@ -21,17 +21,14 @@ export interface ActivityItem {
   tags: TechTagList;
 }
 
-/**
- * すべての Activity を新しい順に返す。
- * 同じ日付の中は activity.json の並びを保つ（toSorted は安定ソートのため）
- */
+/** すべての Activity を新しい順（activity.json の並び）に返す */
 export async function loadActivityItems(): Promise<ActivityItem[]> {
   const [activity, works] = await Promise.all([getCollection('activity'), getCollection('works')]);
   const workTitle = new Map(works.map((e) => [e.id, e.data.title]));
 
   return Promise.all(
     activity
-      .toSorted((a, b) => b.data.date.localeCompare(a.data.date))
+      .toSorted((a, b) => a.data.order - b.data.order)
       .map(async (e) => ({
         id: e.id,
         date: e.data.date,

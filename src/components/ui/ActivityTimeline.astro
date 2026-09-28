@@ -3,7 +3,7 @@
  * 日付ごとにまとめた Activity の列（About の Latest Activity・Activity 一覧）
  *
  * 各行：種類のアイコン・作品名（作品詳細へのリンク）・要約・Tech タグ（screens.md §5.9）。
- * 「もっと見る」で畳む行や、作品での絞り込みの目印は、呼び出し側が data 属性で指定する
+ * 各行に作品の id（data-work）を付ける（Activity 一覧の絞り込みに使う）
  */
 import type { ActivityItem } from '@/lib/load-activity';
 import Icon from './Icon.astro';
@@ -11,19 +11,19 @@ import TechTags from './TechTags.astro';
 
 interface Props {
   groups: { date: string; items: ActivityItem[] }[];
-  /** 日付のまとまりに付ける属性（「もっと見る」で畳む data-extra など） */
-  groupAttrs?: (group: { date: string; items: ActivityItem[] }) => Record<string, string>;
+  /** この番号以降の日付のまとまりに data-extra を付ける（「もっと見る」で畳む対象） */
+  extraFrom?: number;
 }
 
-const { groups, groupAttrs } = Astro.props;
+const { groups, extraFrom = Infinity } = Astro.props;
 ---
 
 <div class="space-y-10" data-activity-timeline>
-  {groups.map((group) => (
+  {groups.map((group, i) => (
     <div
       class="grid gap-3 sm:grid-cols-[7rem_1fr] sm:gap-6"
       data-activity-date
-      {...groupAttrs?.(group)}
+      data-extra={i >= extraFrom ? '' : undefined}
     >
       <time datetime={group.date} class="pt-1 text-xs text-white/40">
         {group.date}

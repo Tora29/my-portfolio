@@ -29,8 +29,8 @@ test('すべてのタブのページが表示できる', async ({ page }) => {
   await page.goto('/about');
   const tabs = page.getByRole('navigation', { name: 'セクション', exact: true }).getByRole('link');
   const hrefs = await tabs.evaluateAll((links) => links.map((a) => a.getAttribute('href')!));
-  // Notes・Activity は後のフェーズで作る
-  for (const href of hrefs.filter((h) => !['/notes', '/activity'].includes(h))) {
+  // Notes は後のフェーズで作る
+  for (const href of hrefs.filter((h) => h !== '/notes')) {
     const response = await page.goto(href);
     expect(response?.status(), href).toBe(200);
   }
