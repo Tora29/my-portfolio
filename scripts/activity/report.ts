@@ -1,19 +1,19 @@
 /**
  * 確認用 PR の本文（.users/design/activity-pipeline.md §6.1）
  *
- * 今回追加した Activity を、公開される見出し・要約のまま一覧にする。
+ * まだ公開していない Activity を、公開される見出し・要約のまま一覧にする。
  * 直し方・除外の仕方もここに書き、確認する人がルールを見に行かなくて済むようにする
  */
 import type { Activity } from './types.ts';
 
-export function renderSummary(added: Activity[]): string {
-  const rows = added.map(
+export function renderSummary(pending: Activity[]): string {
+  const rows = pending.map(
     (a) =>
       `- **${a.date}** ${a.headline}（[${a.id}](${a.url})）\n  - 要約：${a.summary}\n  - Tech：${a.tech.join(', ') || 'なし'}`,
   );
-  return `GitHub の開発活動から、ポートフォリオに載せる Activity を ${added.length} 件生成しました。
+  return `GitHub の開発活動から、ポートフォリオに載せる Activity を ${pending.length} 件生成しました。
 
-## 追加する Activity
+## 公開する Activity
 
 ${rows.join('\n')}
 

@@ -7,7 +7,9 @@
  * 3. Activity に変換する（載せないものは除外）
  * 4. 既存の activity.json・除外リストと統合し、新しい分だけを追加して書き出す
  *
- * --summary <file> を指定すると、今回追加した Activity の一覧を Markdown で書き出す（確認用 PR の本文に使う）。
+ * --summary <file> を指定すると、公開前の Activity の一覧を Markdown で書き出す（確認用 PR の本文に使う）。
+ * 公開前かどうかは --base <file>（main の activity.json）と比べて決める。確認用 PR は毎日上書きされるため、
+ * 今回の実行で追加した分だけでなく、まだ main にない分をすべて載せる
  * --dry-run を指定すると、activity.json を書き換えずに追加分を表示する（手元での確認用。
  * activity.json は確認用 PR 上でしか変更しないため）
  *
@@ -23,7 +25,11 @@ import { renderSummary } from './report.ts';
 import type { Activity } from './types.ts';
 
 const { values } = parseArgs({
-  options: { summary: { type: 'string' }, 'dry-run': { type: 'boolean' } },
+  options: {
+    summary: { type: 'string' },
+    base: { type: 'string' },
+    'dry-run': { type: 'boolean' },
+  },
 });
 
 // 1.
@@ -67,4 +73,7 @@ console.log(`追加 ${added.length} 件（合計 ${activity.length} 件）`);
 if (values['dry-run']) console.log(JSON.stringify(added, null, 2));
 else await saveActivity(activity);
 
-if (values.summary) await writeFile(values.summary, renderSummary(added));
+if (values.summary) {
+  const published = new Set(values.base ? (await loadActivity(values.base)).map((a) => a.id) : []);
+  await writeFile(values.summary, renderSummary(activity.filter((a) => !published.has(a.id))));
+}
