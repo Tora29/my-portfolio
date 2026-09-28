@@ -1,0 +1,17 @@
+---
+/**
+ * Career（/career）
+ *
+ * 職歴をタイムラインで並べ、資格を添える（.users/requirements/screens.md §5.2）。
+ * 所属は企業名ではなく業態、期間は年単位で表示する（公開範囲のルール。screens.md §6）
+ */
+import { loadCareerPage } from '@/features/career/load-career';
+import CareerTimeline from '@/features/career/CareerTimeline.astro';
+import SectionLayout from '@/layouts/SectionLayout.astro';
+
+const page = await loadCareerPage();
+---
+
+<SectionLayout section="career">
+  <CareerTimeline page={page} />
+</SectionLayout>
