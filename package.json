@@ -17,7 +17,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check:deps": "npm audit --audit-level=high",
-    "semgrep": "semgrep scan --config p/javascript --config p/typescript --config p/secrets --config p/github-actions --error --metrics=off"
+    "semgrep": "semgrep scan --config p/javascript --config p/typescript --config p/secrets --config p/github-actions --error --metrics=off",
+    "activity": "node scripts/activity/main.ts"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "^0.4.2",
