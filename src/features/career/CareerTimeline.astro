@@ -1,0 +1,54 @@
+---
+/**
+ * 職歴のタイムラインと資格（.users/requirements/screens.md §5.2）
+ *
+ * 職歴は新しい順に縦の線でつなぐ。Tech タグは重要なものから書かれているため、先頭6個を常に表示する。
+ * IT 系以外の資格（Extra）は、主たる情報ではないため小さく1行にまとめる
+ */
+import Icon from '@/components/ui/Icon.astro';
+import Subheading from '@/components/ui/Subheading.astro';
+import TechTags from '@/components/ui/TechTags.astro';
+import type { CareerPage } from './load-career';
+
+interface Props {
+  page: CareerPage;
+}
+
+const { page } = Astro.props;
+---
+
+<ol class="relative ml-1.5 space-y-10 border-l border-white/10">
+  {page.career.map((item) => (
+    <li class="relative pl-8">
+      <span class="absolute top-1.5 -left-[5px] size-2.5 rounded-full border border-(--accent)/50 bg-bg" />
+      <p class="text-xs tracking-wider text-white/40">{item.period}</p>
+      <h2 class="mt-1 text-lg text-white">
+        {item.org}
+        <span class="ml-2 text-sm text-white/50">{item.role}</span>
+      </h2>
+      <p class="mt-2 text-sm leading-relaxed text-white/60">{item.summary}</p>
+      <TechTags list={item.tags} class="mt-3" />
+    </li>
+  ))}
+</ol>
+
+{page.certifications.length > 0 && (
+  <section class="mt-14">
+    <Subheading label="Certifications" />
+    <ul class="mt-4 space-y-2">
+      {page.certifications.map((name) => (
+        <li class="flex items-center gap-3 text-sm text-white/70">
+          <Icon name="seal-check" class="text-(--accent)" />
+          {name}
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+
+{page.extraCertifications.length > 0 && (
+  <p class="mt-6 text-xs leading-relaxed text-white/40">
+    <span class="mr-3 tracking-[0.3em] text-white/30 uppercase">Extra</span>
+    {page.extraCertifications.join(' · ')}
+  </p>
+)}
