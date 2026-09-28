@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ORBIT_PERIOD, orbitGeometry, orbitPoint, restoreOrbitAngle } from './orbit';
+import { entryCircle, orbitGeometry, orbitPoint } from './orbit';
 
 describe('orbitGeometry', () => {
   it('縦長の画面では、縦に長い軌道にする', () => {
@@ -21,13 +21,23 @@ describe('orbitPoint', () => {
   });
 });
 
-describe('restoreOrbitAngle', () => {
-  it('離れていた時間の分だけ公転を進める', () => {
-    const saved = { angle: 1, at: 0 };
-    expect(restoreOrbitAngle(saved, ORBIT_PERIOD * 1000)).toBeCloseTo(1 + Math.PI * 2);
+describe('entryCircle', () => {
+  it('惑星のセクションは、その惑星の軌道上の位置', () => {
+    const orbit = orbitGeometry(1280, 800);
+    const circle = entryCircle('career', 1280, 800, 0);
+    // career は公転の先頭（角度 0 = 軌道の右端）
+    expect(circle.x).toBeCloseTo(orbitPoint(orbit, 0).x);
+    expect(circle.y).toBeCloseTo(orbitPoint(orbit, 0).y);
   });
 
-  it('保存がなければ undefined', () => {
-    expect(restoreOrbitAngle(null, 0)).toBeUndefined();
+  it('90°ずつずれた位置に、公転の順で惑星が並ぶ', () => {
+    const orbit = orbitGeometry(1280, 800);
+    expect(entryCircle('works', 1280, 800, 0).x).toBeCloseTo(orbitPoint(orbit, Math.PI / 2).x);
+  });
+
+  it('About は中央、Activity は右下（幅の狭い画面では下の中央）', () => {
+    expect(entryCircle('about', 1280, 800, 0)).toMatchObject({ x: 640, y: 400 });
+    expect(entryCircle('activity', 1280, 800, 0).x).toBeGreaterThan(1000);
+    expect(entryCircle('activity', 390, 844, 0).x).toBe(195);
   });
 });

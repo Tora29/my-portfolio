@@ -44,6 +44,15 @@ const { prev, next } = adjacentSections(sectionId);
   ogType={ogType}
 >
   <div style={`--accent: ${section.color}`}>
+    <!--
+      背景の光。Home でこのセクションを開いた位置（惑星・名前・最新 Activity）に、セクションの色をうっすら残す
+      （screens.md §4.6。位置は SectionTransition.astro のスクリプトが --glow-x / --glow-y で指定する）
+    -->
+    <div
+      aria-hidden="true"
+      data-section-glow
+      class="pointer-events-none fixed inset-0 -z-10 bg-radial-[circle_at_var(--glow-x,50%)_var(--glow-y,50%)] from-(--accent)/8 to-transparent to-55%"
+    ></div>
     <header class="sticky top-0 z-10 flex items-center gap-3 border-b border-white/5 bg-bg/55 px-4 py-4 backdrop-blur-md sm:px-8">
       <!-- 画面幅に収まらない場合は横スクロール。続きがある側の端をフェードさせる（下の <style> と <script>） -->
       <nav
