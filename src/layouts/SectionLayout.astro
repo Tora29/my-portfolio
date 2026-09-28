@@ -70,7 +70,7 @@ const { prev, next } = adjacentSections(sectionId);
                   href={tab.href}
                   aria-current={isCurrent ? 'page' : undefined}
                   style={`--tab: ${tab.color}`}
-                  class="relative block px-3 py-2 text-[11px] tracking-[0.25em] text-white/45 uppercase transition-colors after:absolute after:inset-x-3 after:bottom-0.5 after:h-px after:scale-x-0 after:bg-(--tab) after:transition-transform after:duration-400 hover:text-white/85 aria-[current=page]:text-white aria-[current=page]:after:scale-x-100 motion-reduce:after:transition-none"
+                  class="relative block px-3 py-2 text-[11px] tracking-[0.25em] text-white/55 uppercase transition-colors after:absolute after:inset-x-3 after:bottom-0.5 after:h-px after:scale-x-0 after:bg-(--tab) after:transition-transform after:duration-400 hover:text-white/85 aria-[current=page]:text-white aria-[current=page]:after:scale-x-100 motion-reduce:after:transition-none"
                 >
                   {tab.title}
                 </a>
@@ -123,7 +123,7 @@ const { prev, next } = adjacentSections(sectionId);
       >
         {prev ? (
           <a href={prev.href} class="group flex flex-col items-start gap-1">
-            <span class="text-[10px] tracking-[0.3em] text-white/35 uppercase">Prev</span>
+            <span class="text-[10px] tracking-[0.3em] text-white/55 uppercase">Prev</span>
             <span class="flex items-center gap-2 text-sm tracking-[0.2em] text-white/70 uppercase transition-colors group-hover:text-white">
               <Icon name="arrow-left" />
               {prev.title}
@@ -134,7 +134,7 @@ const { prev, next } = adjacentSections(sectionId);
         )}
         {next && (
           <a href={next.href} class="group flex flex-col items-end gap-1 text-right">
-            <span class="text-[10px] tracking-[0.3em] text-white/35 uppercase">Next</span>
+            <span class="text-[10px] tracking-[0.3em] text-white/55 uppercase">Next</span>
             <span class="flex items-center gap-2 text-sm tracking-[0.2em] text-white/70 uppercase transition-colors group-hover:text-white">
               {next.title}
               <Icon name="arrow-right" />

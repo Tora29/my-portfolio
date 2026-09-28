@@ -22,7 +22,7 @@ const { tech } = Astro.props;
       <span class="flex items-center gap-2 text-base text-white/90 group-hover:text-white sm:text-lg">
         {tech.name}
         {tech.childNames.length > 0 && (
-          <span class="text-[11px] text-white/35">+ {tech.childNames.join(' · ')}</span>
+          <span class="text-[11px] text-white/55">+ {tech.childNames.join(' · ')}</span>
         )}
         <Icon
           name="arrow-right"
@@ -32,7 +32,7 @@ const { tech } = Astro.props;
       <TechCounts counts={tech.counts} />
     </span>
     {tech.relatedContents.length > 0 && (
-      <span class="mt-2 block truncate text-xs leading-relaxed text-white/40 transition-colors group-hover:text-white/75">
+      <span class="mt-2 block truncate text-xs leading-relaxed text-white/55 transition-colors group-hover:text-white/85">
         {tech.relatedContents.join(' · ')}
       </span>
     )}

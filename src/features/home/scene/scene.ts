@@ -1,7 +1,7 @@
 /**
  * 宇宙のシーンの開始と停止（.users/requirements/screens.md §4）
  *
- * HomeScene.astro のスクリプトから、Home を開くたびに startScene を呼び、離れるときに返り値の関数で止める。
+ * HomeScene.astro のスクリプトから、Home を開くたびに startScene を呼び、離れるときに返り値の stop で止める。
  * ClientRouter によるページ遷移ではページが読み込み直されないため、止めないと
  * requestAnimationFrame とイベントリスナーが遷移のたびに重複する（astro-components.md）。
  *
@@ -16,14 +16,22 @@ import { createSky } from './sky';
 export interface SceneOptions {
   /** イントロ。省略すると、完成した状態から始める */
   intro?: IntroTimeline;
+  /** 止めた状態で始める（1枚だけ描く） */
+  paused?: boolean;
 }
 
-/**
- * シーンを始める。返り値の関数を呼ぶと、描画とイベントリスナーをすべて止める。
- * prefers-reduced-motion のときは、動かさずに1枚だけ描く（画面の大きさが変わったら描き直す）
- */
-export function startScene(root: HTMLElement, options: SceneOptions = {}): () => void {
-  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+export interface Scene {
+  /** 描画とイベントリスナーをすべて止める（Home を離れるとき） */
+  stop(): void;
+  /**
+   * 動きを止める・再開する（停止ボタン。WCAG 2.2.2）。
+   * 止めている間の時間は数えず、再開したときに星や惑星が飛ばないようにする
+   */
+  setPaused(paused: boolean): void;
+}
+
+/** シーンを始める。止めた状態で始めたときや、止めている間は、画面の大きさが変わったときだけ描き直す */
+export function startScene(root: HTMLElement, options: SceneOptions = {}): Scene {
   const coarsePointer = matchMedia('(pointer: coarse)');
   const intro = options.intro ?? finishedIntro();
 
@@ -42,29 +50,58 @@ export function startScene(root: HTMLElement, options: SceneOptions = {}): () =>
   };
   layout();
 
+  let paused = options.paused ?? false;
   let frameId = 0;
   let lastT: number | null = null;
-  const frame = (now: number) => {
-    const t = now / 1000;
+  /** 止めていた時間の合計（秒）。シーンの時刻から差し引く */
+  let pausedTotal = 0;
+  let pausedAt = 0;
+
+  const sceneTime = (now: number) => now / 1000 - pausedTotal;
+
+  const draw = (now: number) => {
+    const t = sceneTime(now);
     const dt = lastT === null ? 0 : Math.min(t - lastT, 0.1);
     lastT = t;
     updateOrbit(orbit, planets, t, coarsePointer.matches);
     sky.draw(t, { orbit, planets, intro });
     updateMoons(moons, t, intro.done || t - intro.start > intro.bang);
     drawPlanets(planets, t, dt, intro);
-    if (!reducedMotion) frameId = requestAnimationFrame(frame);
+  };
+  const frame = (now: number) => {
+    draw(now);
+    if (!paused) frameId = requestAnimationFrame(frame);
   };
 
   const onResize = () => {
     layout();
-    if (reducedMotion) frame(performance.now());
+    if (paused) draw(pausedAt * 1000);
   };
   window.addEventListener('resize', onResize);
-  frameId = requestAnimationFrame(frame);
 
-  return () => {
-    cancelAnimationFrame(frameId);
-    window.removeEventListener('resize', onResize);
-    saveOrbitAngle(orbit.angle);
+  if (paused) {
+    pausedAt = performance.now() / 1000;
+    draw(performance.now());
+  } else {
+    frameId = requestAnimationFrame(frame);
+  }
+
+  return {
+    stop() {
+      cancelAnimationFrame(frameId);
+      window.removeEventListener('resize', onResize);
+      saveOrbitAngle(orbit.angle);
+    },
+    setPaused(next) {
+      if (next === paused) return;
+      paused = next;
+      if (paused) {
+        cancelAnimationFrame(frameId);
+        pausedAt = performance.now() / 1000;
+      } else {
+        pausedTotal += performance.now() / 1000 - pausedAt;
+        frameId = requestAnimationFrame(frame);
+      }
+    },
   };
 }

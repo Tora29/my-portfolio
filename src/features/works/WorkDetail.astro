@@ -70,12 +70,12 @@ const { Content } = work;
             ]}
           />
           <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-5">
-            <time datetime={item.date} class="w-14 shrink-0 text-xs text-white/40">
+            <time datetime={item.date} class="w-14 shrink-0 text-xs text-white/55">
               {item.label}
             </time>
             <div class="min-w-0">
               <p class="flex items-center gap-2 text-sm text-white">
-                <Icon name={item.icon} class="text-white/40" />
+                <Icon name={item.icon} class="text-white/55" />
                 {item.headline}
               </p>
               <p class="mt-1 text-xs leading-relaxed text-white/50">{item.summary}</p>
@@ -100,14 +100,14 @@ const { Content } = work;
     <ul class="mt-4 divide-y divide-white/10 border-y border-white/10">
       {work.relatedNotes.map((note) => (
         <li class="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:gap-6">
-          <time datetime={note.date} class="w-28 shrink-0 text-xs text-white/40">
+          <time datetime={note.date} class="w-28 shrink-0 text-xs text-white/55">
             {note.date}
           </time>
           <div class="min-w-0">
             <a href={note.href} class="text-base text-white/90 hover:text-white">
               {note.title}
             </a>
-            <p class="mt-1 text-[11px] text-white/35">{note.reason}</p>
+            <p class="mt-1 text-[11px] text-white/55">{note.reason}</p>
           </div>
         </li>
       ))}

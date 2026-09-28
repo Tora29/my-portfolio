@@ -17,7 +17,7 @@ const { notes } = Astro.props;
 ---
 
 {notes.length === 0 ? (
-  <p class="text-sm text-white/40">まだありません</p>
+  <p class="text-sm text-white/55">まだありません</p>
 ) : (
   <ShowMore rest={Math.max(0, notes.length - LIMIT)}>
     <ul class="divide-y divide-white/10 border-t border-white/10">
@@ -26,7 +26,7 @@ const { notes } = Astro.props;
           class="grid gap-1 py-6 sm:grid-cols-[7rem_1fr] sm:gap-6"
           data-extra={i >= LIMIT ? '' : undefined}
         >
-          <time datetime={note.date} class="pt-1 text-xs text-white/40">
+          <time datetime={note.date} class="pt-1 text-xs text-white/55">
             {note.date}
           </time>
           <div class="min-w-0">
