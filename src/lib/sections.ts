@@ -39,7 +39,7 @@ export const SECTIONS: Record<SectionId, Section> = {
     title: 'Career',
     href: '/career',
     icon: 'path',
-    lead: '経験してきたこと。職歴と役割、資格。',
+    lead: '職歴と資格でたどる経歴',
     color: 'var(--color-career)',
   },
   works: {
@@ -47,7 +47,7 @@ export const SECTIONS: Record<SectionId, Section> = {
     title: 'Works',
     href: '/works',
     icon: 'code',
-    lead: '作ったもの。完成物だけでなく、設計と開発の過程まで。',
+    lead: '開発の過程まで追う制作物',
     color: 'var(--color-works)',
   },
   tech: {
@@ -55,7 +55,7 @@ export const SECTIONS: Record<SectionId, Section> = {
     title: 'Tech',
     href: '/tech',
     icon: 'cpu',
-    lead: '使ってきた技術と、その根拠。自己申告ではなく実績から。',
+    lead: '実績からみる使用技術',
     color: 'var(--color-tech)',
   },
   notes: {
@@ -63,7 +63,7 @@ export const SECTIONS: Record<SectionId, Section> = {
     title: 'Notes',
     href: '/notes',
     icon: 'notebook',
-    lead: '書いたこと。技術記事、メモ、読書記録、失敗と振り返り。',
+    lead: '開発と学びの記録',
     color: 'var(--color-notes)',
   },
   activity: {
@@ -71,7 +71,7 @@ export const SECTIONS: Record<SectionId, Section> = {
     title: 'Activity',
     href: '/activity',
     icon: 'pulse',
-    lead: 'GitHub上の公開された開発活動から生成しています。',
+    lead: 'GitHub からみる開発活動',
     color: 'var(--color-activity)',
   },
 };
