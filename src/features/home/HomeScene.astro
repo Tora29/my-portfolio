@@ -124,10 +124,17 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
       >
         <h1
           data-home-title
-          class="grid pl-[0.25em] text-center text-lg leading-snug font-light tracking-[0.25em] text-white uppercase text-shadow-white/40 text-shadow-lg sm:text-2xl lg:text-3xl lg:tracking-[0.3em]"
+          class="grid pl-[0.25em] text-center text-lg leading-snug font-light tracking-[0.25em] text-white text-shadow-white/40 text-shadow-lg sm:text-2xl lg:text-3xl lg:tracking-[0.3em]"
         >
-          {/* イントロでは WELCOME が先に浮かび、ビッグバンで名前に入れ替わる（同じ位置に重ねる） */}
-          <span aria-hidden="true" class="col-start-1 row-start-1 self-center" data-home-welcome>
+          {/*
+            イントロでは WELCOME が先に浮かび、ビッグバンで名前に入れ替わる（同じ位置に重ねる）。
+            名前はハンドルネームの表記（大文字・小文字）どおりに出すため、大文字にするのは WELCOME だけ
+          */}
+          <span
+            aria-hidden="true"
+            class="col-start-1 row-start-1 self-center uppercase"
+            data-home-welcome
+          >
             Welcome
           </span>
           <span class="col-start-1 row-start-1" data-home-name>
