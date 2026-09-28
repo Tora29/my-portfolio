@@ -62,8 +62,9 @@ export async function loadExcluded(): Promise<Set<string>> {
   return new Set((excluded ?? []).map((e) => e.id));
 }
 
-export async function loadActivity(): Promise<Activity[]> {
-  return JSON.parse(await readFile(ACTIVITY_FILE, 'utf8')) as Activity[];
+/** activity.json を読む。file を省略すると、このリポジトリの data/activity.json */
+export async function loadActivity(file = ACTIVITY_FILE): Promise<Activity[]> {
+  return JSON.parse(await readFile(file, 'utf8')) as Activity[];
 }
 
 /**
