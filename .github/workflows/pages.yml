@@ -1,0 +1,45 @@
+# GitHub Pages へのビルドとデプロイ（再利用可能ワークフロー）
+#
+# 呼び出し元：
+# - deploy.yml：main への push（人がマージしたとき）
+# - activity.yml：確認用 PR を自動でマージしたとき（GITHUB_TOKEN によるマージでは deploy.yml が起動しないため）
+#
+# 呼び出し側のジョブに pages: write・id-token: write を付けること
+name: Pages
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # 自動マージの直後に呼ばれたときも、マージ後の main をビルドする（呼び出し元のコミットではなく）
+          ref: main
+          persist-credentials: false
+      - uses: withastro/action@3eafd002e65cc31b4f0eae0bb05450d521562247 # v6.1.3
+        with:
+          node-version: 24
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    # 同時に1つだけデプロイし、実行中のデプロイは中断しない。
+    # 呼び出し元のワークフロー単位ではなくここで指定する（呼び出し元と同じグループにすると互いに待ち続けるため）
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
