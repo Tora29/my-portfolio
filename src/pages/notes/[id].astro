@@ -1,0 +1,35 @@
+---
+/**
+ * 記事詳細（/notes/[id]）
+ *
+ * 記事の本文と、関連する作品・技術を表示する（screens.md §5.8）。
+ * id は content/notes/<id>/ のフォルダ名。すべての記事についてページを作る
+ * （content/_drafts/ の下書きは読み込まれないため、ページも作られない）
+ */
+import type { GetStaticPaths } from 'astro';
+import { loadNoteDetails, type NoteDetail } from '@/features/notes/load-notes';
+import NoteArticle from '@/features/notes/NoteArticle.astro';
+import SectionLayout from '@/layouts/SectionLayout.astro';
+
+// ビルド時に、すべての記事のページを作る。表示用のデータもここで渡す
+export const getStaticPaths = (async () => {
+  const details = await loadNoteDetails();
+  return details.map((note) => ({ params: { id: note.id }, props: { note } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  note: NoteDetail;
+}
+
+const { note } = Astro.props;
+---
+
+<SectionLayout
+  section="notes"
+  title={note.title}
+  back={{ href: '/notes', label: 'All Notes' }}
+  description={note.summary}
+  ogType="article"
+>
+  <NoteArticle note={note} />
+</SectionLayout>

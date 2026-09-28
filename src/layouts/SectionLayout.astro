@@ -27,9 +27,11 @@ interface Props {
    */
   back?: { href: string; label: string };
   description?: string;
+  /** OGP の種類（BaseLayout） */
+  ogType?: 'website' | 'article';
 }
 
-const { section: sectionId, title, lead, back, description } = Astro.props;
+const { section: sectionId, title, lead, back, description, ogType } = Astro.props;
 const section = SECTIONS[sectionId];
 const isDetail = title !== undefined;
 const leadText = lead ?? (isDetail ? '' : section.lead);
@@ -39,6 +41,7 @@ const { prev, next } = adjacentSections(sectionId);
 <BaseLayout
   title={isDetail ? pageTitle(title, section.title) : pageTitle(section.title)}
   description={description ?? (leadText || undefined)}
+  ogType={ogType}
 >
   <div style={`--accent: ${section.color}`}>
     <header class="sticky top-0 z-10 flex items-center gap-3 border-b border-white/5 bg-bg/55 px-4 py-4 backdrop-blur-md sm:px-8">
