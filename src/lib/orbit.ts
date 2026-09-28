@@ -2,8 +2,9 @@
  * Home の惑星の軌道（.users/requirements/screens.md §4.2）
  *
  * 名前を中心とした傾いた楕円軌道の形と、軌道上の位置の計算。
- * Home のシーン（features/home/scene/）と、セクションを閉じて Home へ戻る演出（layouts/SectionTransition.astro）の
- * 両方で使う。閉じる演出は Home を表示する前に惑星の位置を知る必要があるため、DOM に依存しない形でここに置く。
+ * Home のシーン（features/home/scene/）と、セクションを開く・閉じる演出・セクションの背景の光
+ * （layouts/SectionTransition.astro）の両方で使う。セクションのページからも惑星の位置を知る必要があるため、
+ * DOM に依存しない形でここに置く。
  */
 
 /** 公転の順（90°間隔） */
@@ -73,33 +74,56 @@ export const planetAngle = (orbitAngle: number, index: number) =>
 /** 奥行きによる惑星の拡大率（手前ほど大きい） */
 export const depthScale = (depth: number) => 0.7 + 0.45 * depth;
 
+/** 円（中心と半径）。セクションの入口の位置と大きさを表す */
+export interface Circle {
+  x: number;
+  y: number;
+  r: number;
+}
+
+/**
+ * Home での、セクションの入口の位置（width × height の画面）。
+ * セクションを閉じるときの戻り先と、セクションのページの背景の光の位置に使う。
+ * - Career / Works / Tech / Notes：公転の角度 angle にあるその惑星
+ * - Activity：右下（幅の狭い画面では下の中央）の最新 Activity
+ * - それ以外（About）：中央の名前
+ */
+export function entryCircle(section: string, width: number, height: number, angle: number): Circle {
+  const index = PLANET_ORDER.indexOf(section as (typeof PLANET_ORDER)[number]);
+  if (index >= 0) {
+    const orbit = orbitGeometry(width, height);
+    const point = orbitPoint(orbit, planetAngle(angle, index));
+    return { x: point.x, y: point.y, r: (orbit.size / 2) * depthScale(point.depth) };
+  }
+  if (section === 'activity') {
+    // HomeScene.astro の右下の配置（sm 以上は右寄せ、未満は下の中央）に合わせる
+    const wide = width >= 640;
+    return { x: wide ? width - 160 : width / 2, y: height - (wide ? 44 : 26), r: 12 };
+  }
+  return { x: width / 2, y: height / 2, r: 60 };
+}
+
 // ─── 公転の角度の保存 ─────────────────────────────────────────
-// Home を離れても惑星が動き続けているように見せるため、離れた時点の角度と時刻を保存し、
-// 戻るときは経過時間の分だけ進めた角度から再開する
+// セクションを開いている間は公転を止める（モックと同じ）。離れた時点の角度を保存し、
+// 開いた位置・セクションの背景の光・閉じて戻る惑星が、すべて同じ位置になるようにする
+// （公転を進めると、ページを移るたびに光の位置がずれ、閉じたときも開いた場所と違う位置へ縮んでしまう）
 
 const STORAGE_KEY = 'home-orbit';
 
-/** 保存した角度から、now の時点の角度を求める。保存がなければ undefined */
-export function restoreOrbitAngle(
-  saved: { angle: number; at: number } | null,
-  now: number,
-): number | undefined {
-  if (!saved) return undefined;
-  return saved.angle + ((now - saved.at) / 1000) * ((Math.PI * 2) / ORBIT_PERIOD);
-}
-
-export function loadOrbitAngle(now = Date.now()): number | undefined {
+/** 保存した角度。保存がない・読めないときは既定の角度 */
+export function loadOrbitAngle(): number {
   try {
-    return restoreOrbitAngle(JSON.parse(sessionStorage.getItem(STORAGE_KEY) ?? 'null'), now);
+    const saved: unknown = JSON.parse(sessionStorage.getItem(STORAGE_KEY) ?? 'null');
+    return typeof saved === 'number' ? saved : DEFAULT_ORBIT_ANGLE;
   } catch {
     // 保存できない環境（プライベートブラウズ等）では、既定の位置から始める
-    return undefined;
+    return DEFAULT_ORBIT_ANGLE;
   }
 }
 
-export function saveOrbitAngle(angle: number, now = Date.now()) {
+export function saveOrbitAngle(angle: number) {
   try {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ angle, at: now }));
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(angle));
   } catch {
     // 上と同じ理由で無視する
   }

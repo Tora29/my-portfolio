@@ -8,6 +8,7 @@
  *
  * ページの切り替えは View Transitions（ClientRouter）に任せ、その見せ方だけをここで変える。
  * 粒子の Canvas はページ遷移をまたいで残し（transition:persist）、切り替えの間も動き続けるようにする。
+ * 開いた後も、セクションのページの背景には開いた位置にセクションの色の光を残す（placeGlow）。
  * それ以外の移動（タブ・本文のリンク）は、ブラウザ標準のクロスフェードのまま。
  * prefers-reduced-motion のときは演出を行わない。
  */
@@ -105,15 +106,7 @@
 <script>
   import { coverRadius, playBurst, type Circle } from '@/lib/burst';
   import { toRgbTriplet } from '@/lib/color';
-  import {
-    PLANET_ORDER,
-    depthScale,
-    loadOrbitAngle,
-    orbitGeometry,
-    orbitPoint,
-    planetAngle,
-    DEFAULT_ORBIT_ANGLE,
-  } from '@/lib/orbit';
+  import { entryCircle, loadOrbitAngle } from '@/lib/orbit';
 
   /** 演出の長さ（ミリ秒）。CSS のアニメーションと揃える。粒子は少し長く残す */
   const DURATION = { open: 1000, close: 700 };
@@ -137,29 +130,9 @@
       getComputedStyle(document.documentElement).getPropertyValue(`--color-${section}`) || 'white',
     );
 
-  /**
-   * 閉じるときの戻り先。Home はまだ表示されていないため、保存してある公転の角度から惑星の位置を求める
-   * （Home のシーンも同じ角度から再開する。lib/orbit.ts）
-   */
-  function targetOf(section: string): Circle {
-    const index = PLANET_ORDER.indexOf(section as (typeof PLANET_ORDER)[number]);
-    if (index >= 0) {
-      const orbit = orbitGeometry(innerWidth, innerHeight);
-      const angle = planetAngle(loadOrbitAngle() ?? DEFAULT_ORBIT_ANGLE, index);
-      const point = orbitPoint(orbit, angle);
-      return { x: point.x, y: point.y, r: (orbit.size / 2) * depthScale(point.depth) };
-    }
-    // Activity は右下（スマートフォンでは下の中央）の最新 Activity、それ以外（About）は中央の名前
-    if (section === 'activity') {
-      const wide = innerWidth >= 640;
-      return {
-        x: wide ? innerWidth - 160 : innerWidth / 2,
-        y: innerHeight - (wide ? 44 : 26),
-        r: 12,
-      };
-    }
-    return { x: innerWidth / 2, y: innerHeight / 2, r: 60 };
-  }
+  /** Home でのセクションの入口の位置。公転はセクションを開いている間止まっているため、保存した角度で求める */
+  const entryOf = (section: string) =>
+    entryCircle(section, innerWidth, innerHeight, loadOrbitAngle());
 
   /** 押した要素の位置と大きさ（惑星の円・名前の楕円は、短い辺を直径とみなす） */
   function circleOfElement(el: Element): Circle {
@@ -191,11 +164,26 @@
       stopBurst = playBurst(canvas, circle, colorOf(sectionOf(to)), 'out', DURATION.open + 200);
     } else if (!isHome(from) && isHome(to)) {
       const section = sectionOf(from);
-      const circle = targetOf(section);
+      const circle = entryOf(section);
       pending = { kind: 'close', circle };
       stopBurst = playBurst(canvas, circle, colorOf(section), 'in', DURATION.close);
     }
   });
+
+  /**
+   * セクションのページの背景の光を、Home でそのセクションを開いた位置（入口の位置）に置く。
+   * 光は SectionLayout.astro の [data-section-glow]。JavaScript が無効なときは画面の中央
+   */
+  function placeGlow() {
+    const glow = document.querySelector<HTMLElement>('[data-section-glow]');
+    if (!glow) return;
+    const circle = entryOf(sectionOf(new URL(location.href)));
+    glow.style.setProperty('--glow-x', `${circle.x}px`);
+    glow.style.setProperty('--glow-y', `${circle.y}px`);
+  }
+  // モジュールの読み込み時に1回だけ登録するため、遷移しても重複しない
+  document.addEventListener('astro:page-load', placeGlow);
+  window.addEventListener('resize', placeGlow);
 
   document.addEventListener('astro:before-swap', (event) => {
     if (!pending) return;
