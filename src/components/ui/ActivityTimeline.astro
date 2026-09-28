@@ -25,13 +25,13 @@ const { groups, extraFrom = Infinity } = Astro.props;
       data-activity-date
       data-extra={i >= extraFrom ? '' : undefined}
     >
-      <time datetime={group.date} class="pt-1 text-xs text-white/40">
+      <time datetime={group.date} class="pt-1 text-xs text-white/55">
         {group.date}
       </time>
       <ul class="space-y-6">
         {group.items.map((item) => (
           <li class="flex gap-4" data-activity-item data-work={item.work.id}>
-            <Icon name={item.icon} class="pt-0.5 text-lg text-white/40" />
+            <Icon name={item.icon} class="pt-0.5 text-lg text-white/55" />
             <div class="min-w-0">
               <a
                 href={item.work.href}

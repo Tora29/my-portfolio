@@ -14,7 +14,7 @@ interface Props {
 const { label, count, as: Tag = 'h2', id } = Astro.props;
 ---
 
-<Tag id={id} class="flex items-center gap-3 text-[11px] tracking-[0.3em] text-white/40 uppercase">
+<Tag id={id} class="flex items-center gap-3 text-[11px] tracking-[0.3em] text-white/55 uppercase">
   {label}
   {count !== undefined && <span class="text-(--accent)">{count}</span>}
 </Tag>

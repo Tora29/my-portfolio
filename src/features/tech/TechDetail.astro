@@ -15,11 +15,11 @@ interface Props {
 
 const { tech } = Astro.props;
 const listClass = 'mt-5 divide-y divide-white/10 border-y border-white/10';
-const emptyClass = 'mt-5 text-sm text-white/25';
+const emptyClass = 'mt-5 text-sm text-white/50';
 ---
 
 {tech.childNames.length > 0 && (
-  <p class="-mt-4 mb-2 text-xs text-white/45">
+  <p class="-mt-4 mb-2 text-xs text-white/55">
     下位の技術（{tech.childNames.join(' · ')}）の実績も含みます。
   </p>
 )}
@@ -48,7 +48,7 @@ const emptyClass = 'mt-5 text-sm text-white/25';
     <ul class={listClass}>
       {tech.notes.map((note) => (
         <li class="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:gap-6">
-          <time datetime={note.date} class="w-28 shrink-0 text-xs text-white/40">
+          <time datetime={note.date} class="w-28 shrink-0 text-xs text-white/55">
             {note.date}
           </time>
           <a href={note.href} class="text-base text-white/90 hover:text-white">
@@ -72,7 +72,7 @@ const emptyClass = 'mt-5 text-sm text-white/25';
             {career.org}
             <span class="ml-2 text-sm text-white/50">{career.role}</span>
           </p>
-          <p class="mt-1 text-xs text-white/40">{career.period}</p>
+          <p class="mt-1 text-xs text-white/55">{career.period}</p>
         </li>
       ))}
     </ul>
@@ -87,7 +87,7 @@ const emptyClass = 'mt-5 text-sm text-white/25';
     <ul class={listClass}>
       {tech.activity.map((activity) => (
         <li class="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:gap-6">
-          <time datetime={activity.date} class="w-28 shrink-0 text-xs text-white/40">
+          <time datetime={activity.date} class="w-28 shrink-0 text-xs text-white/55">
             {activity.date}
           </time>
           <p class="text-sm text-white/70">

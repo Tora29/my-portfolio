@@ -20,8 +20,11 @@
   --color-notes: rgb(52 211 153);
   --color-activity: rgb(251 191 36);
 
-  /* 更新が続いていることを示す緑の点の脈動（About の Latest Activity・Home の右下と惑星のラベル） */
-  --animate-live: live 2.4s ease-in-out infinite;
+  /*
+   * 更新が続いていることを示す緑の点の脈動（About の Latest Activity・Home の右下と惑星のラベル）。
+   * 2回（4.8秒）で止める。5秒以上続く動きには止める手段が必要になるため（WCAG 2.2.2。accessibility.md）
+   */
+  --animate-live: live 2.4s ease-in-out 2;
   @keyframes live {
     0%,
     100% {

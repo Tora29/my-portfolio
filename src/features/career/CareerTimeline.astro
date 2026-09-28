@@ -21,7 +21,7 @@ const { page } = Astro.props;
   {page.career.map((item) => (
     <li class="relative pl-8">
       <span class="absolute top-1.5 -left-[5px] size-2.5 rounded-full border border-(--accent)/50 bg-bg" />
-      <p class="text-xs tracking-wider text-white/40">{item.period}</p>
+      <p class="text-xs tracking-wider text-white/55">{item.period}</p>
       <h2 class="mt-1 text-lg text-white">
         {item.org}
         <span class="ml-2 text-sm text-white/50">{item.role}</span>
@@ -47,8 +47,8 @@ const { page } = Astro.props;
 )}
 
 {page.extraCertifications.length > 0 && (
-  <p class="mt-6 text-xs leading-relaxed text-white/40">
-    <span class="mr-3 tracking-[0.3em] text-white/30 uppercase">Extra</span>
+  <p class="mt-6 text-xs leading-relaxed text-white/55">
+    <span class="mr-3 tracking-[0.3em] text-white/55 uppercase">Extra</span>
     {page.extraCertifications.join(' · ')}
   </p>
 )}

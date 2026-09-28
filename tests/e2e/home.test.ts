@@ -96,6 +96,34 @@ test.describe('入口', () => {
   });
 });
 
+test.describe('背景の動きを止める（WCAG 2.2.2）', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      (window as unknown as { __homeIntroPlayed: boolean }).__homeIntroPlayed = true;
+    });
+  });
+
+  test('停止ボタンで止め、開き直しても止まったまま、もう一度押すと再開する', async ({ page }) => {
+    await page.goto('/');
+    const home = page.locator('[data-home]');
+    const toggle = page.getByRole('button', { name: '背景の動きを止める' });
+    await toggle.click();
+    await expect(home).toHaveAttribute('data-paused', '');
+
+    await page.reload();
+    await expect(home).toHaveAttribute('data-paused', '');
+    await page.getByRole('button', { name: '背景の動きを再開する' }).click();
+    await expect(home).not.toHaveAttribute('data-paused');
+  });
+
+  test('動きを減らす設定では、最初から止まっている', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/');
+    await expect(page.locator('[data-home]')).toHaveAttribute('data-paused', '');
+    await expect(page.getByRole('button', { name: '背景の動きを再開する' })).toBeVisible();
+  });
+});
+
 test.describe('JavaScript なし', () => {
   test.use({ javaScriptEnabled: false });
 

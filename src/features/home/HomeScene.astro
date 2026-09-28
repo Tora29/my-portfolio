@@ -44,7 +44,18 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
   <script is:inline>
     (() => {
       const root = document.currentScript.parentElement;
-      if (window.__homeIntroPlayed || matchMedia('(prefers-reduced-motion: reduce)').matches)
+      // 背景の動きを止めている（停止ボタン）ときも再生しない
+      let motionPaused = false;
+      try {
+        motionPaused = localStorage.getItem('home-motion') === 'paused';
+      } catch {
+        // 読めないときは止めていないものとして扱う
+      }
+      if (
+        window.__homeIntroPlayed ||
+        motionPaused ||
+        matchMedia('(prefers-reduced-motion: reduce)').matches
+      )
         return;
       window.__homeIntroPlayed = true;
       let returning = false;
@@ -81,7 +92,7 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
         >
           <a
             href={planet.href}
-            class="peer relative z-1 block size-full rounded-full transition-transform duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 group-data-scene/home:scale-(--ds) group-data-scene/home:opacity-(--depth-opacity) group-data-scene/home:hover:scale-[calc(var(--ds)*1.05)] motion-reduce:transition-none"
+            class="peer relative z-1 block size-full rounded-full transition-transform duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 group-data-scene/home:scale-(--ds) group-data-scene/home:opacity-(--depth-opacity) group-data-scene/home:hover:scale-[calc(var(--ds)*1.05)] motion-reduce:transition-none"
           >
             {/* 惑星の本体。輪や光が惑星の外まで広がるため、リンクより大きく描く */}
             <canvas
@@ -120,7 +131,7 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
     <div class="absolute top-1/2 left-1/2 z-20 -translate-1/2">
       <a
         href="/about"
-        class="group flex flex-col items-center justify-center rounded-full bg-radial-[closest-side] from-bg/90 via-bg/75 via-60% to-transparent px-8 py-7 transition-transform duration-500 hover:scale-104 focus:outline-none focus-visible:scale-104 motion-reduce:transition-none sm:px-12 sm:py-9"
+        class="group flex flex-col items-center justify-center rounded-full bg-radial-[closest-side] from-bg/90 via-bg/75 via-60% to-transparent px-8 py-7 transition-transform duration-500 hover:scale-104 focus:outline-none focus-visible:scale-104 focus-visible:ring-2 focus-visible:ring-white/70 motion-reduce:transition-none sm:px-12 sm:py-9"
       >
         <h1
           data-home-title
@@ -151,10 +162,25 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
     </div>
   </main>
 
+  <!--
+    右上：背景の動きを止める・再開するボタン（WCAG 2.2.2。accessibility.md）。
+    セクションのページの閉じるボタンと同じ位置・形。JavaScript が無効なときはシーンが動かないため表示しない
+  -->
+  <button
+    type="button"
+    data-motion-toggle
+    data-intro-hide
+    aria-label="背景の動きを止める"
+    class="fixed top-4 right-4 z-30 hidden size-11 items-center justify-center rounded-full border border-white/15 bg-white/5 text-lg text-white/70 transition-colors hover:border-white/40 hover:text-white focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:outline-none js:flex sm:right-8"
+  >
+    <Icon name="pause" class="group-data-paused/home:hidden" />
+    <Icon name="play" class="hidden group-data-paused/home:block" />
+  </button>
+
   <!-- 左下：職種と GitHub（Activity の出どころ）。スマートフォンでは右下の Activity の上に中央寄せ -->
   <div
     data-intro-hide
-    class="fixed right-4 bottom-12 left-4 z-10 flex items-center justify-center text-[11px] tracking-[0.25em] text-white/45 uppercase sm:right-auto sm:bottom-10 sm:left-10 sm:justify-start"
+    class="fixed right-4 bottom-12 left-4 z-10 flex items-center justify-center text-[11px] tracking-[0.25em] text-white/55 uppercase sm:right-auto sm:bottom-10 sm:left-10 sm:justify-start"
   >
     <span>{page.role}</span>
     {page.github && (
@@ -184,14 +210,14 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
       class="group fixed right-4 bottom-5 left-4 z-10 flex items-center justify-center gap-2.5 text-[11px] text-white/60 transition-colors hover:text-white sm:right-10 sm:bottom-10 sm:left-auto sm:justify-end"
     >
       <span class="size-1.5 shrink-0 rounded-full bg-emerald-400 group-data-[freshness=live]:animate-live group-data-[freshness=stale]:bg-white/30 motion-reduce:animate-none" />
-      <span class="shrink-0 tracking-[0.25em] text-white/40 uppercase">
+      <span class="shrink-0 tracking-[0.25em] text-white/55 uppercase">
         <span class="group-data-[freshness=stale]:hidden">Latest</span>
         <span class="hidden group-data-[freshness=stale]:inline">Last update</span>
       </span>
       <span class="truncate tracking-wide">
         <time datetime={page.latest.date}>{page.latest.label}</time> · {page.latest.text}
       </span>
-      <Icon name="arrow-right" class="shrink-0 text-white/40" />
+      <Icon name="arrow-right" class="shrink-0 text-white/55" />
     </a>
   )}
 </div>
@@ -276,6 +302,32 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
     }
   }
 
+  /** 停止ボタンで止めた状態の保存先。次に開いたときも止まったままにする */
+  const MOTION_KEY = 'home-motion';
+
+  /**
+   * 最初に止めた状態にするか。
+   * 停止ボタンで選んだ状態を優先し、選んでいなければ OS の「視差効果を減らす」設定に従う
+   */
+  function initiallyPaused(): boolean {
+    let saved: string | null = null;
+    try {
+      saved = localStorage.getItem(MOTION_KEY);
+    } catch {
+      // 読めないときは OS の設定に従う
+    }
+    if (saved) return saved === 'paused';
+    return matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function saveMotion(paused: boolean) {
+    try {
+      localStorage.setItem(MOTION_KEY, paused ? 'paused' : 'playing');
+    } catch {
+      // 保存できなくても、このページを見ている間は止まっている
+    }
+  }
+
   /** 動いているシーン・イントロを止める関数。Home 以外のページでは空 */
   let stops: (() => void)[] = [];
 
@@ -283,11 +335,27 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
     const root = document.querySelector<HTMLElement>('[data-home]');
     if (!root) return;
     updateFreshness();
-    // イントロを再生するかは、<head> 直後のスクリプトが data-intro で決めている
+    // イントロを再生するかは、ルート直後のスクリプトが data-intro で決めている
     const intro = root.dataset.intro
       ? createIntro(root.dataset.introSpeed === 'quick', performance.now() / 1000)
       : undefined;
-    stops = [startScene(root, { intro }), ...(intro ? [runIntro(root, intro)] : [])];
+    const paused = initiallyPaused();
+    const scene = startScene(root, { intro, paused });
+    stops = [scene.stop, ...(intro ? [runIntro(root, intro)] : [])];
+
+    // 停止ボタン。要素ごと遷移で破棄されるため、リスナーの解除は不要
+    const toggle = root.querySelector<HTMLButtonElement>('[data-motion-toggle]')!;
+    const apply = (next: boolean) => {
+      scene.setPaused(next);
+      root.toggleAttribute('data-paused', next);
+      toggle.setAttribute('aria-label', next ? '背景の動きを再開する' : '背景の動きを止める');
+    };
+    apply(paused);
+    toggle.addEventListener('click', () => {
+      const next = !root.hasAttribute('data-paused');
+      apply(next);
+      saveMotion(next);
+    });
   });
 
   // Home から離れるときに、描画・タイマー・イベントリスナーを止める（遷移のたびに重複させない）
