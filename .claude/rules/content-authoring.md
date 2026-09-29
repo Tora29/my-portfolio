@@ -11,20 +11,23 @@ paths:
 ## 配置と id
 
 - 作品・記事は1件1フォルダとし、本文は `index.mdx` に書く。画像は同じフォルダに置く
-- フォルダ名がそのまま id（URL）になる。英小文字・数字・ハイフンのみ（kebab-case）
+- id（URL）は英小文字・数字・ハイフンのみ（kebab-case）
+  - 作品：フォルダ名がそのまま id になる
+  - 記事：フォルダ名を `YYYY-MM-DD-<id>`（公開日 + id）にする。日付は URL に含まれない（`2026-09-28-static-first-portfolio` → `/notes/static-first-portfolio`）。ディレクトリを見ただけで公開順に並び、いつ公開したかが分かるようにするため
+  - 記事のフォルダ名の日付は frontmatter の `date` と揃える（食い違うとビルドエラー）
 - 公開後に id を変えない（URLが変わり、リンクと検索評価が失われる）
 
 ```text
 content/
-├─ _drafts/                    # 下書き（コミットしない）
+├─ _drafts/                    # 下書き（コミットしない。フォルダ名に日付は不要）
 │  └─ rag-langfuse/index.mdx
 ├─ works/
 │  └─ personal-platform/
 │     ├─ index.mdx             # → /works/personal-platform
 │     └─ cover.webp
 ├─ notes/
-│  └─ static-first-portfolio/
-│     ├─ index.mdx             # → /notes/static-first-portfolio
+│  └─ 2026-09-28-static-first-portfolio/
+│     ├─ index.mdx             # → /notes/static-first-portfolio（日付は URL に含まれない）
 │     └─ architecture.webp
 └─ career/
    └─ 2024-consulting.yml      # 職歴は1社1ファイル（URLを持たない）
@@ -33,7 +36,7 @@ content/
 ## 下書きから公開まで
 
 1. `content/_drafts/<id>/` で書く
-2. 書き上がったら `content/notes/<id>/`（作品は `content/works/<id>/`）へ移す
+2. 書き上がったら `content/notes/YYYY-MM-DD-<id>/`（作品は `content/works/<id>/`）へ移す。記事は公開日をフォルダ名の先頭と frontmatter の `date` の両方に書く
 3. `npm run build` がエラーなく通ることを確認する
 4. コミットして push する（GitHub Actionsでデプロイされる）
 

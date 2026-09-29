@@ -11,6 +11,7 @@ import { defineCollection, reference } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { parse } from 'yaml';
+import { noteIdFromFolder } from '@/lib/note-id';
 
 /**
  * YAML の配列を読み込み、記述順を order として持たせる。
@@ -25,15 +26,18 @@ const orderedYaml = (fileName: string) =>
   });
 
 /**
- * 1件1フォルダのコンテンツ（content/<種類>/<id>/index.mdx）を読み込む。
- * フォルダ名をそのまま id（URL）にする。
+ * 1件1フォルダのコンテンツ（content/<種類>/<フォルダ>/index.mdx）を読み込む。
+ * id（URL）はフォルダ名から toId で決める。既定はフォルダ名そのまま。
  * content/_drafts/ は base の外にあるため読み込まれない（下書きが公開されない）
  */
-const byFolder = (base: string) =>
+const byFolder = (
+  base: string,
+  toId: (folder: string, data: Record<string, unknown>) => string = (folder) => folder,
+) =>
   glob({
     base,
     pattern: '*/index.mdx',
-    generateId: ({ entry }) => entry.split('/')[0],
+    generateId: ({ entry, data }) => toId(entry.split('/')[0], data),
   });
 
 /**
@@ -87,9 +91,12 @@ const works = defineCollection({
       }),
 });
 
-/** 記事（content/notes/<id>/index.mdx） */
+/**
+ * 記事（content/notes/YYYY-MM-DD-<id>/index.mdx）。
+ * フォルダ名の日付は公開日で、id（URL）には含めない。形式の誤りや date との食い違いはビルドエラーになる
+ */
 const notes = defineCollection({
-  loader: byFolder('content/notes'),
+  loader: byFolder('content/notes', (folder, data) => noteIdFromFolder(folder, data.date)),
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
