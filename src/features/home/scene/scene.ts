@@ -9,8 +9,16 @@
  */
 import { loadOrbitAngle, saveOrbitAngle } from '@/lib/orbit';
 import { finishedIntro, type IntroTimeline } from './intro';
+import { clamp01 } from './math';
 import { createMoons, updateMoons } from './moons';
-import { createOrbit, createPlanets, drawPlanets, layoutPlanets, updateOrbit } from './planets';
+import {
+  createOrbit,
+  createPlanets,
+  drawPlanets,
+  layoutPlanets,
+  planetForm,
+  updateOrbit,
+} from './planets';
 import { createSky } from './sky';
 
 export interface SceneOptions {
@@ -65,7 +73,8 @@ export function startScene(root: HTMLElement, options: SceneOptions = {}): Scene
     lastT = t;
     updateOrbit(orbit, planets, t, coarsePointer.matches);
     sky.draw(t, { orbit, planets, intro });
-    updateMoons(moons, t, intro.done || t - intro.start > intro.bang);
+    // 衛星は惑星がほぼ形になってから現れる（まだ粒子が散らばっているうちに衛星だけ見えないように）
+    updateMoons(moons, t, clamp01((planetForm(intro, t) - 0.6) / 0.4));
     drawPlanets(planets, t, dt, intro);
   };
   /**
