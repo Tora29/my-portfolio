@@ -37,6 +37,12 @@ const { headings = 'label', class: className } = Astro.props;
     // コード
     '[&_:not(pre)>code]:rounded [&_:not(pre)>code]:bg-white/8 [&_:not(pre)>code]:px-1.5 [&_:not(pre)>code]:py-0.5 [&_:not(pre)>code]:text-[0.9em]',
     '[&_pre]:mt-4 [&_pre]:overflow-x-auto [&_pre]:rounded-xl [&_pre]:border [&_pre]:border-white/10 [&_pre]:p-4 [&_pre]:text-xs [&_pre]:leading-relaxed',
+    // 表。狭い画面でページ全体が横にスクロールしないよう、表だけを横スクロールさせる（block にして overflow を効かせる）。
+    // 1列目は行の見出しとして使うことが多いため、折り返さず少し薄くする
+    '[&_table]:mt-6 [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto [&_table]:border-collapse [&_table]:text-sm [&_table]:leading-relaxed',
+    '[&_th]:border-b [&_th]:border-white/20 [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:align-bottom [&_th]:font-medium [&_th]:text-white sm:[&_th]:px-4',
+    '[&_td]:border-b [&_td]:border-white/10 [&_td]:px-3 [&_td]:py-3 [&_td]:align-top sm:[&_td]:px-4',
+    '[&_:is(th,td):first-child]:pl-0 [&_td:first-child]:whitespace-nowrap [&_td:first-child]:text-white/55',
     // 引用・画像
     '[&_blockquote]:mt-4 [&_blockquote]:border-l [&_blockquote]:border-white/20 [&_blockquote]:pl-4 [&_blockquote]:text-white/55',
     '[&_img]:mt-6 [&_img]:rounded-xl',
