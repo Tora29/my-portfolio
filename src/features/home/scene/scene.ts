@@ -78,14 +78,15 @@ export function startScene(root: HTMLElement, options: SceneOptions = {}): Scene
     drawPlanets(planets, t, dt, intro);
   };
   /**
-   * タッチ端末（スマートフォン・タブレット）では、1秒に30回だけ描く。
-   * 動きはゆっくり（公転は1周110秒）なので30回でも滑らかに見え、描画の負荷と電池の消費が半分になる
+   * タッチ端末（スマートフォン・タブレット）では、イントロの後は1秒に30回だけ描く。
+   * イントロ後の動きはゆっくり（公転は1周110秒）なので30回でも滑らかに見え、描画の負荷と電池の消費が半分になる。
+   * イントロ（閃光・衝撃波・惑星の形成）は動きが速く、30回ではコマ落ちして見えるため、間引かない
    */
   const minInterval = coarsePointer.matches ? 1000 / 30 : 0;
   let lastDrawn = -Infinity;
   const frame = (now: number) => {
     // 描く間隔の端数で間引きが偏らないよう、少し早めに来たフレームも描く
-    if (now - lastDrawn >= minInterval - 4) {
+    if (!intro.done || now - lastDrawn >= minInterval - 4) {
       lastDrawn = now;
       draw(now);
     }

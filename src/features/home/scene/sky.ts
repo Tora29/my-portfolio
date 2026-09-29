@@ -29,6 +29,13 @@ const NEBULAE: [number, number, string, number][] = [
   [0.25, 0.1, '244,114,182', 0.035],
 ];
 
+/**
+ * 星雲と銀河の中心の光（背景の光）は動かないため、画面の大きさが変わったときに1枚の画像へ描いておき、毎フレームはそれを貼るだけにする。
+ * 画面全体のグラデーションを毎フレーム何枚も描くと、スマートフォンではそれだけで描画が間に合わず、コマ落ちするため。
+ * ぼんやりした光で細部がないため、画素数を減らして描き、引き伸ばして貼る
+ */
+const BACKDROP_SCALE = 0.5;
+
 interface Star {
   x: number;
   y: number;
@@ -62,8 +69,35 @@ export function createSky(canvas: HTMLCanvasElement): Sky {
   let galaxyR = 0;
   let stars: Star[] = [];
   let galaxy: GalaxyParticle[] = [];
+  const backdrop = document.createElement('canvas');
+  const backdropCtx = backdrop.getContext('2d')!;
 
-  /** 画面の大きさに合わせて、星と銀河を作り直す（星の数は画面の広さに比例させる） */
+  /** 背景の光を描いておく。中心の光は星や銀河と同じく加算で重ねる（draw で貼るときは、この画像全体の濃さだけを変える） */
+  function drawBackdrop() {
+    backdrop.width = Math.ceil(W * BACKDROP_SCALE);
+    backdrop.height = Math.ceil(H * BACKDROP_SCALE);
+    const b = backdropCtx;
+    b.setTransform(BACKDROP_SCALE, 0, 0, BACKDROP_SCALE, 0, 0);
+    for (const [nx, ny, rgb, a] of NEBULAE) {
+      const g = b.createRadialGradient(nx * W, ny * H, 0, nx * W, ny * H, Math.max(W, H) * 0.45);
+      g.addColorStop(0, `rgba(${rgb},${a})`);
+      g.addColorStop(1, `rgba(${rgb},0)`);
+      b.fillStyle = g;
+      b.fillRect(0, 0, W, H);
+    }
+    b.globalCompositeOperation = 'lighter';
+    const cx = W / 2;
+    const cy = H / 2;
+    const core = b.createRadialGradient(cx, cy, 0, cx, cy, galaxyR * 0.32);
+    core.addColorStop(0, 'rgba(255,225,190,0.24)');
+    core.addColorStop(0.4, 'rgba(200,170,255,0.08)');
+    core.addColorStop(1, 'rgba(0,0,0,0)');
+    b.fillStyle = core;
+    b.fillRect(0, 0, W, H);
+    b.globalCompositeOperation = 'source-over';
+  }
+
+  /** 画面の大きさに合わせて、星と銀河・背景の光を作り直す（星の数は画面の広さに比例させる） */
   function resize() {
     const dpr = pixelRatio();
     W = innerWidth;
@@ -103,6 +137,8 @@ export function createSky(canvas: HTMLCanvasElement): Sky {
         color: `rgba(${rgb.join(',')},${(0.16 + (1 - d) * 0.5) * (inArm ? 1 : 0.55)})`,
       };
     });
+
+    drawBackdrop();
   }
 
   /** Career の軌跡：すでに通った軌道上に、薄れていく粒子を残す（歩み） */
@@ -167,13 +203,7 @@ export function createSky(canvas: HTMLCanvasElement): Sky {
 
     // 2.
     ctx.globalAlpha = Math.min(1, e * 1.5);
-    for (const [nx, ny, rgb, a] of NEBULAE) {
-      const g = ctx.createRadialGradient(nx * W, ny * H, 0, nx * W, ny * H, Math.max(W, H) * 0.45);
-      g.addColorStop(0, `rgba(${rgb},${a})`);
-      g.addColorStop(1, `rgba(${rgb},0)`);
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, W, H);
-    }
+    ctx.drawImage(backdrop, 0, 0, W, H);
 
     ctx.globalCompositeOperation = 'lighter';
     // 流れ始めるのはビッグバンから（爆発は中心から広がって見えるように）
@@ -192,13 +222,6 @@ export function createSky(canvas: HTMLCanvasElement): Sky {
       ctx.fill();
     }
     ctx.globalAlpha = baseAlpha;
-
-    const core = ctx.createRadialGradient(cx, cy, 0, cx, cy, galaxyR * 0.32);
-    core.addColorStop(0, 'rgba(255,225,190,0.24)');
-    core.addColorStop(0.4, 'rgba(200,170,255,0.08)');
-    core.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = core;
-    ctx.fillRect(0, 0, W, H);
 
     // 銀河は傾けて平たくした円盤。ビッグバンの間は外へ渦を巻きながら広がる
     const tilt = -0.42;
@@ -230,9 +253,10 @@ export function createSky(canvas: HTMLCanvasElement): Sky {
 
     // 4.
     const since = it - intro.bang;
-    if (since < 1.6) {
-      const maxR = Math.hypot(W, H);
-      const f = clamp01(since / 0.5);
+    const maxR = Math.hypot(W, H);
+    // 閃光は 0.5 秒で消える。消えた後も画面全体のグラデーションを描き続けると重いため、描くのは消えるまで
+    if (since < 0.5) {
+      const f = since / 0.5;
       const flash = ctx.createRadialGradient(
         cx,
         cy,
@@ -246,8 +270,9 @@ export function createSky(canvas: HTMLCanvasElement): Sky {
       flash.addColorStop(1, 'rgba(255,255,255,0)');
       ctx.fillStyle = flash;
       ctx.fillRect(0, 0, W, H);
-
-      const w = clamp01(since / 1.6);
+    }
+    if (since < 1.6) {
+      const w = since / 1.6;
       ctx.strokeStyle = `rgba(255,255,255,${0.4 * (1 - w)})`;
       ctx.lineWidth = 1 + 14 * (1 - w);
       ctx.beginPath();
