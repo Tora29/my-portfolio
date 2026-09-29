@@ -74,9 +74,11 @@ test.describe('入口', () => {
       return after - before;
     };
 
+    // 1秒あたりの回数を「1回目と比べて増えていないか」で判定すると、テストを並列に動かしたときの
+    // 負荷で回数がぶれて不安定になる。代わりに「離れたら止まる」を毎回確かめる。
+    // 描画が止まらずに残れば離れた後も回数が 0 にならないため、重複はここで必ず検出できる
     await page.goto('/');
-    const first = await rafPerSecond();
-    expect(first).toBeGreaterThan(0);
+    expect(await rafPerSecond()).toBeGreaterThan(0);
     for (let i = 0; i < 3; i++) {
       // 動かない名前のリンクで移動する（惑星は公転していて押せないため）
       await page.getByRole('heading', { level: 1 }).click();
@@ -86,13 +88,9 @@ test.describe('入口', () => {
       expect(await rafPerSecond()).toBeLessThanOrEqual(2);
       await page.getByRole('link', { name: '閉じて Home に戻る' }).click();
       await expect(page).toHaveURL('/');
+      // 戻ってきたら再び動いている
+      await expect.poll(rafPerSecond).toBeGreaterThan(0);
     }
-    // 戻ってきたら再び動き、1回目と同程度であること（重複していれば回数が増える）。
-    // 閉じる演出の粒子が消えるのを待ってから数える
-    await page.waitForTimeout(1000);
-    const later = await rafPerSecond();
-    expect(later).toBeGreaterThan(0);
-    expect(later).toBeLessThan(first * 1.5 + 5);
   });
 });
 

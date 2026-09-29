@@ -66,7 +66,9 @@ export function updateMoons(moons: Moon[], t: number, visible: boolean) {
       m.el.style.opacity = '0';
       continue;
     }
-    const R = (m.planet.link.offsetWidth / 2) * planetScale(m.planet.key, t) * m.planet.ds;
+    // 惑星の半径は layoutPlanets で求めた値を使う（毎フレーム offsetWidth を読むと、
+    // 直前に書き換えた惑星の位置のためにレイアウトの再計算が走り、重くなるため）
+    const R = (m.planet.R / m.planet.dpr) * planetScale(m.planet.key, t) * m.planet.ds;
     const ang = m.phase + m.speed * t;
     const x = Math.cos(ang) * m.a * R;
     const y = Math.sin(ang) * m.b * R;

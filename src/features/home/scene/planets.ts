@@ -41,6 +41,8 @@ export interface Planet {
   px: number;
   R: number;
   dpr: number;
+  /** 表面の粒子の並び。惑星の大きさに合わせて選ぶ（layoutPlanets） */
+  sphere: Sphere;
   /** 軌道上の位置・角度・奥行きによる拡大率 */
   x: number;
   y: number;
@@ -76,6 +78,12 @@ const TRAITS: Record<
 
 /** 自転の基本の速さ（rad/s） */
 const SPIN = 0.16;
+/**
+ * これより小さい惑星（px）は、粒子の少ない並び（SPHERES.small）で描く。
+ * 小さな惑星では粒子が詰まっていて半分にしても見た目がほとんど変わらず、スマートフォンでの描画の負荷が下がるため
+ */
+const SMALL_PLANET = 120;
+
 /** 呼吸するように半径を ±2.5% 変える */
 const BREATHE_AMOUNT = 0.025;
 
@@ -102,17 +110,6 @@ interface SpherePoint {
   proj?: { x: number; y: number; depth: number };
 }
 
-// 球面上に均等に並べた点（フィボナッチ格子）。どの角度から見ても粒子の密度が偏らない
-const SPHERE_POINTS: SpherePoint[] = Array.from({ length: 900 }, (_, i) => ({
-  lat: Math.asin(1 - (2 * (i + 0.5)) / 900),
-  lon: i * 2.399963,
-  phase: Math.random() * Math.PI * 2,
-  white: Math.random() < 0.12,
-  jx: (Math.random() - 0.5) * 1.4,
-  jy: (Math.random() - 0.5) * 1.4,
-  dist: 0.4 + Math.random() * 0.8,
-}));
-
 // Works の輪の粒子
 const RING_POINTS = Array.from({ length: 320 }, () => ({
   ang: Math.random() * Math.PI * 2,
@@ -121,30 +118,61 @@ const RING_POINTS = Array.from({ length: 320 }, () => ({
   white: Math.random() < 0.2,
 }));
 
-// Tech の表面のネットワーク：均等に間引いた点をノードにし、それぞれ近い2点と結ぶ
-const NETWORK_NODES = SPHERE_POINTS.filter((_, i) => i % 32 === 16);
-for (const q of NETWORK_NODES) {
-  q.node = true;
-  q.v3 = {
-    x: Math.cos(q.lat) * Math.sin(q.lon),
-    y: Math.sin(q.lat),
-    z: Math.cos(q.lat) * Math.cos(q.lon),
-  };
+/** 表面の粒子の並びと、Tech のネットワーク（その中から選んだノードと、ノードを結ぶ辺） */
+interface Sphere {
+  points: SpherePoint[];
+  nodes: SpherePoint[];
+  edges: [number, number][];
 }
-const NETWORK_EDGES: [number, number][] = [];
-NETWORK_NODES.forEach((q, i) => {
-  NETWORK_NODES.map((o, j) => ({
-    j,
-    d: (q.v3!.x - o.v3!.x) ** 2 + (q.v3!.y - o.v3!.y) ** 2 + (q.v3!.z - o.v3!.z) ** 2,
-  }))
-    .filter(({ j }) => j !== i)
-    .sort((a, b) => a.d - b.d)
-    .slice(0, 2)
-    .forEach(({ j }) => {
-      // 同じ辺を2回引かない
-      if (!NETWORK_EDGES.some(([a, b]) => a === j && b === i)) NETWORK_EDGES.push([i, j]);
-    });
-});
+
+/** ネットワークのノードの数。粒子の数によらず同じにし、Tech の模様が画面の大きさで変わらないようにする */
+const NETWORK_NODE_COUNT = 28;
+
+/**
+ * 球面上に均等に並べた点（フィボナッチ格子）。どの角度から見ても粒子の密度が偏らない。
+ * 粒子を減らすときは、格子の点を間引く（縞模様になる）のではなく、少ない数で格子を作り直す
+ */
+function buildSphere(count: number): Sphere {
+  const points: SpherePoint[] = Array.from({ length: count }, (_, i) => ({
+    lat: Math.asin(1 - (2 * (i + 0.5)) / count),
+    lon: i * 2.399963,
+    phase: Math.random() * Math.PI * 2,
+    white: Math.random() < 0.12,
+    jx: (Math.random() - 0.5) * 1.4,
+    jy: (Math.random() - 0.5) * 1.4,
+    dist: 0.4 + Math.random() * 0.8,
+  }));
+
+  // Tech の表面のネットワーク：均等に間引いた点をノードにし、それぞれ近い2点と結ぶ
+  const step = Math.floor(count / NETWORK_NODE_COUNT);
+  const nodes = points.filter((_, i) => i % step === Math.floor(step / 2));
+  for (const q of nodes) {
+    q.node = true;
+    q.v3 = {
+      x: Math.cos(q.lat) * Math.sin(q.lon),
+      y: Math.sin(q.lat),
+      z: Math.cos(q.lat) * Math.cos(q.lon),
+    };
+  }
+  const edges: [number, number][] = [];
+  nodes.forEach((q, i) => {
+    nodes
+      .map((o, j) => ({
+        j,
+        d: (q.v3!.x - o.v3!.x) ** 2 + (q.v3!.y - o.v3!.y) ** 2 + (q.v3!.z - o.v3!.z) ** 2,
+      }))
+      .filter(({ j }) => j !== i)
+      .sort((a, b) => a.d - b.d)
+      .slice(0, 2)
+      .forEach(({ j }) => {
+        // 同じ辺を2回引かない
+        if (!edges.some(([a, b]) => a === j && b === i)) edges.push([i, j]);
+      });
+  });
+  return { points, nodes, edges };
+}
+
+const SPHERES = { full: buildSphere(900), small: buildSphere(450) };
 
 /** 単位球面上の点を回転させる（自転 → 手前への傾き → 画面内での回転） */
 function sphere(lat: number, lon: number, spin: number, tilt: number, roll: number) {
@@ -185,9 +213,10 @@ function drawRing(p: Planet, R: number, c: number, back: boolean, alpha: number)
 function drawNetwork(p: Planet, alpha: number) {
   const { ctx, rgb, dpr } = p;
   ctx.lineWidth = 0.8 * dpr;
-  for (const [i, j] of NETWORK_EDGES) {
-    const a = NETWORK_NODES[i].proj!;
-    const b = NETWORK_NODES[j].proj!;
+  const { nodes, edges } = p.sphere;
+  for (const [i, j] of edges) {
+    const a = nodes[i].proj!;
+    const b = nodes[j].proj!;
     const la = alpha * 0.55 * Math.min(a.depth, b.depth) ** 2 * (1 + p.hover);
     if (la < 0.02) continue;
     ctx.strokeStyle = `rgba(${rgb},${Math.min(1, la)})`;
@@ -196,7 +225,7 @@ function drawNetwork(p: Planet, alpha: number) {
     ctx.lineTo(b.x, b.y);
     ctx.stroke();
   }
-  for (const q of NETWORK_NODES) {
+  for (const q of nodes) {
     const { x, y, depth } = q.proj!;
     const na = alpha * depth ** 2;
     if (na < 0.02) continue;
@@ -251,9 +280,10 @@ function drawPlanet(p: Planet, t: number, intro: IntroTimeline) {
   ctx.fillRect(0, 0, px, px);
   ctx.globalAlpha = 1;
 
-  // 2.
+  // 2. 粒子ごとに色の文字列を作ると負荷が大きいため、色は固定し、濃さは globalAlpha で変える
   ctx.globalCompositeOperation = 'lighter';
-  for (const q of SPHERE_POINTS) {
+  const color = `rgb(${rgb})`;
+  for (const q of p.sphere.points) {
     const v = sphere(q.lat, q.lon, p.spin, trait.tilt, trait.roll);
     // ホバー中は粒子が少し膨らんで揺らぐ
     let expand = 1 + h * (0.1 + 0.07 * Math.sin(t * 2 + q.phase));
@@ -273,9 +303,11 @@ function drawPlanet(p: Planet, t: number, intro: IntroTimeline) {
     const sx = c + v.x * R * expand + bx;
     const sy = c + v.y * R * expand + by;
     if (q.node) q.proj = { x: sx, y: sy, depth };
-    ctx.fillStyle = q.white ? `rgba(255,255,255,${a})` : `rgba(${rgb},${a})`;
+    ctx.globalAlpha = a;
+    ctx.fillStyle = q.white ? 'white' : color;
     ctx.fillRect(sx - size / 2, sy - size / 2, size, size);
   }
+  ctx.globalAlpha = 1;
 
   // 3.
   if (trait.network) drawNetwork(p, form);
@@ -320,6 +352,7 @@ export function createPlanets(root: HTMLElement): Planet[] {
       px: 0,
       R: 0,
       dpr: 1,
+      sphere: SPHERES.full,
       x: 0,
       y: 0,
       th: 0,
@@ -346,6 +379,7 @@ export function layoutPlanets(orbit: Orbit, planets: Planet[]) {
     p.px = Math.round(p.canvas.offsetWidth * dpr);
     p.canvas.width = p.canvas.height = p.px;
     p.R = (p.link.offsetWidth / 2) * dpr;
+    p.sphere = orbit.size < SMALL_PLANET ? SPHERES.small : SPHERES.full;
   }
 }
 

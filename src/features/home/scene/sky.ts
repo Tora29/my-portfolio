@@ -15,6 +15,13 @@ import type { Orbit, Planet } from './planets';
 const STAR_DRIFT = { min: 0.6, max: 3.2, dx: -0.96, dy: 0.28 };
 /** 星の色。白を多めにし、ときどき青白い星・赤みのある星を混ぜる */
 const STAR_TINTS = ['255,255,255', '255,255,255', '200,215,255', '255,230,200'];
+/**
+ * 銀河の粒子の数。PC の標準的な画面（1440×900）で 4,800 個とし、画面が小さいほど減らす（最少で 30%）。
+ * 小さい画面では粒子が詰まって見えるうえ、スマートフォンでは描画の負荷が重くなるため
+ */
+const galaxyCount = (w: number, h: number) =>
+  Math.round(4800 * Math.min(1, Math.max(0.3, (w * h) / (1440 * 900))));
+
 /** 背景のうっすらとした星雲（画面に対する位置・色・濃さ） */
 const NEBULAE: [number, number, string, number][] = [
   [0.82, 0.18, '139,92,246', 0.07],
@@ -30,7 +37,8 @@ interface Star {
   depth: number;
   phase: number;
   speed: number;
-  tint: string;
+  /** 色（rgb(...)）。濃さは描くときに globalAlpha で付ける */
+  color: string;
 }
 
 interface GalaxyParticle {
@@ -71,12 +79,12 @@ export function createSky(canvas: HTMLCanvasElement): Sky {
       depth: Math.random(),
       phase: Math.random() * Math.PI * 2,
       speed: 0.4 + Math.random() * 1.6,
-      tint: STAR_TINTS[Math.floor(Math.random() * STAR_TINTS.length)],
+      color: `rgb(${STAR_TINTS[Math.floor(Math.random() * STAR_TINTS.length)]})`,
     }));
 
     // 2本の腕を持つ渦巻き。粒子は中心に集める（d を偏らせる）。中心は暖色、外側は青紫
     galaxyR = Math.max(W, H) * 0.42;
-    galaxy = Array.from({ length: 4800 }, (_, i) => {
+    galaxy = Array.from({ length: galaxyCount(W, H) }, (_, i) => {
       const d = Math.random() ** 1.7;
       const inArm = Math.random() < 0.72;
       const spread = inArm ? (Math.random() - 0.5) * (0.9 - d * 0.45) : Math.random() * Math.PI * 2;
@@ -170,16 +178,20 @@ export function createSky(canvas: HTMLCanvasElement): Sky {
     ctx.globalCompositeOperation = 'lighter';
     // 流れ始めるのはビッグバンから（爆発は中心から広がって見えるように）
     const driftT = intro.done ? t : Math.max(0, it - intro.bang);
+    // 星ごとに色の文字列を作ると負荷が大きいため、色は固定し、またたきは globalAlpha で表す
+    const baseAlpha = ctx.globalAlpha;
     for (const s of stars) {
       const a = 0.25 + 0.75 * (0.5 + 0.5 * Math.sin(s.phase + t * s.speed));
       const v = STAR_DRIFT.min + (STAR_DRIFT.max - STAR_DRIFT.min) * s.depth;
       const x = (((s.x + driftT * v * STAR_DRIFT.dx) % W) + W) % W;
       const y = (((s.y + driftT * v * STAR_DRIFT.dy) % H) + H) % H;
-      ctx.fillStyle = `rgba(${s.tint},${a * (0.4 + s.depth * 0.6)})`;
+      ctx.globalAlpha = baseAlpha * a * (0.4 + s.depth * 0.6);
+      ctx.fillStyle = s.color;
       ctx.beginPath();
       ctx.arc(cx + (x - cx) * grow, cy + (y - cy) * grow, s.r, 0, Math.PI * 2);
       ctx.fill();
     }
+    ctx.globalAlpha = baseAlpha;
 
     const core = ctx.createRadialGradient(cx, cy, 0, cx, cy, galaxyR * 0.32);
     core.addColorStop(0, 'rgba(255,225,190,0.24)');
