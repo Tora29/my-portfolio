@@ -1,5 +1,38 @@
 [
   {
+    "id": "Tora29/my-portfolio#22",
+    "date": "2026-09-28",
+    "type": "fix",
+    "work": "personal-platform",
+    "headline": "アクセシビリティを WCAG 2.1 AA に対応",
+    "summary": "小さな補足の文字まで読みやすいコントラストに上げ、トップページの動き続ける背景を止められるようにした。キーボードだけでも、すべての入口と操作に届く。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/22"
+  },
+  {
+    "id": "Tora29/my-portfolio#23",
+    "date": "2026-09-28",
+    "type": "docs",
+    "work": "personal-platform",
+    "headline": "記事「Static-first で作るポートフォリオ」を推敲",
+    "summary": "記事「Static-first で作るポートフォリオ」の表記と箇条書きを整え、Static-first にした理由をより読み取りやすくした。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/23"
+  },
+  {
+    "id": "Tora29/my-portfolio#24",
+    "date": "2026-09-28",
+    "type": "feature",
+    "work": "personal-platform",
+    "headline": "共有したときの画像とファビコンを追加",
+    "summary": "SNS や Slack でページを共有したときに、宇宙のシーンの画像付きで表示されるようにした。ブラウザのタブにも、惑星をかたどったアイコンが出る。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/24"
+  },
+  {
     "id": "Tora29/my-portfolio#20",
     "date": "2026-09-28",
     "type": "fix",
