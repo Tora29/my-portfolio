@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { adjacentSections } from './sections';
+import { adjacentSections } from '../sections';
 
 describe('adjacentSections', () => {
   it('タブ順で前後のセクションを返す', () => {

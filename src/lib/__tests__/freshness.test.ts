@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { daysSince, freshnessOf } from './freshness';
+import { daysSince, freshnessOf } from '../freshness';
 
 describe('daysSince', () => {
   it('日本時間の日付で差を数える', () => {

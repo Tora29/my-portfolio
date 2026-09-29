@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatPeriod } from './format-period';
+import { formatPeriod } from '../format-period';
 
 describe('formatPeriod', () => {
   it('開始年と終了年をダッシュでつなぐ', () => {

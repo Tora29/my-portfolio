@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { activityHref, groupByDate, initialCount } from './activity';
+import { activityHref, groupByDate, initialCount } from '../activity';
 
 const item = (date: string, id: string) => ({ date, id });
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { entryCircle, orbitGeometry, orbitPoint } from './orbit';
+import { entryCircle, orbitGeometry, orbitPoint } from '../orbit';
 
 describe('orbitGeometry', () => {
   it('縦長の画面では、縦に長い軌道にする', () => {

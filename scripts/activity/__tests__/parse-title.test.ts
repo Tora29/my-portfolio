@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseTitle } from './parse-title';
+import { parseTitle } from '../parse-title';
 
 describe('parseTitle', () => {
   it('type・scope・見出しに分ける', () => {
