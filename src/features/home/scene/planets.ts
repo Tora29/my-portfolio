@@ -100,10 +100,13 @@ interface SpherePoint {
   lon: number;
   phase: number;
   white: boolean;
-  /** イントロで、散らばった状態から集まってくるときのずれと距離 */
+  /**
+   * イントロで、散らばった状態から集まってくるときのずれと、どれだけ遠くに散ったか（0〜1）。
+   * 遠くに散った粒子ほど遅れて集まる（formParticle）
+   */
   jx: number;
   jy: number;
-  dist: number;
+  far: number;
   /** Tech のネットワークのノードか。ノードは描いた位置を proj に記録し、線を引くのに使う */
   node?: boolean;
   v3?: { x: number; y: number; z: number };
@@ -138,9 +141,9 @@ function buildSphere(count: number): Sphere {
     lon: i * 2.399963,
     phase: Math.random() * Math.PI * 2,
     white: Math.random() < 0.12,
-    jx: (Math.random() - 0.5) * 1.4,
-    jy: (Math.random() - 0.5) * 1.4,
-    dist: 0.4 + Math.random() * 0.8,
+    jx: (Math.random() - 0.5) * 0.6,
+    jy: (Math.random() - 0.5) * 0.6,
+    far: Math.random(),
   }));
 
   // Tech の表面のネットワーク：均等に間引いた点をノードにし、それぞれ近い2点と結ぶ
@@ -173,6 +176,37 @@ function buildSphere(count: number): Sphere {
 }
 
 const SPHERES = { full: buildSphere(900), small: buildSphere(450) };
+
+// ─── イントロでの形成 ────────────────────────────────────────
+
+/** ビッグバンから粒子が集まり始めるまでの間（秒）。閃光の広がりを先に見せる */
+const FORM_DELAY = 0.1;
+/**
+ * 集まりきってからイントロが終わるまでの余裕（秒）。
+ * イントロが終わると完成した状態で描くため、形成の途中で終わると最後に惑星が跳ぶように縮んでしまう
+ */
+const FORM_MARGIN = 0.1;
+/**
+ * 遠くに散った粒子ほど遅らせる最大の遅れ（形成の進み具合に対する割合）。
+ * すべての粒子が同時に着くと最後に一斉に縮んで見えるため、内側から順に積もるように集める
+ */
+const FORM_STAGGER = 0.45;
+/** 集まるときに中心の周りを回り込む角度（rad）。まっすぐ縮むより、渦を巻いて集まるほうが自然に見える */
+const FORM_SWIRL = 0.9;
+
+/**
+ * イントロでの惑星の形成の進み具合（0〜1）。ビッグバンの少し後に始まり、イントロが終わる少し前に終える。
+ * 形成の長さはイントロの長さ（初回 / 2回目以降）に合わせる。イントロ後は常に 1
+ */
+export function planetForm(intro: IntroTimeline, t: number): number {
+  const start = intro.bang + FORM_DELAY;
+  const end = intro.settle - FORM_MARGIN;
+  return clamp01((introElapsed(intro, t) - start) / (end - start));
+}
+
+/** 1つの粒子の集まり具合（0〜1）。form は planetForm の値 */
+const formParticle = (form: number, q: SpherePoint) =>
+  easeOutCubic(clamp01((form - q.far * FORM_STAGGER) / (1 - FORM_STAGGER)));
 
 /** 単位球面上の点を回転させる（自転 → 手前への傾き → 画面内での回転） */
 function sphere(lat: number, lon: number, spin: number, tilt: number, roll: number) {
@@ -252,18 +286,21 @@ function drawPlanet(p: Planet, t: number, intro: IntroTimeline) {
   const R = p.R * planetScale(p.key, t);
   const c = px / 2;
   const h = p.hover;
-  // イントロでは、ビッグバンの直後に散らばった粒子が集まって惑星になる。イントロ後は常に 1
-  const form = easeOutCubic(clamp01((introElapsed(intro, t) - intro.bang - 0.1) / 1.3));
+  // イントロでは、ビッグバンの後に散らばった粒子が集まって惑星になる。イントロ後は常に 1
+  const form = planetForm(intro, t);
   if (form <= 0) return;
+  // 輪郭（暗い円・にじみ・輪・ネットワーク）は、粒子がある程度集まってから現れる。
+  // 粒子が散らばっているうちに惑星の形が見えてしまわないように
+  const shape = easeOutCubic(clamp01((form - 0.3) / 0.7));
 
   if (trait.ring) {
     ctx.globalCompositeOperation = 'lighter';
-    drawRing(p, R, c, true, form);
+    drawRing(p, R, c, true, shape);
     ctx.globalCompositeOperation = 'source-over';
   }
 
   // 1.
-  ctx.globalAlpha = form;
+  ctx.globalAlpha = shape;
   const core = ctx.createRadialGradient(c, c, 0, c, c, R * 1.04);
   core.addColorStop(0, 'rgba(6,6,11,0.8)');
   core.addColorStop(0.85, 'rgba(6,6,11,0.75)');
@@ -287,12 +324,20 @@ function drawPlanet(p: Planet, t: number, intro: IntroTimeline) {
     const v = sphere(q.lat, q.lon, p.spin, trait.tilt, trait.roll);
     // ホバー中は粒子が少し膨らんで揺らぐ
     let expand = 1 + h * (0.1 + 0.07 * Math.sin(t * 2 + q.phase));
-    const bx = (1 - form) * q.jx * R;
-    const by = (1 - form) * q.jy * R;
-    expand *= 1 + (1 - form) * (1.5 + q.dist * 1.5);
+    const f = formParticle(form, q);
+    // 散らばる範囲は Canvas（惑星の半径の約2倍）に収める。はみ出すと四角く切れて見えるため
+    expand *= 1 + (1 - f) * (0.3 + q.far * 0.6);
+    let dx = v.x * R * expand + (1 - f) * q.jx * R;
+    let dy = v.y * R * expand + (1 - f) * q.jy * R;
+    if (f < 1) {
+      const swirl = (1 - f) * FORM_SWIRL;
+      const cs = Math.cos(swirl);
+      const sn = Math.sin(swirl);
+      [dx, dy] = [dx * cs - dy * sn, dx * sn + dy * cs];
+    }
     const depth = (v.z + 1) / 2;
     const lit = 0.65 + 0.7 * Math.max(0, v.x * light.x + v.y * light.y);
-    let a = Math.min(1, (0.15 + depth * depth) * lit) * form;
+    let a = Math.min(1, (0.15 + depth * depth) * lit) * f;
     if (trait.lines) a *= Math.cos(q.lat * 15) > 0.15 ? 1.2 : 0.3;
     // 螺旋の帯は、帯に沿ってゆっくり流れる
     if (trait.spiral)
@@ -300,9 +345,11 @@ function drawPlanet(p: Planet, t: number, intro: IntroTimeline) {
     // ネットワークを目立たせるため、表面の粒子は控えめにする
     if (trait.network) a *= 0.65;
     const size = (0.5 + 1.4 * depth) * dpr;
-    const sx = c + v.x * R * expand + bx;
-    const sy = c + v.y * R * expand + by;
-    if (q.node) q.proj = { x: sx, y: sy, depth };
+    const sx = c + dx;
+    const sy = c + dy;
+    // ネットワークのノードも粒子と一緒に現れる（depth に集まり具合を掛け、まだ集まっていないノードと線を描かない）
+    if (q.node) q.proj = { x: sx, y: sy, depth: depth * f };
+    if (a <= 0) continue;
     ctx.globalAlpha = a;
     ctx.fillStyle = q.white ? 'white' : color;
     ctx.fillRect(sx - size / 2, sy - size / 2, size, size);
@@ -310,8 +357,8 @@ function drawPlanet(p: Planet, t: number, intro: IntroTimeline) {
   ctx.globalAlpha = 1;
 
   // 3.
-  if (trait.network) drawNetwork(p, form);
-  if (trait.ring) drawRing(p, R, c, false, form);
+  if (trait.network) drawNetwork(p, shape);
+  if (trait.ring) drawRing(p, R, c, false, shape);
   ctx.globalCompositeOperation = 'source-over';
 }
 

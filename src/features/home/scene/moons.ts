@@ -59,10 +59,13 @@ export function createMoons(planets: Planet[]): Moon[] {
   );
 }
 
-/** 衛星を動かす。惑星の呼吸と奥行きによる拡大率に合わせて、軌道の大きさも変える */
-export function updateMoons(moons: Moon[], t: number, visible: boolean) {
+/**
+ * 衛星を動かす。惑星の呼吸と奥行きによる拡大率に合わせて、軌道の大きさも変える。
+ * appear は現れ具合（0〜1）。イントロでは惑星が形になるのに合わせて現れる（scene.ts）
+ */
+export function updateMoons(moons: Moon[], t: number, appear: number) {
   for (const m of moons) {
-    if (!visible) {
+    if (appear <= 0) {
       m.el.style.opacity = '0';
       continue;
     }
@@ -78,6 +81,6 @@ export function updateMoons(moons: Moon[], t: number, visible: boolean) {
     const Y = x * Math.sin(m.rad) + y * Math.cos(m.rad);
     m.el.style.transform = `translate(${X}px, ${Y}px) scale(${front ? 1 : 0.75})`;
     m.el.style.zIndex = front ? '3' : '0';
-    m.el.style.opacity = front ? '1' : '0.4';
+    m.el.style.opacity = String(appear * (front ? 1 : 0.4));
   }
 }
