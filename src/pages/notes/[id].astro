@@ -3,7 +3,7 @@
  * 記事詳細（/notes/[id]）
  *
  * 記事の本文と、関連する作品・技術を表示する（screens.md §5.8）。
- * id は content/notes/<id>/ のフォルダ名。すべての記事についてページを作る
+ * id は content/notes/YYYY-MM-DD-<id>/ のフォルダ名から日付を除いたもの。すべての記事についてページを作る
  * （content/_drafts/ の下書きは読み込まれないため、ページも作られない）
  */
 import type { GetStaticPaths } from 'astro';

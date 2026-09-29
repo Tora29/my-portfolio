@@ -9,7 +9,7 @@ my-portfolio/
 ├─ content/                    # 手書きコンテンツ（Gitが唯一の正）
 │  ├─ _drafts/                 #   下書き（.gitignore 対象。コミットしない）
 │  ├─ works/<id>/index.mdx     #   作品（1作品1フォルダ。フォルダ名 = id。画像も同じフォルダ）
-│  ├─ notes/<id>/index.mdx     #   記事（1記事1フォルダ。フォルダ名 = id。画像も同じフォルダ）
+│  ├─ notes/YYYY-MM-DD-<id>/index.mdx  # 記事（1記事1フォルダ。フォルダ名 = 公開日 + id。画像も同じフォルダ）
 │  └─ career/*.yml             #   職歴（1社1ファイル）
 ├─ data/                       # 構造化データ
 │  ├─ profile.yml              #   名前・職種・Values・Next・資格・外部リンク
