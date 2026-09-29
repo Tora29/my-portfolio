@@ -11,6 +11,10 @@ export default defineConfig({
   // trailingSlash は開発サーバー・sitemap の URL を本番と同じ形にするために合わせて指定する
   build: { format: 'file' },
   trailingSlash: 'never',
+  // ClientRouter の既定の先読みはホバーのため、スマートフォンではタップしてから HTML を取りに行く。
+  // セクションを開く・閉じる演出の粒子はタップと同時に動き出し、ページの演出は取得後に始まるため、
+  // 取得を待つ間だけ粒子が先に進んでしまう。画面に見えているリンクを先に読み込んでおき、この差をなくす
+  prefetch: { prefetchAll: true, defaultStrategy: 'viewport' },
   integrations: [mdx(), sitemap()],
   // 英字の見出し・ラベル用。日本語は OS 標準のゴシック体を使うため Web フォントを読み込まない。
   // npm パッケージから読み込み、ビルド時に外部の CDN へ通信しない（remote: false）
