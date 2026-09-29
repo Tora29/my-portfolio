@@ -34,9 +34,10 @@ my-portfolio/
 │  ├─ components/ui/           # 機能をまたいで使う汎用部品
 │  ├─ lib/                     # 機能をまたいで使う処理
 │  │  └─ graph/                #   Engineering Graph
-│  └─ styles/                  # デザイントークン・グローバルスタイル
+│  ├─ styles/                  # デザイントークン・グローバルスタイル
+│  └─ test/                    # 単体テスト用の部品（.astro の描画・テストデータ）。テストからのみ import する
 ├─ public/                     # そのまま配信する静的ファイル
-├─ tests/e2e/                  # E2Eテスト（Playwright）。単体テストは対象と同じディレクトリに置く
+├─ e2e/                        # E2Eテスト（Playwright）。単体テストは対象と同じディレクトリの `__tests__/` に置く
 ├─ .github/workflows/          # デプロイ・Activity定期取得
 └─ .claude/rules/              # 開発ルール
 ```
