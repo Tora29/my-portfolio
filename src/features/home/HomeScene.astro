@@ -38,7 +38,8 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
 <div class="group/home fixed inset-0 overflow-hidden" data-home>
   <!--
     イントロを再生するかを、最初の描画より前に決める（名前が一瞬見えてから暗転しないように）。
-    同じタブでは1回だけ（サイト内の移動で Home に戻ったときは再生しない）。2回目以降の訪問は短縮版にする。
+    Home をページとして読み込んだときだけ再生し、サイト内の移動で Home に来たときは再生しない
+    （記事などへ直接入ってから閉じるで Home に来たときも含む）。2回目以降の訪問は短縮版にする。
     prefers-reduced-motion のときは再生しない
   -->
   <script is:inline>
@@ -51,7 +52,11 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
       } catch {
         // 読めないときは止めていないものとして扱う
       }
+      // ClientRouter の遷移では、このスクリプトはドキュメントの読み込みが終わった後に実行される。
+      // 読み込み中かどうかで、ページの読み込みかサイト内の移動かを見分ける
+      // （window の印だけでは、Home 以外のページから入ったときに印が付いていない）
       if (
+        document.readyState !== 'loading' ||
         window.__homeIntroPlayed ||
         motionPaused ||
         matchMedia('(prefers-reduced-motion: reduce)').matches

@@ -21,6 +21,14 @@ test.describe('イントロ', () => {
     await expect(page.locator('[data-home]')).toHaveAttribute('data-intro-speed', 'quick');
   });
 
+  test('別のページから入り、閉じるで Home に来たときは再生しない', async ({ page }) => {
+    await page.goto('/about');
+    await page.getByRole('link', { name: '閉じて Home に戻る' }).click();
+    await expect(page).toHaveURL('/');
+    // イントロは終わると data-intro が消えるため、待たずに移動した直後の状態を見る
+    expect(await page.locator('[data-home]').getAttribute('data-intro')).toBeNull();
+  });
+
   test('動きを減らす設定では再生しない', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/');
