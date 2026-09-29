@@ -196,7 +196,7 @@ const FORM_SWIRL = 0.9;
 
 /**
  * イントロでの惑星の形成の進み具合（0〜1）。ビッグバンの少し後に始まり、イントロが終わる少し前に終える。
- * 形成の長さはイントロの長さ（初回 / 2回目以降）に合わせる。イントロ後は常に 1
+ * 形成の長さはイントロの長さに合わせる。イントロ後は常に 1
  */
 export function planetForm(intro: IntroTimeline, t: number): number {
   const start = intro.bang + FORM_DELAY;

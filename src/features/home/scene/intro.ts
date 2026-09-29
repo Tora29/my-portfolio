@@ -19,14 +19,15 @@ export interface IntroTimeline {
   done: boolean;
 }
 
-/** 初めての訪問 */
-export const FULL_INTRO = { charge: 1.5, bang: 1.9, expand: 1.4, settle: 3.3 };
-/** 2回目以降の訪問。何度も見る人（採用の担当者など）を待たせない */
-export const QUICK_INTRO = { charge: 0.3, bang: 0.45, expand: 1.0, settle: 1.4 };
+/**
+ * イントロの時刻。訪問者の多く（採用の担当者など）は一度しか来ないため、初回から待たせない長さにする。
+ * WELCOME を一度読める間（charge まで）だけ取り、約2秒で操作できるようにする
+ */
+export const INTRO = { charge: 0.9, bang: 1.2, expand: 1.2, settle: 2.3 };
 
 /** イントロを再生しない（終わった状態から始める） */
 export const finishedIntro = (): IntroTimeline => ({
-  ...FULL_INTRO,
+  ...INTRO,
   start: 0,
   done: true,
 });
@@ -35,9 +36,9 @@ export const finishedIntro = (): IntroTimeline => ({
 export const introElapsed = (intro: IntroTimeline, t: number) =>
   intro.done ? Infinity : t - intro.start;
 
-/** イントロを始める。quick は2回目以降の訪問（短縮版） */
-export const createIntro = (quick: boolean, start: number): IntroTimeline => ({
-  ...(quick ? QUICK_INTRO : FULL_INTRO),
+/** イントロを始める */
+export const createIntro = (start: number): IntroTimeline => ({
+  ...INTRO,
   start,
   done: false,
 });
@@ -61,7 +62,6 @@ export function runIntro(root: HTMLElement, intro: IntroTimeline): () => void {
     intro.done = true;
     cleanup();
     delete root.dataset.intro;
-    delete root.dataset.introSpeed;
   };
   function skip(event: Event) {
     finish();

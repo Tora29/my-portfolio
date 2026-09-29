@@ -9,16 +9,9 @@ test.describe('イントロ', () => {
     await page.goto('/');
     const home = page.locator('[data-home]');
     await expect(home).toHaveAttribute('data-intro', /.+/);
-    await expect(home).not.toHaveAttribute('data-intro-speed', 'quick');
 
     await page.keyboard.press('Escape');
     await expect(home).not.toHaveAttribute('data-intro');
-  });
-
-  test('2回目以降の訪問では短縮版になる', async ({ page }) => {
-    await page.goto('/');
-    await page.reload();
-    await expect(page.locator('[data-home]')).toHaveAttribute('data-intro-speed', 'quick');
   });
 
   test('別のページから入り、閉じるで Home に来たときは再生しない', async ({ page }) => {

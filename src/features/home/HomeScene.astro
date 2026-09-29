@@ -39,7 +39,7 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
   <!--
     イントロを再生するかを、最初の描画より前に決める（名前が一瞬見えてから暗転しないように）。
     Home をページとして読み込んだときだけ再生し、サイト内の移動で Home に来たときは再生しない
-    （記事などへ直接入ってから閉じるで Home に来たときも含む）。2回目以降の訪問は短縮版にする。
+    （記事などへ直接入ってから閉じるで Home に来たときも含む）。
     prefers-reduced-motion のときは再生しない
   -->
   <script is:inline>
@@ -63,15 +63,7 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
       )
         return;
       window.__homeIntroPlayed = true;
-      let returning = false;
-      try {
-        returning = localStorage.getItem('intro-seen') === '1';
-        localStorage.setItem('intro-seen', '1');
-      } catch {
-        // 保存できない環境では、毎回はじめから再生する
-      }
       root.dataset.intro = 'dark';
-      if (returning) root.dataset.introSpeed = 'quick';
     })();
   </script>
   <!-- 星と銀河 -->
@@ -240,11 +232,7 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
     }
   }
   [data-home][data-intro] [data-home-title] {
-    animation: welcome-emerge 1.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
-  }
-  [data-home][data-intro-speed='quick'] [data-home-title] {
-    animation-duration: 0.5s;
-    animation-delay: 0s;
+    animation: welcome-emerge 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
   }
   /* ビッグバンの直前に名前が強く光る */
   [data-home][data-intro='charge'] [data-home-title] {
@@ -341,9 +329,7 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
     if (!root) return;
     updateFreshness();
     // イントロを再生するかは、ルート直後のスクリプトが data-intro で決めている
-    const intro = root.dataset.intro
-      ? createIntro(root.dataset.introSpeed === 'quick', performance.now() / 1000)
-      : undefined;
+    const intro = root.dataset.intro ? createIntro(performance.now() / 1000) : undefined;
     const paused = initiallyPaused();
     const scene = startScene(root, { intro, paused });
     stops = [scene.stop, ...(intro ? [runIntro(root, intro)] : [])];
