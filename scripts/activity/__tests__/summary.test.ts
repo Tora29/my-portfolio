@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { SUMMARY_MAX_LENGTH, TEMPLATE_PLACEHOLDER, extractSummary } from './summary';
+import { SUMMARY_MAX_LENGTH, TEMPLATE_PLACEHOLDER, extractSummary } from '../summary';
 
 describe('extractSummary', () => {
   it('最初の見出しより前の、最初の段落を要約にする', () => {

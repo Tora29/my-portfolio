@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { convertPullRequest, convertRelease, toJstDate } from './convert';
-import type { PullRequest, Release, Target } from './types';
+import { convertPullRequest, convertRelease, toJstDate } from '../convert';
+import type { PullRequest, Release, Target } from '../types';
 
 // GitHub API のレスポンスを変換した後の形（fixture）
 const target: Target = {

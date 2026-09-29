@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { assignTech } from './tech';
+import { assignTech } from '../tech';
 
 const known = new Set(['typescript', 'astro', 'aws']);
 

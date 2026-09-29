@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatExperience, yearsOfExperience } from './experience';
+import { formatExperience, yearsOfExperience } from '../experience';
 
 describe('yearsOfExperience', () => {
   it('最も古い職歴の開始年から数える（並び順に依存しない）', () => {

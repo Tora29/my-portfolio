@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { buildGraph, findParentCycle, groupByCategory, totalCount } from './build-graph';
-import type { ContentInput, TechInput } from './types';
+import { buildGraph, findParentCycle, groupByCategory, totalCount } from '../build-graph';
+import type { ContentInput, TechInput } from '../types';
 
 const tech: TechInput[] = [
   { id: 'aws', name: 'AWS', category: 'cloud' },

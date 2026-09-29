@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { popEntry, pushEntry, resolveBack, type BackEntry } from './back-history';
+import { popEntry, pushEntry, resolveBack, type BackEntry } from '../back-history';
 
 const aToB: BackEntry = { from: '/a', label: 'A', to: '/b' };
 const bToC: BackEntry = { from: '/b', label: 'B', to: '/c' };

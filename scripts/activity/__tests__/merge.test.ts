@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { mergeActivity } from './merge';
-import type { Activity } from './types';
+import { mergeActivity } from '../merge';
+import type { Activity } from '../types';
 
 const activity = (id: string, date: string, summary = '生成した要約'): Activity => ({
   id,

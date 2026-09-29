@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatShortDate, toDateString } from './format-date';
+import { formatShortDate, toDateString } from '../format-date';
 
 describe('formatShortDate', () => {
   it('月を英語の略称にし、日の先頭の0を除く', () => {

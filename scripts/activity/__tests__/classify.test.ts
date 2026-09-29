@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { classifyPullRequest } from './classify';
-import type { PullRequest } from './types';
+import { classifyPullRequest } from '../classify';
+import type { PullRequest } from '../types';
 
 const pr = (overrides: Partial<PullRequest> = {}): PullRequest => ({
   number: 1,

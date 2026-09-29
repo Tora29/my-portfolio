@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildTechTags, type TechTagSource } from './tech-tags';
+import { buildTechTags, type TechTagSource } from '../tech-tags';
 
 const source: TechTagSource = {
   tech: new Map([
