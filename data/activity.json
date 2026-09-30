@@ -1,5 +1,60 @@
 [
   {
+    "id": "Tora29/my-portfolio#34",
+    "date": "2026-09-29",
+    "type": "improvement",
+    "work": "personal-platform",
+    "headline": "スマートフォンでオープニングの動きがカクつく問題を改善",
+    "summary": "スマートフォンで Home を開いたときのオープニング（ビッグバンから惑星が集まるまで）の描画を軽くし、コマ落ちせず滑らかに動くようにした。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/34"
+  },
+  {
+    "id": "Tora29/my-portfolio#33",
+    "date": "2026-09-29",
+    "type": "fix",
+    "work": "personal-platform",
+    "headline": "オープニングで惑星が最後に急に縮む問題を修正",
+    "summary": "オープニングで、散らばった粒子が最後に一気に縮んで惑星になっていたのを、渦を巻きながら内側から少しずつ集まって形になるようにした。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/33"
+  },
+  {
+    "id": "Tora29/my-portfolio#32",
+    "date": "2026-09-29",
+    "type": "fix",
+    "work": "personal-platform",
+    "headline": "記事などへ直接入ってから Home に戻るとイントロが再生される問題を修正",
+    "summary": "記事や各セクションのURLから直接サイトに入り、閉じるボタンで Home に戻ったときに、Welcome のイントロが再生されないようにした。サイト内の移動では演出に待たされずに Home を見られる。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/32"
+  },
+  {
+    "id": "Tora29/my-portfolio#28",
+    "date": "2026-09-29",
+    "type": "docs",
+    "work": "personal-platform",
+    "headline": "記事「ハーネスは AI のための説明書でもある」を追加",
+    "summary": "AI 駆動開発で品質を保つための「ハーネスエンジニアリング」について、書く前に伝えるハーネスと書いたあとに確かめるハーネスの考え方と、このサイトでの実例をまとめた記事を公開した。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/28"
+  },
+  {
+    "id": "Tora29/my-portfolio#26",
+    "date": "2026-09-29",
+    "type": "improvement",
+    "work": "personal-platform",
+    "headline": "スマートフォンでトップページの描画を軽くした",
+    "summary": "スマートフォンでトップページの宇宙のシーンを軽くし、ラベルの文字を読みやすい大きさにした。見た目をほとんど変えずに、描画の負荷と電池の消費を抑えている。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/26"
+  },
+  {
     "id": "Tora29/my-portfolio#22",
     "date": "2026-09-28",
     "type": "fix",
