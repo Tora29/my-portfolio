@@ -45,6 +45,13 @@ gh repo view --json owner --jq .owner.login
 - 個人情報・顧客名・案件名・所属企業名（`.claude/rules/content-authoring.md` 「公開してよい情報」）
 - `.users/` や `content/_drafts/` のファイル（`.gitignore` 対象。強制追加しない）
 
+### 2-2. 動作確認
+
+`verify-app` skill の手順でチェックを実行する。
+
+- 1つでも失敗した場合は、コミットに進まず結果をユーザーに伝える
+- 最後の変更の後に同じ会話の中で `verify-app` を実行し、すべて通っている場合は省略してよい
+
 ### 3. ブランチを決める
 
 - **main にいる場合**：差分から type と内容を判断してブランチ名を決め、作成する（形式は `git-workflow.md`）
@@ -80,11 +87,13 @@ gh pr create --base main --head <branch-name> --title "<title>" --body "<body>"
 
 - タイトル：`<type>(<scope>): <閲覧者が読んで分かる日本語>`（Activityの見出しになる）
 - 本文：最初の段落に「何を変えて、閲覧者にとって何が良くなったか」を1〜2文。実装の詳細は見出し以降に書く
+  - 「確認方法」には、その変更に固有の確認だけを書く。verify-app の結果（チェックの表）は載せない（同じチェックを CI が PR ごとに実行し、Checks 欄に最新の結果が出るため）
 - ラベル：Activityとして載せない変更（type が feat / fix 等でも）には `activity:skip`、作品のTechと異なるTechを示したい場合は `tech:<id>` を `--label` で付ける。付けるかどうか迷う場合はユーザーに確認する
 
 ### 7. ユーザーに伝える
 
 - PR の URL
+- 動作確認の結果（verify-app の報告の表）
 - Activityとして公開される見出しと要約（タイトルの `: ` 以降と本文の最初の段落）
 - 「マージしたら『完了』と伝えてください」
 
