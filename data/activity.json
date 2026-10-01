@@ -1,5 +1,27 @@
 [
   {
+    "id": "Tora29/my-portfolio#35",
+    "date": "2026-09-30",
+    "type": "improvement",
+    "work": "personal-platform",
+    "headline": "オープニングを初回から短い1種類にまとめる",
+    "summary": "初めて訪れた人にも短いオープニングを見せるようにし、操作できるまでの時間を3.3秒から2.3秒に縮めた。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/35"
+  },
+  {
+    "id": "Tora29/my-portfolio#36",
+    "date": "2026-09-30",
+    "type": "improvement",
+    "work": "personal-platform",
+    "headline": "スマートフォンでセクションを開閉するときの演出のずれを改善",
+    "summary": "スマートフォンでセクションを開く・閉じるとき、粒子の演出だけが先に進み、ページの切り替えが遅れて見える問題を改善した。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/36"
+  },
+  {
     "id": "Tora29/my-portfolio#34",
     "date": "2026-09-29",
     "type": "improvement",
