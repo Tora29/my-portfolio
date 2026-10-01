@@ -1,0 +1,24 @@
+---
+title: testglass
+summary: テストコードを静的解析し、人間がレビューするためのテスト仕様書（HTML・Markdown・CSV）を生成するツール。
+status: developing
+github:
+  owner: Tora29
+  repo: testglass
+tech: [typescript, vitest, playwright, github-actions]
+---
+
+## Overview
+
+AI にテストを書かせると量が多く、実装まですべて読み切るのは難しい。せめてテストだけは人間がしっかりレビューできるように、テストコードを「テスト名・手順・期待結果・警告」の表に並べたテスト仕様書を生成する。テスト名と中身が一致しているかを、ソースを開かずに確かめられることが目的。
+
+- Vitest と Playwright のテストに対応する。テストは実行せず、構文木から読み取る
+- アサーションが無い、`.only` が残っている、モックの呼び出ししか見ていない、固定時間の待ちがある、などを警告として示す
+- 出力は CSS・JS・データを埋め込んだ単一ファイルの HTML で、そのまま共有したり CI の成果物にしたりできる。Markdown・CSV でも出力できる
+
+## Architecture
+
+- 「テストを読む → 中間 JSON（spec.json）に保存 → JSON から成果物を生成」の3段構成。中間 JSON は JSON Schema で形式を公開している
+- 入力（テストフレームワーク）と出力（HTML・Markdown・CSV）はアダプタ方式で、アダプタを1つ足すだけで対応を増やせる
+- 手順は LLM を使わず、TypeScript Compiler API で得た構文木からルールで組み立てる。同じコードからは常に同じ結果が出る
+- 警告ルールは構文木ではなく、テストごとに抽出した「事実」を見て判定する。言語が違っても同じルールがそのまま働く
