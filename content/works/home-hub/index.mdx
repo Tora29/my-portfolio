@@ -1,0 +1,38 @@
+---
+title: home-hub
+summary: 家計や日々の記録をまとめる招待制の Web アプリ。SvelteKit を Cloudflare Pages と D1 の上で動かしている。
+status: active
+github:
+  owner: Tora29
+  repo: home-hub
+tech:
+  [
+    typescript,
+    sveltekit,
+    tailwind-css,
+    cloudflare,
+    cloudflare-d1,
+    drizzle-orm,
+    terraform,
+    vitest,
+    playwright,
+    github-actions,
+  ]
+---
+
+## Overview
+
+家計や日々の記録を一か所で管理するための Web アプリ。実際に使いながら、必要になった機能を足している。
+
+- 支出を登録し、カテゴリ別の集計や月ごとの推移をダッシュボードで確認できる
+- 許可した Google アカウントだけが使える。許可リストが未設定のときは誰も入れない（fail-closed）
+- スマートフォンのホーム画面に追加して使える（PWA）
+
+## Architecture
+
+- SvelteKit を Cloudflare Pages（Workers ランタイム）で動かし、データは Cloudflare D1（SQLite）に Drizzle ORM で保存する
+- 初期表示は SSR、操作後は JSON API を呼んで再取得する。入力の検証には Zod のスキーマをフロントエンドとサーバーで共有する
+- D1 はトランザクションを持たないため、複数の書き込みは batch でまとめ、外部サービスへの通知は DB の更新後にベストエフォートで送る
+- Cloudflare の設定とシークレットは Terraform で管理し、plan / apply は GitHub Actions からのみ実行する。本番の値を手元に置かない
+- 結合テストは D1 をモックせず、Miniflare 上の実際の D1 に対して Vitest で行う。E2E は本番ビルドを起動して Playwright で確かめる
+- 日付は JST 固定で計算し、UTC で動く本番環境で月の境目がずれないようにしている
