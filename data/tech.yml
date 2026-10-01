@@ -54,6 +54,9 @@
 - id: sqlalchemy
   name: SQLAlchemy
   category: backend
+- id: drizzle-orm
+  name: Drizzle ORM
+  category: backend
 
 # Database
 - id: postgresql
@@ -63,6 +66,10 @@
   name: Cosmos DB
   category: database
   parent: azure
+- id: cloudflare-d1
+  name: Cloudflare D1
+  category: database
+  parent: cloudflare
 
 # Generative AI
 - id: rag

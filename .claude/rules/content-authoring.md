@@ -99,5 +99,5 @@ tech: [typescript, nextjs, python, azure, rag, claude-code, …]   # tech.yml �
 
 - 書かない：住所・電話・メール・生年月日などの個人情報、顧客名・案件名・社内システム名、所属企業名
 - 書かない：業務で知った顧客システムの脆弱性・不具合
-- 書かない：個人用・家族用Repositoryの内容
+- 書かない：家族構成・同居人・健康状態など私生活が分かる内容。個人用・家族用Repositoryを Works に載せるときは技術面だけを書き、該当するActivityは `data/activity-excluded.yml` で除外する
 - 職歴の期間は年単位、所属は業態で表記する
