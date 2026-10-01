@@ -311,7 +311,7 @@ function drawPlanet(p: Planet, t: number, intro: IntroTimeline) {
   ctx.fill();
 
   const glow = ctx.createRadialGradient(c, c, 0, c, c, R * 1.1);
-  glow.addColorStop(0, `rgba(${rgb},${0.16 + 0.1 * h})`);
+  glow.addColorStop(0, `rgba(${rgb},${0.24 + 0.1 * h})`);
   glow.addColorStop(1, `rgba(${rgb},0)`);
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, px, px);
@@ -337,7 +337,7 @@ function drawPlanet(p: Planet, t: number, intro: IntroTimeline) {
     }
     const depth = (v.z + 1) / 2;
     const lit = 0.65 + 0.7 * Math.max(0, v.x * light.x + v.y * light.y);
-    let a = Math.min(1, (0.15 + depth * depth) * lit) * f;
+    let a = Math.min(1, (0.3 + 1.15 * depth * depth) * lit) * f;
     if (trait.lines) a *= Math.cos(q.lat * 15) > 0.15 ? 1.2 : 0.3;
     // 螺旋の帯は、帯に沿ってゆっくり流れる
     if (trait.spiral)
@@ -454,7 +454,7 @@ export function updateOrbit(orbit: Orbit, planets: Planet[], t: number, coarsePo
     // 手前にある惑星は名前より前を通る
     p.wrap.style.zIndex = depth > 0.5 ? '30' : '5';
     p.wrap.style.setProperty('--ds', p.ds.toFixed(3));
-    p.wrap.style.setProperty('--depth-opacity', (0.7 + 0.3 * depth).toFixed(3));
+    p.wrap.style.setProperty('--depth-opacity', (0.82 + 0.18 * depth).toFixed(3));
     p.wrap.style.setProperty('--r', `${(orbit.size / 2) * p.ds}px`);
 
     const dx = orbit.cx - x;
