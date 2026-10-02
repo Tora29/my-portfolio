@@ -10,17 +10,20 @@ import '@/styles/global.css';
 import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 import { SITE_NAME } from '@/lib/site';
+import { toJsonLd } from '@/lib/structured-data';
 import SectionTransition from './SectionTransition.astro';
 
 interface Props {
-  /** <title> にそのまま使う（pageTitle() で組み立てる） */
+  /** <title> にそのまま使う（Home 以外は pageTitle() で組み立てる） */
   title: string;
   description?: string;
   /** OGP の種類。記事は article、それ以外は website */
   ogType?: 'website' | 'article';
+  /** 検索エンジン向けの構造化データ（lib/structured-data.ts で組み立てる）。Home でのみ渡す */
+  structuredData?: object;
 }
 
-const { title, description, ogType = 'website' } = Astro.props;
+const { title, description, ogType = 'website', structuredData } = Astro.props;
 // 共有・検索で同じページが別の URL として扱われないよう、正規の URL を示す。
 // ビルド時の Astro.url は出力ファイル名（/notes/foo.html、/index.html）になるため、公開される URL の形に直す
 const canonical = new URL(
@@ -69,6 +72,7 @@ const ogImage = new URL('/og.png', Astro.site);
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={`${SITE_NAME} – Web Engineer`} />
     <meta name="twitter:card" content="summary_large_image" />
+    {structuredData && <script type="application/ld+json" set:html={toJsonLd(structuredData)} />}
     <Font cssVariable="--font-montserrat" preload />
     <ClientRouter />
   </head>

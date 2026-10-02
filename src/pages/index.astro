@@ -8,12 +8,19 @@
 import { loadHomePage } from '@/features/home/load-home';
 import HomeScene from '@/features/home/HomeScene.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { pageTitle } from '@/lib/site';
+import { SITE_NAME } from '@/lib/site';
 import { loadProfile } from '@/lib/load-profile';
+import { homeStructuredData } from '@/lib/structured-data';
 
 const [page, profile] = await Promise.all([loadHomePage(), loadProfile()]);
+// 名前だけの <title> は同名の別サイトと区別できないため、職種を添える
+const title = `${SITE_NAME} | ${profile.role}`;
 ---
 
-<BaseLayout title={pageTitle()} description={`${profile.role}。${profile.intro}`}>
+<BaseLayout
+  title={title}
+  description={`${profile.role}。${profile.intro}`}
+  structuredData={homeStructuredData(profile, Astro.site!)}
+>
   <HomeScene page={page} />
 </BaseLayout>
