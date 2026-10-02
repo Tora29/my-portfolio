@@ -10,7 +10,7 @@ import { totalCount } from '@/lib/graph/build-graph';
 import { loadGraph } from '@/lib/graph/load-graph';
 import { formatShortDate, toDateString } from '@/lib/format-date';
 import { loadActivityItems } from '@/lib/load-activity';
-import { loadProfile } from '@/lib/load-profile';
+import { findLink, loadProfile } from '@/lib/load-profile';
 import { SECTIONS, type SectionId } from '@/lib/sections';
 
 /** Tech の衛星の上限。技術の数は多く、すべてを衛星にすると惑星が埋もれるため */
@@ -74,7 +74,7 @@ export async function loadHomePage(): Promise<HomePage> {
   return {
     name: profile.name,
     role: profile.role,
-    github: profile.links.find((link) => new URL(link.href).hostname === 'github.com')?.href,
+    github: findLink(profile.links, 'github.com'),
     planets: PLANET_IDS.map((id) => ({
       id,
       title: SECTIONS[id].title,

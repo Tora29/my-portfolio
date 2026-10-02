@@ -2,18 +2,22 @@
 /**
  * 記事一覧（.users/requirements/screens.md §5.7）
  *
- * 初期表示は10件。残りは「もっと見る」で展開する（JavaScript なしでは全件表示）
+ * 初期表示は10件。残りは「もっと見る」で展開する（JavaScript なしでは全件表示）。
+ * 技術記事は Zenn に書くため、末尾に Zenn への案内を置く。記事が0件でも出す
  */
+import Icon from '@/components/ui/Icon.astro';
 import ShowMore from '@/components/ui/ShowMore.astro';
 import TechTags from '@/components/ui/TechTags.astro';
 import type { NoteListItem } from './load-notes';
 
 interface Props {
   notes: NoteListItem[];
+  /** Zenn のプロフィールの URL。なければ案内を出さない */
+  zenn?: string;
 }
 
 const LIMIT = 10;
-const { notes } = Astro.props;
+const { notes, zenn } = Astro.props;
 ---
 
 {notes.length === 0 ? (
@@ -43,4 +47,16 @@ const { notes } = Astro.props;
       ))}
     </ul>
   </ShowMore>
+)}
+
+{zenn && (
+  <a
+    href={zenn}
+    target="_blank"
+    rel="noopener"
+    class="mt-10 inline-flex items-center gap-2 text-xs tracking-[0.2em] text-white/60 uppercase transition-colors hover:text-white"
+  >
+    Zenn の技術記事を見る
+    <Icon name="arrow-up-right" />
+  </a>
 )}

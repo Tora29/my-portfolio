@@ -2,16 +2,16 @@
 /**
  * 記事一覧（/notes）
  *
- * 書いた記事を新しい順に並べる（.users/requirements/screens.md §5.7）。
+ * 書いた記事を新しい順に並べ、末尾で Zenn の記事へ案内する（.users/requirements/screens.md §5.7）。
  * 表示用のデータの組み立ては features/notes/load-notes.ts が行い、ページは受け渡しだけをする
  */
-import { loadNotesList } from '@/features/notes/load-notes';
+import { loadNotesPage } from '@/features/notes/load-notes';
 import NoteList from '@/features/notes/NoteList.astro';
 import SectionLayout from '@/layouts/SectionLayout.astro';
 
-const notes = await loadNotesList();
+const { notes, zenn } = await loadNotesPage();
 ---
 
 <SectionLayout section="notes">
-  <NoteList notes={notes} />
+  <NoteList notes={notes} zenn={zenn} />
 </SectionLayout>
