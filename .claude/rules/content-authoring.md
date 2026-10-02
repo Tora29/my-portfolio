@@ -57,6 +57,14 @@ cover: ./cover.webp         # 任意
 
 本文には `## Overview` と `## Architecture` を書く。Development TimelineはActivityから自動生成するので本文に書かない。
 
+作品について書いた外部の記事（Zenn 等）があれば、本文の末尾に `## Articles` を設けて Markdown のリンクで並べる。技術記事は Zenn に書き、ポートフォリオに同じ記事を置かない。
+
+```mdx
+## Articles
+
+- [記事のタイトル](https://zenn.dev/tora29/articles/...)
+```
+
 ### Notes
 
 ```yaml
