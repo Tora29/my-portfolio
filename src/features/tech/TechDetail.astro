@@ -6,6 +6,7 @@
  * 0件の種類も見出しを残し「まだありません」と表示する（実績がないことも情報として示す）
  */
 import Chip from '@/components/ui/Chip.astro';
+import ExternalLink from '@/components/ui/ExternalLink.astro';
 import Subheading from '@/components/ui/Subheading.astro';
 import type { TechDetail } from './load-tech';
 
@@ -51,9 +52,9 @@ const emptyClass = 'mt-5 text-sm text-white/50';
           <time datetime={note.date} class="w-28 shrink-0 text-xs text-white/55">
             {note.date}
           </time>
-          <a href={note.href} class="text-base text-white/90 hover:text-white">
+          <ExternalLink href={note.href} class="text-base text-white/90 hover:text-white">
             {note.title}
-          </a>
+          </ExternalLink>
         </li>
       ))}
     </ul>

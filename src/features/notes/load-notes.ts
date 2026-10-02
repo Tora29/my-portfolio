@@ -1,22 +1,24 @@
 /**
- * 記事一覧・記事詳細に表示するデータの組み立て（.users/requirements/screens.md §5.7・§5.8）
+ * 記事一覧に表示するデータの組み立て（.users/requirements/screens.md §5.7）
  *
+ * 記事（articles/）の本文は Zenn で公開しているため、サイトには詳細ページを作らず、一覧から Zenn の記事へリンクする。
  * コンポーネントには、ここで組み立てた表示用の値だけを渡す（コンポーネントで getCollection を呼ばない）。
  */
-import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import { toDateString } from '@/lib/format-date';
 import { findLink, loadProfile } from '@/lib/load-profile';
 import { loadTechTags } from '@/lib/load-tech-tags';
 import type { TechTagList } from '@/lib/tech-tags';
+import { zennArticleUrl } from '@/lib/zenn';
 
 type Note = CollectionEntry<'notes'>;
 
 export interface NoteListItem {
   id: string;
+  /** Zenn の記事の URL */
   href: string;
   title: string;
   date: string;
-  category: string;
   tags: TechTagList;
 }
 
@@ -26,22 +28,12 @@ export interface NotesPage {
   zenn?: string;
 }
 
-export interface NoteDetail extends NoteListItem {
-  summary: string;
-  /** 大きく改訂した日。なければ undefined */
-  updated?: string;
-  Content: Awaited<ReturnType<typeof render>>['Content'];
-  /** 記事の works で明示的に関連付けた作品 */
-  relatedWorks: { href: string; title: string; summary: string }[];
-}
-
 async function toListItem(note: Note): Promise<NoteListItem> {
   return {
     id: note.id,
-    href: `/notes/${note.id}`,
+    href: zennArticleUrl(note.id),
     title: note.data.title,
     date: toDateString(note.data.date),
-    category: note.data.category,
     tags: await loadTechTags(note.data.tags),
   };
 }
@@ -60,24 +52,4 @@ export async function loadNotesPage(): Promise<NotesPage> {
     notes: await Promise.all(notes.toSorted(byDate).map(toListItem)),
     zenn: findLink(profile.links, 'zenn.dev'),
   };
-}
-
-/** 記事詳細：すべての記事について、本文と関連する作品を返す */
-export async function loadNoteDetails(): Promise<NoteDetail[]> {
-  const [notes, works] = await Promise.all([getCollection('notes'), getCollection('works')]);
-  const workById = new Map(works.map((e) => [e.id, e]));
-
-  return Promise.all(
-    notes.map(async (note) => ({
-      ...(await toListItem(note)),
-      summary: note.data.summary,
-      updated: note.data.updated && toDateString(note.data.updated),
-      Content: (await render(note)).Content,
-      // 存在しない作品への参照はスキーマ（reference）でビルドエラーになる
-      relatedWorks: note.data.works.map((ref) => {
-        const work = workById.get(ref.id)!;
-        return { href: `/works/${work.id}`, title: work.data.title, summary: work.data.summary };
-      }),
-    })),
-  );
 }

@@ -11,6 +11,7 @@ import type { ContentKind, Graph, TechNode } from '@/lib/graph/types';
 import { toDateString } from '@/lib/format-date';
 import { formatPeriod } from '@/lib/format-period';
 import { techHref } from '@/lib/load-tech-tags';
+import { zennArticleUrl } from '@/lib/zenn';
 
 /** Tech 一覧の関連コンテンツ名は1行で省略表示するため、それ以上は渡さない */
 const LIST_RELATED_CONTENTS = 4;
@@ -131,7 +132,7 @@ export async function loadTechDetails(): Promise<TechDetail[]> {
       .map((id) => index.notes.get(id)!)
       .toSorted((a, b) => b.data.date.getTime() - a.data.date.getTime())
       .map((e) => ({
-        href: `/notes/${e.id}`,
+        href: zennArticleUrl(e.id),
         title: e.data.title,
         date: toDateString(e.data.date),
       })),

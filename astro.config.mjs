@@ -15,6 +15,12 @@ export default defineConfig({
   // セクションを開く・閉じる演出の粒子はタップと同時に動き出し、ページの演出は取得後に始まるため、
   // 取得を待つ間だけ粒子が先に進んでしまう。画面に見えているリンクを先に読み込んでおき、この差をなくす
   prefetch: { prefetchAll: true, defaultStrategy: 'viewport' },
+  // 記事は Zenn に移した。以前の記事ページの URL は、外部から張られたリンクが切れないよう Zenn の記事へ転送する。
+  // GitHub Pages はサーバー側で転送できないため、Astro が転送用の HTML（meta refresh と canonical）を出力する
+  redirects: {
+    '/notes/static-first-portfolio': 'https://zenn.dev/tora29/articles/static-first-portfolio',
+    '/notes/harness-engineering': 'https://zenn.dev/tora29/articles/harness-as-ai-manual',
+  },
   integrations: [mdx(), sitemap()],
   // 英字の見出し・ラベル用。日本語は OS 標準のゴシック体を使うため Web フォントを読み込まない。
   // npm パッケージから読み込み、ビルド時に外部の CDN へ通信しない（remote: false）
