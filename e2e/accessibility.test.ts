@@ -13,7 +13,6 @@ const PAGES = [
   '/tech',
   '/tech/typescript',
   '/notes',
-  '/notes/static-first-portfolio',
   '/activity',
   '/does-not-exist',
 ];

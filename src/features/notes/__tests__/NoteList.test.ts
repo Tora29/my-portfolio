@@ -6,10 +6,9 @@ import NoteList from '../NoteList.astro';
 
 const note = (i: number): NoteListItem => ({
   id: `n${i}`,
-  href: `/notes/n${i}`,
+  href: `https://zenn.dev/example/articles/n${i}`,
   title: `記事${i}`,
   date: '2026-09-24',
-  category: 'Tech',
   tags: techTags('ts'),
 });
 

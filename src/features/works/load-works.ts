@@ -11,6 +11,7 @@ import type { IconName } from '@/components/ui/Icon.astro';
 import { formatShortDate, toDateString } from '@/lib/format-date';
 import { loadTechTags } from '@/lib/load-tech-tags';
 import type { TechTagList } from '@/lib/tech-tags';
+import { zennArticleUrl } from '@/lib/zenn';
 
 type Work = CollectionEntry<'works'>;
 type Activity = CollectionEntry<'activity'>;
@@ -130,7 +131,7 @@ function relatedNotesOf(
 ): RelatedNote[] {
   const workTech = new Set(work.data.tech.map((ref) => ref.id));
   const toItem = (note: CollectionEntry<'notes'>, reason: string): RelatedNote => ({
-    href: `/notes/${note.id}`,
+    href: zennArticleUrl(note.id),
     title: note.data.title,
     date: toDateString(note.data.date),
     reason,

@@ -7,11 +7,12 @@
  *
  * 設計：.users/design/engineering-graph.md §3・§5、書き方：.claude/rules/content-authoring.md
  */
+import { readFileSync } from 'node:fs';
 import { defineCollection, reference } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { parse } from 'yaml';
-import { noteIdFromFolder } from '@/lib/note-id';
+import { techIdsFromTopics, zennSlugFromFile } from '@/lib/zenn';
 
 /**
  * YAML の配列を読み込み、記述順を order として持たせる。
@@ -27,17 +28,14 @@ const orderedYaml = (fileName: string) =>
 
 /**
  * 1件1フォルダのコンテンツ（content/<種類>/<フォルダ>/index.mdx）を読み込む。
- * id（URL）はフォルダ名から toId で決める。既定はフォルダ名そのまま。
+ * id（URL）はフォルダ名そのまま。
  * content/_drafts/ は base の外にあるため読み込まれない（下書きが公開されない）
  */
-const byFolder = (
-  base: string,
-  toId: (folder: string, data: Record<string, unknown>) => string = (folder) => folder,
-) =>
+const byFolder = (base: string) =>
   glob({
     base,
     pattern: '*/index.mdx',
-    generateId: ({ entry, data }) => toId(entry.split('/')[0], data),
+    generateId: ({ entry }) => entry.split('/')[0],
   });
 
 /**
@@ -92,32 +90,45 @@ const works = defineCollection({
 });
 
 /**
- * 記事（content/notes/YYYY-MM-DD-<id>/index.mdx）。
- * フォルダ名の日付は公開日で、id（URL）には含めない。形式の誤りや date との食い違いはビルドエラーになる
+ * Tech の id の一覧。記事の topics を Tech に読み替えるために使う。
+ * スキーマの検証中は他のコレクションを読めないため、tech.yml を直接読む
+ */
+const techIds = (parse(readFileSync('data/tech.yml', 'utf8')) as { id: string }[]).map((t) => t.id);
+
+/**
+ * 記事（articles/<スラッグ>.md）。本文は Zenn で公開し、サイトには一覧と Tech・作品とのつながりだけを出す。
+ * Zenn の GitHub 連携は、リポジトリ直下の articles/ しか読まない（サブディレクトリを指定できない）ため、content/ の外に置く。
+ * ファイル名が Zenn のスラッグ（URL）で、そのまま id になる。
+ * 項目は Zenn の frontmatter に合わせ、サイトで使う形（date・tags）に読み替える
  */
 const notes = defineCollection({
-  loader: byFolder('content/notes', (folder, data) => noteIdFromFolder(folder, data.date)),
-  schema: z.object({
-    title: z.string(),
-    date: z.coerce.date(),
-    // 大きく改訂したときのみ
-    updated: z.coerce.date().optional(),
-    // 記事の大分類。1記事に1つ
-    category: z.enum([
-      'Backend',
-      'Frontend',
-      'Infrastructure',
-      'Architecture',
-      'AI',
-      'Career',
-      'Misc',
-    ]),
-    tags: techRefs,
-    // 一覧・OGP に使う1〜2文
-    summary: z.string(),
-    // この記事が扱う作品（作品ページの Related Notes に優先して表示される）
-    works: z.array(reference('works')).default([]),
+  loader: glob({
+    base: 'articles',
+    pattern: '*.md',
+    generateId: ({ entry }) => zennSlugFromFile(entry),
   }),
+  schema: z
+    .object({
+      title: z.string(),
+      // Zenn の記事の種類（tech：技術記事 / idea：アイデア記事）
+      type: z.enum(['tech', 'idea']),
+      // Zenn の topics（最大5つ）。Tech に対応するものが、サイトでの Tech になる（lib/zenn.ts）
+      topics: z.array(z.string()).min(1).max(5),
+      // 公開 Repository のため、published: false の下書きも GitHub 上で読めてしまう。
+      // 下書きは content/_drafts/ で書き、articles/ には公開する記事だけを置く
+      published: z.literal(true),
+      // 公開日。Zenn では任意だが、書かないと Zenn に同期した時刻が公開日になり、サイトからは分からないため必須にする
+      published_at: z.coerce.date(),
+      // サイトだけで使う項目（Zenn は知らない項目を無視する）。この記事が扱う作品（作品ページの Related Notes に優先して表示される）
+      works: z.array(reference('works')).default([]),
+    })
+    .transform(({ published_at, topics, ...note }) => ({
+      ...note,
+      date: published_at,
+      topics,
+      // reference('tech') と同じ形にする。読み替えた id は tech.yml にあるものだけなので、存在の確認は要らない
+      tags: techIdsFromTopics(topics, techIds).map((id) => ({ collection: 'tech' as const, id })),
+    })),
 });
 
 /** 職歴（content/career/*.yml。1社1ファイル。URL は持たない） */

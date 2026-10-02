@@ -2,9 +2,11 @@
 /**
  * 記事一覧（.users/requirements/screens.md §5.7）
  *
+ * 記事の本文は Zenn で公開しているため、タイトルから Zenn の記事を新しいタブで開く。
  * 初期表示は10件。残りは「もっと見る」で展開する（JavaScript なしでは全件表示）。
  * 技術記事は Zenn に書くため、末尾に Zenn への案内を置く。記事が0件でも出す
  */
+import ExternalLink from '@/components/ui/ExternalLink.astro';
 import Icon from '@/components/ui/Icon.astro';
 import ShowMore from '@/components/ui/ShowMore.astro';
 import TechTags from '@/components/ui/TechTags.astro';
@@ -34,13 +36,12 @@ const { notes, zenn } = Astro.props;
             {note.date}
           </time>
           <div class="min-w-0">
-            <p class="text-[11px] tracking-[0.2em] text-(--accent) uppercase">{note.category}</p>
-            <a
+            <ExternalLink
               href={note.href}
-              class="mt-1 block text-base text-white/90 hover:text-white sm:text-lg"
+              class="block text-base text-white/90 hover:text-white sm:text-lg"
             >
               {note.title}
-            </a>
+            </ExternalLink>
             <TechTags list={note.tags} class="mt-3" />
           </div>
         </li>

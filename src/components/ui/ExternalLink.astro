@@ -1,0 +1,21 @@
+---
+/**
+ * 外部サイトへのリンク（Zenn の記事など）
+ *
+ * 新しいタブで開き、文字の後ろに外部リンクの印（↗）を付ける。サイト内のリンクと見分けられるようにするため。
+ * 見た目（文字の大きさ・色）は呼び出し側が class で指定する
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  href: string;
+  class?: string;
+}
+
+const { href, class: className } = Astro.props;
+---
+
+<a href={href} target="_blank" rel="noopener" class={className}>
+  <slot />
+  <Icon name="arrow-up-right" class="inline text-xs text-white/55" />
+</a>

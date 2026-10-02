@@ -6,6 +6,7 @@
  * Development Timeline と Related Notes は、Activity・記事がまだないうちは表示しない
  * （「まだありません」が並ぶと、作品そのものの情報が埋もれるため）
  */
+import ExternalLink from '@/components/ui/ExternalLink.astro';
 import Icon from '@/components/ui/Icon.astro';
 import Prose from '@/components/ui/Prose.astro';
 import Subheading from '@/components/ui/Subheading.astro';
@@ -104,9 +105,9 @@ const { Content } = work;
             {note.date}
           </time>
           <div class="min-w-0">
-            <a href={note.href} class="text-base text-white/90 hover:text-white">
+            <ExternalLink href={note.href} class="text-base text-white/90 hover:text-white">
               {note.title}
-            </a>
+            </ExternalLink>
             <p class="mt-1 text-[11px] text-white/55">{note.reason}</p>
           </div>
         </li>
