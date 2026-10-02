@@ -1,5 +1,148 @@
 [
   {
+    "id": "Tora29/testglass#22",
+    "date": "2026-10-01",
+    "type": "docs",
+    "work": "testglass",
+    "headline": "出力の言語をロケールから自動で決めない理由を README に書く",
+    "summary": "出力の言語を OS のロケールから自動で決めない理由を、README の日本語版・英語版に書いた。手元と CI でレポートの言語が変わらないことと、英語にしたいときは --lang en で指定すればよいことが分かる。",
+    "tech": ["typescript", "vitest", "playwright", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/testglass/pull/22"
+  },
+  {
+    "id": "Tora29/my-portfolio#42",
+    "date": "2026-10-01",
+    "type": "fix",
+    "work": "personal-platform",
+    "headline": "入口の惑星が暗く見えにくい問題を修正",
+    "summary": "入口の宇宙のシーンで、惑星の表面の粒子と色味を明るくし、軌道の奥にある惑星や球の影の側も見えやすくした。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/42"
+  },
+  {
+    "id": "Tora29/testglass#19",
+    "date": "2026-10-01",
+    "type": "feature",
+    "work": "testglass",
+    "headline": "CLI のヘルプとメッセージを英語でも表示できるようにする",
+    "summary": "CLI のヘルプ・進行状況・エラーメッセージを、--lang en か設定ファイルの \"lang\": \"en\" で英語でも表示できるようにした。レポートだけでなく、ツールの操作もすべて英語で行えるようになった。",
+    "tech": ["typescript", "vitest", "playwright", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/testglass/pull/19"
+  },
+  {
+    "id": "Tora29/testglass#18",
+    "date": "2026-10-01",
+    "type": "docs",
+    "work": "testglass",
+    "headline": "README にスクリーンショットと英語版を追加する",
+    "summary": "README の先頭にテスト仕様書のスクリーンショットを載せ、日本語の本文をすべて英訳した English の節を追加した。何を見つけるツールかが一目で分かり、npm で見つけた海外の人も使い方を読めるようになった。",
+    "tech": ["typescript", "vitest", "playwright", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/testglass/pull/18"
+  },
+  {
+    "id": "Tora29/testglass#16",
+    "date": "2026-10-01",
+    "type": "feature",
+    "work": "testglass",
+    "headline": "テスト仕様書を英語でも出力できるようにする",
+    "summary": "テスト仕様書（HTML・Markdown・CSV）を、日本語に加えて英語でも出力できるようにした。--lang en か設定ファイルの \"lang\": \"en\" を指定すると、判定・指摘・列名・ボタンなどの表示がすべて英語になる。",
+    "tech": ["typescript", "vitest", "playwright", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/testglass/pull/16"
+  },
+  {
+    "id": "Tora29/my-portfolio#41",
+    "date": "2026-10-01",
+    "type": "docs",
+    "work": "personal-platform",
+    "headline": "Works に home-hub を追加",
+    "summary": "SvelteKit と Cloudflare（Pages・D1）で作っている Web アプリ home-hub を Works に追加し、構成やテストの工夫を読めるようにした。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/41"
+  },
+  {
+    "id": "Tora29/testglass#15",
+    "date": "2026-10-01",
+    "type": "improvement",
+    "work": "testglass",
+    "headline": "spec.json を表示の言語に依存しない形にする",
+    "summary": "spec.json の警告から日本語の文言を外し、ルールと詳細だけを持たせるようにした。文言はレポートを出力するときに組み立てるので、英語のレポートを出力できるようにする準備が整った。",
+    "tech": ["typescript", "vitest", "playwright", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/testglass/pull/15"
+  },
+  {
+    "id": "Tora29/my-portfolio#39",
+    "date": "2026-10-01",
+    "type": "docs",
+    "work": "personal-platform",
+    "headline": "Works に testglass を追加",
+    "summary": "テストコードを静的解析してレビュー用のテスト仕様書を生成するツール「testglass」を Works に追加し、その開発の経過も Activity に載るようにした。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/39"
+  },
+  {
+    "id": "Tora29/testglass#12",
+    "date": "2026-10-01",
+    "type": "docs",
+    "work": "testglass",
+    "headline": "ESLint との違いを README に書く",
+    "summary": "README に、ESLint との違いを説明する節を追加した。ESLint はコードを書く人に向けた指摘、testglass はテストをレビューする人に向けた仕様書であり、両方を併用する想定であることが分かるようにした。",
+    "tech": ["typescript", "vitest", "playwright", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/testglass/pull/12"
+  },
+  {
+    "id": "Tora29/testglass#4",
+    "date": "2026-09-30",
+    "type": "docs",
+    "work": "testglass",
+    "headline": "CLI のコマンドとオプションの説明を分かりやすくする",
+    "summary": "README に CLI のコマンドの一覧を追加し、各オプションがどのコマンドで使えるかと、既定値の決まり方を正確に書いた。",
+    "tech": ["typescript", "vitest", "playwright", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/testglass/pull/4"
+  },
+  {
+    "id": "Tora29/testglass#3",
+    "date": "2026-09-30",
+    "type": "feature",
+    "work": "testglass",
+    "headline": "テスト仕様書を Markdown と CSV でも出力できるようにする",
+    "summary": "テスト仕様書を、HTML に加えて Markdown と CSV でも出力できるようにした。Markdown は PR やドキュメントにそのまま貼れ、CSV は Excel で絞り込みや並べ替えができる。",
+    "tech": ["typescript", "vitest", "playwright", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/testglass/pull/3"
+  },
+  {
+    "id": "Tora29/testglass#2",
+    "date": "2026-09-30",
+    "type": "feature",
+    "work": "testglass",
+    "headline": "レポートの文字を一回り大きくして読みやすくする",
+    "summary": "HTML レポートの文字が全体的に小さく読みにくかったので、一回り大きくした。あわせて、ばらばらだった文字サイズを 5 段階に揃えた。",
+    "tech": ["typescript", "vitest", "playwright", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/testglass/pull/2"
+  },
+  {
+    "id": "Tora29/testglass#1",
+    "date": "2026-09-30",
+    "type": "feature",
+    "work": "testglass",
+    "headline": "指摘の一覧を判定ごとに整理し、読みやすくする",
+    "summary": "HTML レポートの指摘一覧を、要修正・要確認ごとに指摘の種類と件数を並べる形に作り直した。ラベルも「expect がない」のように具体的な言葉にし、文字の大きさとコントラストを見直した。",
+    "tech": ["typescript", "vitest", "playwright", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/testglass/pull/1"
+  },
+  {
     "id": "Tora29/my-portfolio#35",
     "date": "2026-09-30",
     "type": "improvement",
@@ -253,6 +396,28 @@
     "url": "https://github.com/Tora29/my-portfolio/pull/6"
   },
   {
+    "id": "Tora29/home-hub#62",
+    "date": "2026-09-27",
+    "type": "fix",
+    "work": "home-hub",
+    "headline": "モーダルをネイティブ dialog 化し、LINE 通知を waitUntil でバックグラウンド実行",
+    "summary": "モーダルをネイティブ dialog 化し、LINE 通知を waitUntil でバックグラウンド実行",
+    "tech": [
+      "typescript",
+      "sveltekit",
+      "tailwind-css",
+      "cloudflare",
+      "cloudflare-d1",
+      "drizzle-orm",
+      "terraform",
+      "vitest",
+      "playwright",
+      "github-actions"
+    ],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/home-hub/pull/62"
+  },
+  {
     "id": "Tora29/my-portfolio#5",
     "date": "2026-09-27",
     "type": "feature",
@@ -284,5 +449,115 @@
     "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
     "techSource": "work",
     "url": "https://github.com/Tora29/my-portfolio/pull/1"
+  },
+  {
+    "id": "Tora29/home-hub#25",
+    "date": "2026-06-03",
+    "type": "feature",
+    "work": "home-hub",
+    "headline": "ALLOWED_EMAILS によるメール許可リスト機能を追加",
+    "summary": "ALLOWED_EMAILS によるメール許可リスト機能を追加",
+    "tech": [
+      "typescript",
+      "sveltekit",
+      "tailwind-css",
+      "cloudflare",
+      "cloudflare-d1",
+      "drizzle-orm",
+      "terraform",
+      "vitest",
+      "playwright",
+      "github-actions"
+    ],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/home-hub/pull/25"
+  },
+  {
+    "id": "Tora29/home-hub#21",
+    "date": "2026-06-03",
+    "type": "feature",
+    "work": "home-hub",
+    "headline": "メール/パスワード認証をGoogle OAuth認証に移行",
+    "summary": "メール/パスワード認証をGoogle OAuth認証に移行",
+    "tech": [
+      "typescript",
+      "sveltekit",
+      "tailwind-css",
+      "cloudflare",
+      "cloudflare-d1",
+      "drizzle-orm",
+      "terraform",
+      "vitest",
+      "playwright",
+      "github-actions"
+    ],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/home-hub/pull/21"
+  },
+  {
+    "id": "Tora29/home-hub#18",
+    "date": "2026-05-20",
+    "type": "feature",
+    "work": "home-hub",
+    "headline": "Cloudflare インフラの Terraform 管理移行",
+    "summary": "Cloudflare インフラの Terraform 管理移行",
+    "tech": [
+      "typescript",
+      "sveltekit",
+      "tailwind-css",
+      "cloudflare",
+      "cloudflare-d1",
+      "drizzle-orm",
+      "terraform",
+      "vitest",
+      "playwright",
+      "github-actions"
+    ],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/home-hub/pull/18"
+  },
+  {
+    "id": "Tora29/home-hub#13",
+    "date": "2026-04-15",
+    "type": "fix",
+    "work": "home-hub",
+    "headline": "D1 トランザクション非対応による LINE 通知 500 エラーを修正",
+    "summary": "D1 トランザクション非対応による LINE 通知 500 エラーを修正",
+    "tech": [
+      "typescript",
+      "sveltekit",
+      "tailwind-css",
+      "cloudflare",
+      "cloudflare-d1",
+      "drizzle-orm",
+      "terraform",
+      "vitest",
+      "playwright",
+      "github-actions"
+    ],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/home-hub/pull/13"
+  },
+  {
+    "id": "Tora29/home-hub#6",
+    "date": "2026-04-08",
+    "type": "feature",
+    "work": "home-hub",
+    "headline": "PWA対応を追加",
+    "summary": "PWA対応を追加",
+    "tech": [
+      "typescript",
+      "sveltekit",
+      "tailwind-css",
+      "cloudflare",
+      "cloudflare-d1",
+      "drizzle-orm",
+      "terraform",
+      "vitest",
+      "playwright",
+      "github-actions"
+    ],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/home-hub/pull/6"
   }
 ]
