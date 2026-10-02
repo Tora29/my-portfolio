@@ -1,5 +1,5 @@
 ---
-title: "PRをマージするだけで勝手に育つポートフォリオを Astro + GitHub Actions で作った"
+title: "PRをマージするだけで勝手に育つポートフォリオを Astro + GitHub Actions で作ってみた"
 emoji: "🪐"
 type: "tech"
 topics: ["typescript", "astro", "githubactions", "ポートフォリオ", "個人開発"]
