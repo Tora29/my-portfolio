@@ -5,6 +5,7 @@
  */
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import { toDateString } from '@/lib/format-date';
+import { findLink, loadProfile } from '@/lib/load-profile';
 import { loadTechTags } from '@/lib/load-tech-tags';
 import type { TechTagList } from '@/lib/tech-tags';
 
@@ -17,6 +18,12 @@ export interface NoteListItem {
   date: string;
   category: string;
   tags: TechTagList;
+}
+
+export interface NotesPage {
+  notes: NoteListItem[];
+  /** Zenn のプロフィールの URL。profile.yml の links に Zenn がなければ undefined（案内を出さない） */
+  zenn?: string;
 }
 
 export interface NoteDetail extends NoteListItem {
@@ -43,10 +50,16 @@ async function toListItem(note: Note): Promise<NoteListItem> {
 const byDate = (a: Note, b: Note) =>
   b.data.date.getTime() - a.data.date.getTime() || a.data.title.localeCompare(b.data.title, 'ja');
 
-/** 記事一覧：すべての記事を新しい順に返す */
-export async function loadNotesList(): Promise<NoteListItem[]> {
-  const notes = await getCollection('notes');
-  return Promise.all(notes.toSorted(byDate).map(toListItem));
+/**
+ * 記事一覧：すべての記事を新しい順に返す。
+ * 技術記事は Zenn に書くため、一覧の末尾に Zenn への案内を出す（ここに無い記事を探しに来た人が行き止まりにならないように）
+ */
+export async function loadNotesPage(): Promise<NotesPage> {
+  const [notes, profile] = await Promise.all([getCollection('notes'), loadProfile()]);
+  return {
+    notes: await Promise.all(notes.toSorted(byDate).map(toListItem)),
+    zenn: findLink(profile.links, 'zenn.dev'),
+  };
 }
 
 /** 記事詳細：すべての記事について、本文と関連する作品を返す */

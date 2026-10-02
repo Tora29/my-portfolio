@@ -11,6 +11,8 @@ profile:
   links:
     - label: GitHub
       href: https://github.com/Tora29
+    - label: Zenn
+      href: https://zenn.dev/tora29
   certifications:
     - 生成AIパスポート
     - 基本情報技術者

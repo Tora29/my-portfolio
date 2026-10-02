@@ -36,4 +36,13 @@ describe('NoteList', () => {
     expect(root.querySelector('[data-extra]')).toBeNull();
     expect(root.querySelector('[data-show-more-button]')).toBeNull();
   });
+
+  it('Zenn の URL があるときだけ案内を出す（記事が0件でも出す）', async () => {
+    const without = await renderAstro(NoteList, { props: { notes: [] } });
+    expect(without.querySelector('a[href^="https://zenn.dev"]')).toBeNull();
+    const withZenn = await renderAstro(NoteList, {
+      props: { notes: [], zenn: 'https://zenn.dev/example' },
+    });
+    expect(withZenn.querySelector('a[href="https://zenn.dev/example"]')).not.toBeNull();
+  });
 });
