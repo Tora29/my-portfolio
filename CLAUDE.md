@@ -36,7 +36,7 @@
 
 ## 作業時の注意
 
-- `src/` / `scripts/` / `e2e/` / `content/` / `data/` を読み書きする前に、`.claude/rules/` のうち frontmatter の `paths` が合うルールを読む（`paths` 付きのルールは Read ツールでファイルを開いたときしか自動で読み込まれず、Bash での読み書きや新規作成では読み込まれないため）
-- コンテンツ（`content/` / `data/`）は公開Repositoryかつ公開サイトに出る。個人情報・顧客情報・所属企業名を書かない
+- `src/` / `scripts/` / `e2e/` / `content/` / `data/` / `articles/` を読み書きする前に、`.claude/rules/` のうち frontmatter の `paths` が合うルールを読む（`paths` 付きのルールは Read ツールでファイルを開いたときしか自動で読み込まれず、Bash での読み書きや新規作成では読み込まれないため）
+- コンテンツ（`content/` / `data/` / `articles/`）は公開Repositoryかつ公開サイトに出る（`articles/` は Zenn にも公開される）。個人情報・顧客情報・所属企業名を書かない
 - マージ済みPRのタイトルと本文はActivityとしてサイトに公開される（`.claude/rules/git-workflow.md`）
 - `data/activity.json` は main で直接編集しない（確認用PR `bot/activity` 上でのみ修正する）

@@ -7,10 +7,11 @@ Astro（SSG）で構築する。コンテンツ・データ・コードを分離
 ```text
 my-portfolio/
 ├─ content/                    # 手書きコンテンツ（Gitが唯一の正）
-│  ├─ _drafts/                 #   下書き（.gitignore 対象。コミットしない）
+│  ├─ _drafts/                 #   下書き（.gitignore 対象。コミットしない。記事の下書きもここ）
 │  ├─ works/<id>/index.mdx     #   作品（1作品1フォルダ。フォルダ名 = id。画像も同じフォルダ）
-│  ├─ notes/YYYY-MM-DD-<id>/index.mdx  # 記事（1記事1フォルダ。フォルダ名 = 公開日 + id。画像も同じフォルダ）
 │  └─ career/*.yml             #   職歴（1社1ファイル）
+├─ articles/<スラッグ>.md      # 記事（Zenn の GitHub 連携で公開する。ファイル名 = スラッグ = id）
+├─ images/                     # 記事の画像（Zenn が読む）
 ├─ data/                       # 構造化データ
 │  ├─ profile.yml              #   名前・職種・Values・Next・資格・外部リンク
 │  ├─ tech.yml                 #   Tech一覧（id・表示名・親子関係・ジャンル）
@@ -47,7 +48,8 @@ my-portfolio/
 ### content/ と data/
 
 - 手書きのコンテンツは `content/`、構造化データは `data/` に置く。`src/` にコンテンツを置かない
-- Content Collectionsの読み込み対象に `content/_drafts/` を含めない
+- 例外として、記事は `articles/`、その画像は `images/` に置く。Zenn の GitHub 連携は、記事と画像をリポジトリ直下のこの2つからしか読まない（サブディレクトリを指定できない）ため
+- Content Collectionsの読み込み対象に `content/_drafts/` を含めない（記事の下書きも `articles/` に置かないため、公開前の記事は読み込まれない）
 - 書き方（id・frontmatter・画像・下書きから公開までの流れ）は `content-authoring.md` に従う
 - スキーマは `src/content.config.ts` に集約する。コンテンツの項目を増やすときはスキーマも同時に更新する
 - Zod は `astro/zod` から import する（`scripts/` を含む。`zod` は依存に入れていない）
@@ -58,6 +60,7 @@ my-portfolio/
 
 - URLとデータの受け渡しのみを書く。表示の組み立てやデータ加工は `features/` / `lib/` に置く
 - ページ構成は `.users/requirements/screens.md` の画面一覧と1対1で対応させる
+- 記事の詳細ページは作らない（本文は Zenn で公開する）。以前の記事ページの URL は `astro.config.mjs` の `redirects` で Zenn の記事へ転送する
 
 ```text
 pages/
@@ -69,8 +72,7 @@ pages/
 ├─ works/[id].astro     → /works/[id]
 ├─ tech/index.astro     → /tech
 ├─ tech/[id].astro      → /tech/[id]
-├─ notes/index.astro    → /notes
-└─ notes/[id].astro     → /notes/[id]
+└─ notes/index.astro    → /notes
 ```
 
 ### src/features/
@@ -99,5 +101,6 @@ pages/
 | 1つの画面でしか使わない部品 | `features/<機能>/` |
 | 複数の画面で使う、見た目だけの部品 | `components/ui/` |
 | 複数の画面で使う、表示を持たない処理 | `lib/` |
-| 記事・作品の本文 | `content/` |
+| 作品の本文 | `content/` |
+| 記事（Zenn で公開するもの） | `articles/` |
 | 一覧・設定のような構造化データ | `data/` |
