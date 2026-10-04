@@ -1,5 +1,60 @@
 [
   {
+    "id": "Tora29/my-portfolio#50",
+    "date": "2026-10-03",
+    "type": "docs",
+    "work": "personal-platform",
+    "headline": "ポートフォリオ記事のタイトルを変更",
+    "summary": "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com> Claude-Session:",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/50"
+  },
+  {
+    "id": "Tora29/my-portfolio#48",
+    "date": "2026-10-02",
+    "type": "feature",
+    "work": "personal-platform",
+    "headline": "Notes に Zenn の記事を並べる",
+    "summary": "記事を Zenn で公開するようにしたため、Notes の一覧・作品・Tech のページから Zenn の記事へ直接たどれるようにした。以前の記事ページの URL は、リンクが切れないよう Zenn の記事へ転送する。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/48"
+  },
+  {
+    "id": "Tora29/my-portfolio#46",
+    "date": "2026-10-02",
+    "type": "docs",
+    "work": "personal-platform",
+    "headline": "既存の2本の記事を Zenn で公開",
+    "summary": "技術記事を Zenn に集約するため、ポートフォリオに書いた2本の記事を Zenn で公開した。あわせて、ポートフォリオの記事は他のポートフォリオと違う仕組みが伝わるよう、実装に沿った説明を書き足した。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/46"
+  },
+  {
+    "id": "Tora29/my-portfolio#45",
+    "date": "2026-10-02",
+    "type": "feature",
+    "work": "personal-platform",
+    "headline": "Zenn の技術記事へたどれるようにする",
+    "summary": "技術記事を Zenn に書くことにしたため、About と Notes から Zenn のプロフィールへたどれるようにした。あわせて、npm に公開した testglass の状態を「運用中」に更新した。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/45"
+  },
+  {
+    "id": "Tora29/my-portfolio#44",
+    "date": "2026-10-02",
+    "type": "feature",
+    "work": "personal-platform",
+    "headline": "検索結果でこのサイトを見つけやすくする",
+    "summary": "検索エンジンがサイト内のページを辿りやすくし、「Tora29」が GitHub で活動する Web Engineer であることを伝えるようにした。同じ名前の別サイトと区別しやすくなる。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/44"
+  },
+  {
     "id": "Tora29/testglass#22",
     "date": "2026-10-01",
     "type": "docs",
