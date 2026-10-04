@@ -5,7 +5,7 @@
  * 項目の不足・型の誤り・存在しない Tech や作品への参照は、すべてビルドエラーになる。
  * コンテンツの項目を増やすときは、このファイルも同時に更新する。
  *
- * 設計：.users/design/engineering-graph.md §3・§5、書き方：.claude/rules/content-authoring.md
+ * 設計：.users/design/engineering-graph.md §3・§5、書き方：.claude/rules/content-authoring.md・zenn-articles.md
  */
 import { readFileSync } from 'node:fs';
 import { defineCollection, reference } from 'astro:content';
@@ -29,7 +29,6 @@ const orderedYaml = (fileName: string) =>
 /**
  * 1件1フォルダのコンテンツ（content/<種類>/<フォルダ>/index.mdx）を読み込む。
  * id（URL）はフォルダ名そのまま。
- * content/_drafts/ は base の外にあるため読み込まれない（下書きが公開されない）
  */
 const byFolder = (base: string) =>
   glob({
@@ -114,8 +113,8 @@ const notes = defineCollection({
       type: z.enum(['tech', 'idea']),
       // Zenn の topics（最大5つ）。Tech に対応するものが、サイトでの Tech になる（lib/zenn.ts）
       topics: z.array(z.string()).min(1).max(5),
-      // 公開 Repository のため、published: false の下書きも GitHub 上で読めてしまう。
-      // 下書きは content/_drafts/ で書き、articles/ には公開する記事だけを置く
+      // 公開 Repository のため、main に置くと published: false でも GitHub 上で読めてしまう。
+      // 公開前の記事は作業ブランチの上で書き、main の articles/ には公開する記事だけを置く
       published: z.literal(true),
       // 公開日。Zenn では任意だが、書かないと Zenn に同期した時刻が公開日になり、サイトからは分からないため必須にする
       published_at: z.coerce.date(),

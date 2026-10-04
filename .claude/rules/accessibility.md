@@ -45,7 +45,7 @@ paths:
 
 ## 代替テキスト・名前（1.1.1 / 4.1.2）
 
-- 画像には `alt` を書く（`content-authoring.md`）。装飾の画像・アイコン・Canvas は `aria-hidden="true"` にする
+- 画像には `alt` を書く（`content-authoring.md`・`zenn-articles.md`）。装飾の画像・アイコン・Canvas は `aria-hidden="true"` にする
 - アイコンだけのリンク・ボタンには `aria-label` を付ける（例：`閉じて Home に戻る`）
 - 見えている文字と `aria-label` を食い違わせない（音声入力で押せなくなるため）
 

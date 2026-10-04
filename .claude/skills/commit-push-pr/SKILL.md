@@ -43,7 +43,7 @@ gh repo view --json owner --jq .owner.login
 
 - `.env`・トークン・APIキーなどの秘密情報
 - 個人情報・顧客名・案件名・所属企業名（`.claude/rules/content-authoring.md` 「公開してよい情報」）
-- `.users/` や `content/_drafts/` のファイル（`.gitignore` 対象。強制追加しない）
+- `.users/` のファイル（`.gitignore` 対象。強制追加しない）
 
 ### 2-2. 動作確認
 
