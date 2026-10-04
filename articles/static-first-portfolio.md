@@ -25,7 +25,7 @@ works: ["personal-platform"]
 ざっくり、こんな流れです。
 
 ```mermaid
-flowchart LR
+flowchart TD
   A["作品の Repository で PR をマージ"] --> B["毎朝4時に PR を取得"]
   B --> C["確認用 PR を作成・更新"]
   C -->|"人が確認してマージ"| D["main"]
