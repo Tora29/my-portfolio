@@ -1,6 +1,6 @@
 ---
 name: polish-text
-description: 日本語の文章を、意味を変えずに読みやすく推敲する。Zenn の記事（articles/・content/_drafts/）、PR のタイトルと本文、作品の Overview など、人が読む文章を書いたあと、公開する前に使う。Zenn の記事は書き手の口調を保ち、頼まれればその口調に寄せる。直す箇所を理由付きで示し、採るかどうかはユーザーが決める。
+description: 日本語の文章を、意味を変えずに読みやすく推敲する。Zenn の記事（articles/）、PR のタイトルと本文、作品の Overview など、人が読む文章を書いたあと、公開する前に使う。Zenn の記事は書き手の口調を保ち、頼まれればその口調に寄せる。直す箇所を理由付きで示し、採るかどうかはユーザーが決める。
 ---
 
 # polish-text
@@ -11,7 +11,7 @@ Zenn の記事は書き手本人の口調で書く。口調の特徴・入れ方
 
 ## 対象
 
-- `articles/` の記事、`content/_drafts/` の下書き
+- `articles/` の記事
 - PR のタイトルと本文（Activity としてサイトに公開される。`.claude/rules/git-workflow.md`）
 - `content/` の作品・職歴の文章、`data/profile.yml` の紹介文
 

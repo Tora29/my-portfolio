@@ -1,46 +1,40 @@
 ---
 paths:
-  - "articles/**"
   - "content/**"
   - "data/**"
 ---
 
 # コンテンツ作成ルール
 
-`content/` の作品・職歴、`articles/` の記事、`data/` の構造化データを書くときのルール。項目の正確な定義は `src/content.config.ts` のスキーマを正とする。
+`content/` の作品・職歴と `data/` の構造化データを書くときのルール。項目の正確な定義は `src/content.config.ts` のスキーマを正とする。
+
+記事（`articles/`）と記事の画像（`images/`）は `zenn-articles.md` に従う。このルールの「Tech の参照」と「公開してよい情報」は、記事にも当てはまる。
 
 ## 配置と id
 
 - 作品は1件1フォルダとし、本文は `index.mdx` に書く。画像は同じフォルダに置く。フォルダ名がそのまま id（URL）になる
-- 記事は `articles/<スラッグ>.md` に1件1ファイルで書く。本文は Zenn の GitHub 連携で Zenn に公開され、サイトには一覧だけが出る
-  - Zenn はリポジトリ直下の `articles/` しか読まないため、`content/` の外に置く
-  - ファイル名が Zenn のスラッグ（`https://zenn.dev/tora29/articles/<スラッグ>`）になる。英小文字・数字・ハイフン・アンダースコアの12〜50字にする（合わないとビルドエラー）
-  - スラッグは自分の記事の中だけでなく、Zenn 全体で重複できない。`harness-engineering` のような一般的な名前は他の人が使っていることがあるため、`https://zenn.dev/tora29/articles/<スラッグ>` が 404 になる（まだ使われていない）ことを確かめてから決める。ほかの人の非公開の記事と重なっている場合は外から分からないので、マージ後に Zenn のデプロイ履歴で同期が成功したかも確かめる
 - 作品の id は英小文字・数字・ハイフンのみ（kebab-case）
-- 公開後に id・スラッグを変えない（URLが変わり、リンクと検索評価が失われる）
+- 公開後に id を変えない（URLが変わり、リンクと検索評価が失われる）
 
 ```text
 content/
-├─ _drafts/                    # 下書き（コミットしない。フォルダ名に日付は不要）
-│  └─ rag-langfuse/index.mdx
 ├─ works/
 │  └─ personal-platform/
 │     ├─ index.mdx             # → /works/personal-platform
 │     └─ cover.webp
 └─ career/
    └─ 2024-consulting.yml      # 職歴は1社1ファイル（URLを持たない）
-
-articles/
-└─ static-first-portfolio.md   # → https://zenn.dev/tora29/articles/static-first-portfolio
-images/                        # 記事の画像（Zenn の仕様でリポジトリ直下に置く）
 ```
 
-## 下書きから公開まで
+## 書いてから公開まで
 
-1. `content/_drafts/` で書く。記事も `articles/` には置かない（公開 Repository のため、`published: false` でも GitHub 上で読めてしまう）
-2. 書き上がったら、作品は `content/works/<id>/` へ、記事は `articles/<スラッグ>.md` へ移す。記事は `published: true` と公開日（`published_at`）を書く
+下書き用のディレクトリは作らない。作業ブランチが下書きになる。サイトは main からしかデプロイされないため、ブランチの上で書いたものはマージするまで公開されない。
+
+1. ブランチを切り、`content/works/<id>/` などに直接書く
+   - 作業ブランチを push すると、マージ前でも公開 Repository 上で読める。書きかけを見せたくなければ、書き上がるまで push しない
+2. `npm run dev` で表示を確かめる
 3. `npm run build` がエラーなく通ることを確認する
-4. コミットして PR を作り、マージする。マージすると、サイトは GitHub Actions で、記事は Zenn の GitHub 連携で公開される
+4. コミットして PR を作り、マージする。マージすると、GitHub Actions でサイトが公開される
 
 ## frontmatter
 
@@ -61,23 +55,6 @@ cover: ./cover.webp         # 任意
 
 作品について書いた記事は、作品の本文ではなく記事の `works` で関連付ける（作品ページの Related Notes に出る）。
 
-### 記事（`articles/*.md`）
-
-Zenn の frontmatter に、サイトだけで使う `works` を足した形で書く。
-
-```yaml
-title: "Static-first で作るポートフォリオ"   # 70字以内（Zenn の制限）
-emoji: "🪐"                  # Zenn のアイキャッチ。1文字
-type: "tech"                 # tech（技術記事）| idea（アイデア記事）
-topics: ["typescript", "astro", "githubactions", "個人開発"]   # 1〜5個。Tech との対応は「Tech の参照」
-published: true              # articles/ には公開する記事だけを置く（false はビルドエラー）
-published_at: "2026-09-28"   # 公開日。サイトの一覧の日付になる。Zenn では一度設定すると変えられない
-works: ["personal-platform"] # 任意。この記事が扱う作品の id（作品ページの Related Notes に出る）
-```
-
-- 技術記事は Zenn に書き、サイトに同じ記事を置かない
-- `published_at` は引用符で囲み、文字列として書く（Zenn の検証処理は文字列を前提にしているため）
-
 ### Career（`content/career/*.yml`）
 
 ```yaml
@@ -90,25 +67,22 @@ tech: [typescript, nextjs, python, azure, rag, claude-code, …]   # tech.yml �
 
 ## Tech の参照
 
-- `tech` / `tags` には `data/tech.yml` の `id` だけを書く（`TypeScript` や `TS` ではなく `typescript`）。未定義の id はビルドエラーになる
+- `tech` には `data/tech.yml` の `id` だけを書く（`TypeScript` や `TS` ではなく `typescript`）。未定義の id はビルドエラーになる
 - 新しいTechを使うときは、先に `data/tech.yml` へ `id` / `name` / `category` を追加する
 - 下位のTechを持つもの（例：Azureの下にAzure OpenAI Service）は `parent` で関連付ける
-- 記事は `tags` を書かず、Zenn の `topics` だけを書く（Zenn は `tags` を使うと警告する）。tech.yml の id からハイフンを除いた topic（`claude-code` → `claudecode`）が、その Tech として扱われる
-  - Zenn の topics には記号を使えないため、ハイフンを除いた形で対応させている
-  - Tech に対応しない topics（「個人開発」など）は、Zenn で読者に届けるためだけに使われ、サイトでは無視される
+- 記事は `tech` ではなく Zenn の `topics` で Tech を指定する（`zenn-articles.md`）
 
 ## 画像
 
 - コミット前に縮小する。横幅は最大1600px、形式はWebP、1枚あたり300KB以下を目安にする
 - 表示サイズへの最適化はAstroの `<Image />` に任せる。サイズ違いの画像を手で用意しない
-- 作品の画像は作品のフォルダに置く
-- 記事の画像は `images/<スラッグ>/` に置き、本文から `/images/<スラッグ>/xxx.webp` の絶対パスで参照する（Zenn の仕様。相対パスは使えない。1枚3MB以内、png・jpg・gif・webp のみ）
+- 作品の画像は作品のフォルダに置く。記事の画像は `zenn-articles.md` に従う
 - `alt` を必ず書く
 - スクリーンショットに個人情報・社内情報・APIキー等が写っていないか確認する
 
 ## 公開してよい情報
 
-公開リポジトリかつ公開サイトであることを前提に書く（`.users/requirements/screens.md` §6）。
+公開リポジトリかつ公開サイトであることを前提に書く（`.users/requirements/screens.md` §6）。記事にも当てはまる。
 
 - 書かない：住所・電話・メール・生年月日などの個人情報、顧客名・案件名・社内システム名、所属企業名
 - 書かない：業務で知った顧客システムの脆弱性・不具合

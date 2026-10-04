@@ -30,8 +30,7 @@ function frontmatter(source: string): unknown {
 
 /**
  * 収集対象の Repository（許可リスト。activity-pipeline.md §3.1）。
- * content/works/<id>/index.mdx の github を持つ作品のみ。content/_drafts/ の作品は対象にしない
- * （WORKS_DIR の外にあるため読まれない）
+ * content/works/<id>/index.mdx の github を持つ作品のみ
  */
 export async function loadTargets(): Promise<Target[]> {
   const entries = await readdir(WORKS_DIR, { withFileTypes: true });
