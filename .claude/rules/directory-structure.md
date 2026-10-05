@@ -30,7 +30,8 @@ my-portfolio/
 │  │  ├─ works/
 │  │  ├─ tech/
 │  │  ├─ notes/
-│  │  └─ activity/
+│  │  ├─ activity/
+│  │  └─ not-found/            #   404
 │  ├─ components/ui/           # 機能をまたいで使う汎用部品
 │  ├─ lib/                     # 機能をまたいで使う処理
 │  │  └─ graph/                #   Engineering Graph
@@ -71,7 +72,8 @@ pages/
 ├─ works/[id].astro     → /works/[id]
 ├─ tech/index.astro     → /tech
 ├─ tech/[id].astro      → /tech/[id]
-└─ notes/index.astro    → /notes
+├─ notes/index.astro    → /notes
+└─ 404.astro            → 存在しない URL（GitHub Pages が 404.html を返す）
 ```
 
 ### src/features/

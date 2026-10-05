@@ -15,3 +15,22 @@ describe('ExternalLink', () => {
     expect(link?.textContent).toContain('記事');
   });
 });
+
+describe('ExternalLink のアイコン', () => {
+  const render = (props: Record<string, unknown>) =>
+    renderAstro(ExternalLink, {
+      props: { href: 'https://github.com/example', ...props },
+      slots: { default: 'GitHub' },
+    });
+
+  it('既定では、後ろに外部リンクの印だけを付ける', async () => {
+    expect((await render({})).querySelectorAll('svg')).toHaveLength(1);
+  });
+
+  it('icon を渡すと前にも置き、arrow={false} で後ろの印を外す', async () => {
+    expect((await render({ icon: 'github-logo' })).querySelectorAll('svg')).toHaveLength(2);
+    expect(
+      (await render({ icon: 'arrow-up-right', arrow: false })).querySelectorAll('svg'),
+    ).toHaveLength(1);
+  });
+});

@@ -9,6 +9,7 @@
  * 惑星は四隅に並べて置き、宇宙のシーン（Canvas。scene/）が動き始めたら、その位置と見た目をシーンが引き継ぐ
  * （ルートに data-scene が付くと、group-data-scene/home の指定に切り替わる）。
  */
+import ExternalLink from '@/components/ui/ExternalLink.astro';
 import Icon from '@/components/ui/Icon.astro';
 import { FRESH_DAYS, freshnessOf, daysSince } from './freshness';
 import type { PlanetId } from '@/lib/orbit';
@@ -184,16 +185,15 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
     {page.github && (
       <>
         <span class="mx-3 text-white/25">·</span>
-        <a
+        <ExternalLink
           href={page.github}
-          target="_blank"
-          rel="noopener"
+          icon="github-logo"
+          iconClass="text-sm"
+          arrowClass="text-[10px]"
           class="flex items-center gap-1.5 text-white/60 transition-colors hover:text-white"
         >
-          <Icon name="github-logo" class="text-sm" />
           GitHub
-          <Icon name="arrow-up-right" class="text-[10px]" />
-        </a>
+        </ExternalLink>
       </>
     )}
   </div>

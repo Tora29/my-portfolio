@@ -6,9 +6,11 @@
  * Latest Activity は、Activity がまだないうちは見出しごと表示しない
  */
 import ActivityTimeline from '@/components/ui/ActivityTimeline.astro';
-import Icon from '@/components/ui/Icon.astro';
+import ExternalLink from '@/components/ui/ExternalLink.astro';
+import MoreLink from '@/components/ui/MoreLink.astro';
 import Subheading from '@/components/ui/Subheading.astro';
 import TechTags from '@/components/ui/TechTags.astro';
+import { SECTIONS } from '@/lib/sections';
 import type { AboutPage } from './load-about';
 
 interface Props {
@@ -53,15 +55,15 @@ const { page } = Astro.props;
 
   <div class="mt-8 flex flex-wrap gap-5">
     {page.links.map((link) => (
-      <a
+      <ExternalLink
         href={link.href}
-        target="_blank"
-        rel="noopener"
+        icon={link.icon}
+        iconClass="text-base"
+        arrow={false}
         class="flex items-center gap-2 text-xs tracking-[0.2em] text-white/60 uppercase transition-colors hover:text-white"
       >
-        <Icon name={link.icon} class="text-base" />
         {link.label}
-      </a>
+      </ExternalLink>
     ))}
   </div>
 </section>
@@ -75,12 +77,8 @@ const { page } = Astro.props;
     <div class="mt-8">
       <ActivityTimeline groups={page.latestActivity} />
     </div>
-    <a
-      href="/activity"
-      class="mt-10 inline-flex items-center gap-2 text-xs tracking-[0.2em] text-white/60 uppercase transition-colors hover:text-white"
-    >
+    <MoreLink href={SECTIONS.activity.href} class="mt-10">
       すべての Activity を見る
-      <Icon name="arrow-right" />
-    </a>
+    </MoreLink>
   </section>
 )}

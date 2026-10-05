@@ -32,6 +32,7 @@ paths:
 - Propsは `interface Props` で型を定義し、`Astro.props` から分割代入で受け取る
 - データの取得・加工はページ（`src/pages/`）または `lib/` で行い、コンポーネントには表示に必要な値だけを渡す
 - コンポーネント内で `getCollection` を呼ばない（依存関係を見えにくくしないため）
+- 新しいタブで開くリンク（`target="_blank"`）は `components/ui/ExternalLink.astro` で作り、手で書かない（`rel="noopener"` の付け忘れを防ぎ、外部リンクの印を揃えるため）
 
 ```astro
 ---
