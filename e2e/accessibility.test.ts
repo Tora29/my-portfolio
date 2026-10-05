@@ -60,7 +60,7 @@ test.describe('キーボード操作', () => {
     expect([...reached].some((name) => name.startsWith('背景の動きを'))).toBe(true);
   });
 
-  test('「もっと見る」や「+N」を押したあと、フォーカスが切り替え先へ移る', async ({ page }) => {
+  test('Career の Tech タグの「+N」を押したあと、全件の列へフォーカスが移る', async ({ page }) => {
     await page.goto('/career');
     const open = page.locator('[data-tech-tags-open]').first();
     test.skip((await open.count()) === 0, 'Tech タグが7個以上の職歴がない');
@@ -69,5 +69,23 @@ test.describe('キーボード操作', () => {
     await open.focus();
     await page.keyboard.press('Enter');
     await expect(page.locator('[data-tech-tags-full]').first()).toBeFocused();
+  });
+
+  test('Activity の「もっと見る」を押したあと、展開した最初の日付へフォーカスが移る', async ({
+    page,
+  }) => {
+    await page.goto('/activity');
+    const more = page.locator('[data-activity-more]');
+    test.skip(!(await more.isVisible()), 'Activity が初期表示件数以下');
+
+    // 押す前に畳まれている最初の日付が、展開後のフォーカスの移り先
+    const firstFolded = page.locator('[data-activity-date][hidden]').first();
+    const date = await firstFolded.locator('time').getAttribute('datetime');
+    await more.focus();
+    await page.keyboard.press('Enter');
+    await expect(more).toBeHidden();
+    await expect(
+      page.locator('[data-activity-date]', { has: page.locator(`time[datetime="${date}"]`) }),
+    ).toBeFocused();
   });
 });
