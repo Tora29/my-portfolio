@@ -27,7 +27,7 @@
     "type": "docs",
     "work": "personal-platform",
     "headline": "ポートフォリオ記事のタイトルを変更",
-    "summary": "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com> Claude-Session:",
+    "summary": "ポートフォリオ記事のタイトルを変更",
     "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
     "techSource": "work",
     "url": "https://github.com/Tora29/my-portfolio/pull/50"
