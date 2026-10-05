@@ -9,7 +9,7 @@
  * リンクそのものが押せる領域になるため、Canvas の上で当たり判定を計算しなくて済む。
  */
 import { toRgbTriplet } from '@/lib/color';
-import { clamp01, easeOutCubic, pixelRatio } from './math';
+import { approachRate, clamp01, easeOutCubic, pixelRatio } from './math';
 import {
   DEFAULT_ORBIT_ANGLE,
   ORBIT_PERIOD,
@@ -440,7 +440,7 @@ export function updateOrbit(orbit: Orbit, planets: Planet[], t: number, coarsePo
   orbit.last = t;
   const hovering = planets.some((p) => p.target > 0);
   const target = hovering ? 0.06 : coarsePointer ? 0.12 : 1;
-  orbit.speed += (target - orbit.speed) * 0.06;
+  orbit.speed += (target - orbit.speed) * approachRate(0.06, dt);
   orbit.angle += dt * ((Math.PI * 2) / ORBIT_PERIOD) * orbit.speed;
 
   planets.forEach((p, i) => {
@@ -467,7 +467,7 @@ export function updateOrbit(orbit: Orbit, planets: Planet[], t: number, coarsePo
 /** すべての惑星を描く。dt は前のフレームからの秒数 */
 export function drawPlanets(planets: Planet[], t: number, dt: number, intro: IntroTimeline) {
   for (const p of planets) {
-    p.hover += (p.target - p.hover) * 0.08;
+    p.hover += (p.target - p.hover) * approachRate(0.08, dt);
     // ホバー中は自転を速めて、押せることを伝える
     p.spin += dt * SPIN * TRAITS[p.key].spin * (1 + 2.5 * p.hover);
     p.ctx.clearRect(0, 0, p.px, p.px);

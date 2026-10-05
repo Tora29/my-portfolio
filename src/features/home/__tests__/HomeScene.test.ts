@@ -38,6 +38,19 @@ describe('HomeScene', () => {
     expect(dots[0].closest('[data-planet]')?.getAttribute('data-planet')).toBe('works');
   });
 
+  it('惑星の更新の点は、ビルドした日から7日以内の更新のときだけ見せる', async () => {
+    const withUpdated = (updated: string): HomePage => ({
+      ...page,
+      planets: page.planets.map((p) => (p.id === 'works' ? { ...p, updated } : p)),
+    });
+    const dot = async (updated: string) =>
+      (
+        await renderAstro(HomeScene, { props: { page: withUpdated(updated) } })
+      ).querySelector<HTMLElement>('[data-fresh]')!;
+    expect((await dot('2026-09-22')).hidden).toBe(false);
+    expect((await dot('2026-09-21')).hidden).toBe(true);
+  });
+
   it('GitHub・最新の Activity がなければ出さない', async () => {
     const root = await renderAstro(HomeScene, { props: { page } });
     expect(root.textContent).not.toContain('GitHub');
