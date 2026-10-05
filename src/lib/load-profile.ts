@@ -2,6 +2,7 @@
  * プロフィール（data/profile.yml）と経験年数の読み込み
  *
  * About・Career・Home・Notes で使う。ビルド時（ページの生成時）にのみ呼ぶ。
+ * 外部リンクを探す処理（findLink）は profile-links.ts に置く。
  */
 import { getCollection, getEntry } from 'astro:content';
 import { formatExperience, yearsOfExperience } from './experience';
@@ -28,10 +29,7 @@ export async function loadExperience(): Promise<string> {
 }
 
 /**
- * 外部リンク（profile.yml の links）のうち、指定したサービスのものの URL。なければ undefined。
- * Home の GitHub・Notes の Zenn のように、特定のサービスへのリンクを決まった場所に出すときに使う。
- * ラベルは表記を変えることがあるため、ホスト名で探す
+ * 外部リンクから特定のサービスのリンクを探す処理は、astro:content に依存しない profile-links.ts に置く
+ * （単体テストで読み込めるようにするため）。プロフィールと一緒に使う呼び出し側のために、ここからも参照できるようにする
  */
-export function findLink(links: { href: string }[], hostname: string): string | undefined {
-  return links.find((link) => new URL(link.href).hostname === hostname)?.href;
-}
+export { findLink } from './profile-links';

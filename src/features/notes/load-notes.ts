@@ -6,8 +6,9 @@
  */
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { toDateString } from '@/lib/format-date';
-import { findLink, loadProfile } from '@/lib/load-profile';
+import { loadProfile } from '@/lib/load-profile';
 import { loadTechTags } from '@/lib/load-tech-tags';
+import { findLink } from '@/lib/profile-links';
 import type { TechTagList } from '@/lib/tech-tags';
 import { zennArticleUrl } from '@/lib/zenn';
 

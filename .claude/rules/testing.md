@@ -18,6 +18,7 @@ paths:
 | `src/lib/` のその他 | 単体（Vitest） | 分岐や変換を含む関数のみ |
 | ページ | E2E（Playwright） | 最低限。主要ページが表示され、主要な導線がつながること |
 | `src/components/ui/` ・ `src/features/` の `.astro` | 単体（Vitest） | 条件で出し分ける部分（0件のときの表示・件数による畳み・リンクの有無など）。見た目（クラス）やクライアントの `<script>` の動作は確かめない |
+| `src/layouts/` | 単体（Vitest） | 条件で出し分ける部分と、Props・URL から組み立てる値（Prev / Next の有無・見出しとリード文の切り替え・canonical URL など）。見た目（クラス）やクライアントの `<script>` の動作は確かめない |
 | Homeの宇宙（Canvas）・アニメーション | — | テストしない |
 
 ## 単体テスト（Vitest）
@@ -34,6 +35,7 @@ paths:
 - テキストを比べるときは `textOf` を使う（描画結果には要素の間の空白が残らないため）
 - Props のデータはテスト内で組み立てる。Tech タグの列は `src/test/tech-tags.ts` の `techTags`、MDX の本文は `src/test/FakeContent.astro` で代替する
 - 日付で表示が変わるもの（Home の最新 Activity 等）は `vi.setSystemTime` で日付を固定する
+- ページの URL で表示が変わるもの（`BaseLayout` の canonical 等）は `renderAstro` の `request` で URL を指定する。`Astro.site` は `src/test/render.ts` の `TEST_SITE` になる
 
 ## E2E テスト（Playwright）
 
