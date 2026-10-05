@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import astroConfig from '../astro.config.mjs';
 
 // 記事一覧の表示と導線（.claude/rules/testing.md の E2E の範囲）。
 // 記事の本文は Zenn で公開しているため、一覧から Zenn の記事へ、Tech タグから Tech 詳細へつながることを確かめる。
@@ -43,13 +44,22 @@ test('記事の Tech タグから Tech 詳細へ移動でき、その記事が�
   await expect(page.locator(`[data-back-scope] a[href="${href}"]`)).toBeVisible();
 });
 
-test('以前の記事ページの URL は Zenn の記事へ転送する', async ({ request }) => {
-  const response = await request.get('/notes/static-first-portfolio');
-  expect(response.ok()).toBe(true);
-  expect(await response.text()).toContain(
-    'https://zenn.dev/tora29/articles/static-first-portfolio',
-  );
-});
+// 転送の一覧は astro.config.mjs の redirects をそのまま使う（転送を追加したときにテストの更新を忘れないように）。
+// GitHub Pages ではサーバー側で転送できず、Astro が転送用の HTML（meta refresh と canonical）を出力するため、
+// ページを開いて Zenn まで移動するのではなく、出力された HTML の転送先を確かめる（テストで外部へ通信しない）
+for (const [from, to] of Object.entries(astroConfig.redirects ?? {})) {
+  const destination = typeof to === 'string' ? to : to.destination;
+
+  test(`以前の記事ページの URL（${from}）は転送先（${destination}）へ転送する`, async ({
+    request,
+  }) => {
+    const response = await request.get(from);
+    expect(response.ok()).toBe(true);
+    const html = await response.text();
+    expect(html).toContain(`<meta http-equiv="refresh" content="0;url=${destination}">`);
+    expect(html).toContain(`<link rel="canonical" href="${destination}">`);
+  });
+}
 
 test.describe('JavaScript なし', () => {
   test.use({ javaScriptEnabled: false });

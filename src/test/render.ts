@@ -14,7 +14,16 @@ interface RenderOptions {
   props?: Record<string, unknown>;
   /** 名前付きスロットの HTML。既定のスロットは default */
   slots?: Record<string, string>;
+  /** 描画するページのリクエスト。Astro.url を読むコンポーネント（BaseLayout の canonical 等）で指定する */
+  request?: Request;
 }
+
+/**
+ * テストで使うサイトの URL（Astro.site）。
+ * Container API は astro.config の site を読まず、指定しないと Astro.site が undefined になり、
+ * site を基準に URL を組み立てる BaseLayout が描画できないため、実際の公開 URL とは別の値を与える
+ */
+export const TEST_SITE = 'https://example.com';
 
 let container: AstroContainer | undefined;
 
@@ -23,7 +32,7 @@ export async function renderAstro(
   Component: AstroComponent,
   options: RenderOptions = {},
 ): Promise<HTMLElement> {
-  container ??= await AstroContainer.create();
+  container ??= await AstroContainer.create({ astroConfig: { site: TEST_SITE } });
   const html = await container.renderToString(Component, options);
   const { document } = new Window();
   document.body.innerHTML = html;
