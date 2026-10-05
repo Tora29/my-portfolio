@@ -2,4 +2,4 @@ period: { start: 2023, end: 2024 }
 org: 金融系SIer
 role: Software Engineer
 summary: 金融機関向けWebサービスの保守運用を担当。要件定義のレビューから24時間365日の障害対応・深夜リリースまで、止められないシステムを支えた。
-tech: [java, sql]
+tech: [java]

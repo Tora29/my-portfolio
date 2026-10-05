@@ -26,6 +26,5 @@ tech:
     vitest,
     playwright,
     pytest,
-    codex,
     cursor,
   ]
