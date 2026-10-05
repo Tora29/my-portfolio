@@ -6,19 +6,11 @@
  *
  * ブラウザでのみ動く。描画先の Canvas は layouts/SectionTransition.astro がページ遷移をまたいで残す。
  */
-
-export interface Circle {
-  x: number;
-  y: number;
-  r: number;
-}
+import { clamp01, easeOutCubic, lerp } from './math';
+import type { Circle } from './orbit';
 
 /** 粒子の数。画面を覆う密度と、描画の負荷の兼ね合い */
 const COUNT = 1400;
-
-const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
-const easeOutCubic = (v: number) => 1 - (1 - v) ** 3;
-const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 /** 円の中心から、画面の最も遠い角までの距離 */
 export const coverRadius = (c: Circle) =>

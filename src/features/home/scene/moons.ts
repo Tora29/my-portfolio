@@ -4,6 +4,7 @@
  * 衛星の数は、そのセクションの件数（data-moons。load-home.ts）に連動する。中身が増えるほど惑星がにぎやかになる。
  * 衛星は惑星の要素の中に置いた小さな円で、傾いた楕円軌道を回る。軌道の手前側では惑星より前に出る。
  */
+import type { PlanetId } from '@/lib/orbit';
 import { planetScale, type Planet } from './planets';
 
 interface Moon {
@@ -33,12 +34,12 @@ const moonConfigs = (count: number, seed: number) =>
     phase: i * 2.1 + seed,
   }));
 
-const SEEDS: Record<string, number> = { works: 0, notes: 1, career: 3, tech: 4 };
+const SEEDS: Record<PlanetId, number> = { works: 0, notes: 1, career: 3, tech: 4 };
 
 /** 衛星の要素を作って惑星に加える。要素は惑星と一緒にページ遷移で破棄される */
 export function createMoons(planets: Planet[]): Moon[] {
   return planets.flatMap((planet) =>
-    moonConfigs(Number(planet.wrap.dataset.moons ?? 0), SEEDS[planet.key] ?? 0).map((cfg) => {
+    moonConfigs(Number(planet.wrap.dataset.moons ?? 0), SEEDS[planet.key]).map((cfg) => {
       const el = document.createElement('div');
       el.setAttribute('aria-hidden', 'true');
       el.className =

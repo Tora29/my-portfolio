@@ -1,10 +1,6 @@
 /**
- * 宇宙のシーンで使う計算の補助
+ * 宇宙のシーンで使う計算の補助（シーンの外でも使う補間などは lib/math.ts）
  */
-
-export const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
-export const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-export const easeOutCubic = (v: number) => 1 - (1 - v) ** 3;
 
 /**
  * 値を目標へ少しずつ近づけるときの、このフレームで近づける割合。

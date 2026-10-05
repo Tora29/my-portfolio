@@ -12,7 +12,8 @@ import { SITE_NAME } from '@/lib/site';
 import { loadProfile } from '@/lib/load-profile';
 import { homeStructuredData } from '@/lib/structured-data';
 
-const [page, profile] = await Promise.all([loadHomePage(), loadProfile()]);
+const profile = await loadProfile();
+const page = await loadHomePage(profile);
 // 名前だけの <title> は同名の別サイトと区別できないため、職種を添える
 const title = `${SITE_NAME} | ${profile.role}`;
 ---
