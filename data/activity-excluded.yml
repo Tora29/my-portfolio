@@ -59,3 +59,5 @@
   reason: 私生活に関わる内容を含む
 - id: Tora29/home-hub#66
   reason: 内部向けの整理で、閲覧者向けの内容ではない
+- id: Tora29/my-claude-tools#4
+  reason: ライセンスの追加のみで、閲覧者向けの内容ではない
