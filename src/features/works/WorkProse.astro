@@ -1,30 +1,24 @@
 ---
 /**
- * Markdown / MDX の本文の書式（作品の Overview・Architecture、記事の本文）
+ * 作品の本文（MDX）の書式
  *
  * 本文の要素（h2・p・ul 等）には直接クラスを付けられないため、外側から子孫セレクタのユーティリティで整える。
  * 長い日本語を読むため、本文には大文字化・広い字間を使わない（styling.md）。
- *
- * 見出し（h2）の見た目は2種類：
- * - label：セクション内の小見出し（Subheading）と同じ英字ラベル。作品の Overview・Architecture のように、
- *   本文が決まった英字の見出しで区切られるもの
- * - article：通常の見出し。記事のように、日本語の見出しが並ぶもの（大文字化・広い字間は日本語では読みにくいため）
+ * 見出し（h2）は、本文が Overview・Architecture という決まった英字の見出しで区切られるため、
+ * セクション内の小見出し（Subheading）と同じ英字ラベルの見た目にする
  */
 interface Props {
-  headings?: 'label' | 'article';
   class?: string;
 }
 
-const { headings = 'label', class: className } = Astro.props;
+const { class: className } = Astro.props;
 ---
 
 <div
   class:list={[
     'text-sm leading-relaxed text-white/70 sm:text-base',
     // 見出し
-    headings === 'label'
-      ? '[&_h2]:mt-12 [&_h2]:mb-4 [&_h2]:text-[11px] [&_h2]:tracking-[0.3em] [&_h2]:text-white/55 [&_h2]:uppercase'
-      : '[&_h2]:mt-14 [&_h2]:mb-4 [&_h2]:text-lg [&_h2]:leading-snug [&_h2]:text-white sm:[&_h2]:text-xl',
+    '[&_h2]:mt-12 [&_h2]:mb-4 [&_h2]:text-[11px] [&_h2]:tracking-[0.3em] [&_h2]:text-white/55 [&_h2]:uppercase',
     '[&_h2:first-child]:mt-0',
     '[&_h3]:mt-8 [&_h3]:mb-3 [&_h3]:text-base [&_h3]:text-white',
     // 段落・リンク

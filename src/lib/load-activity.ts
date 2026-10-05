@@ -5,10 +5,11 @@
  * ビルド時（ページの生成時）にのみ呼ぶ。ブラウザ向けのスクリプトから import しない。
  */
 import { getCollection } from 'astro:content';
-import type { IconName } from '@/components/ui/Icon.astro';
+import type { IconName } from '@/lib/icons';
 import { ACTIVITY_ICONS } from './activity';
 import { loadTechTags } from './load-tech-tags';
 import type { TechTagList } from './tech-tags';
+import { workHref } from './urls';
 
 export interface ActivityItem {
   id: string;
@@ -36,7 +37,7 @@ export async function loadActivityItems(): Promise<ActivityItem[]> {
         work: {
           id: e.data.work.id,
           title: workTitle.get(e.data.work.id)!,
-          href: `/works/${e.data.work.id}`,
+          href: workHref(e.data.work.id),
         },
         headline: e.data.headline,
         summary: e.data.summary,

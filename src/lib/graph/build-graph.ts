@@ -175,6 +175,15 @@ export function totalCount(node: TechNode): number {
 }
 
 /**
+ * 実績（下位 Tech を含む）が1件以上あるか。実績のない Tech は一覧に出さず、詳細ページも作らない
+ * （tech.yml に定義しただけで、まだ使っていない Tech が「実績 0」として並ぶのを避けるため）。
+ * Tech 詳細へのリンクを張るか・Home の Tech の衛星の数にも使うため、条件はここだけで決める
+ */
+export function hasRecords(node: TechNode): boolean {
+  return totalCount(node) > 0;
+}
+
+/**
  * Tech 一覧の表示用に、ジャンルごとに区切って並べる。
  *
  * - ジャンルは categoryIds の順（tech-categories.yml の記述順）に並べる

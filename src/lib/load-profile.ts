@@ -27,9 +27,3 @@ export async function loadExperience(): Promise<string> {
     ),
   );
 }
-
-/**
- * 外部リンクから特定のサービスのリンクを探す処理は、astro:content に依存しない profile-links.ts に置く
- * （単体テストで読み込めるようにするため）。プロフィールと一緒に使う呼び出し側のために、ここからも参照できるようにする
- */
-export { findLink } from './profile-links';

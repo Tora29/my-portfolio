@@ -23,6 +23,11 @@ export function toJstDate(iso: string): string {
   return new Date(new Date(iso).getTime() + JST_OFFSET_MS).toISOString().slice(0, 10);
 }
 
+/**
+ * PR を Activity にする。
+ * 載せない PR（マージされていない・雑務の種類・activity:skip など。classify.ts）は理由を返す。
+ * tech.yml にない Tech のラベルは無視し、警告として返す（ラベルの書き誤りでワークフローを止めないため）
+ */
 export function convertPullRequest(
   pr: PullRequest,
   target: Target,
@@ -50,6 +55,7 @@ export function convertPullRequest(
   };
 }
 
+/** Release を Activity にする。下書き・プレリリース・公開日のないものは載せない */
 export function convertRelease(release: Release, target: Target): ConvertResult {
   if (release.draft || release.prerelease || release.publishedAt === null) {
     return { skip: '下書き・プレリリース', warnings: [] };

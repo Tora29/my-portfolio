@@ -8,10 +8,10 @@
  */
 import ExternalLink from '@/components/ui/ExternalLink.astro';
 import Icon from '@/components/ui/Icon.astro';
-import Prose from '@/components/ui/Prose.astro';
 import Subheading from '@/components/ui/Subheading.astro';
 import TechTags from '@/components/ui/TechTags.astro';
 import type { WorkDetail } from './load-works';
+import WorkProse from './WorkProse.astro';
 import WorkThumb from './WorkThumb.astro';
 
 interface Props {
@@ -48,9 +48,9 @@ const { Content } = work;
   iconClass="text-5xl"
 />
 
-<Prose class="mt-12">
+<WorkProse class="mt-12">
   <Content />
-</Prose>
+</WorkProse>
 
 <section class="mt-12">
   <Subheading label="Tech" />

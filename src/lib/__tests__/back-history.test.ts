@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { popEntry, pushEntry, resolveBack, type BackEntry } from '../back-history';
+import { parseBackStack, popEntry, pushEntry, resolveBack, type BackEntry } from '../back-history';
 
 const aToB: BackEntry = { from: '/a', label: 'A', to: '/b' };
 const bToC: BackEntry = { from: '/b', label: 'B', to: '/c' };
@@ -33,5 +33,17 @@ describe('pushEntry', () => {
     for (let i = 0; i < 40; i++) stack = pushEntry(stack, { from: `/${i}`, label: '', to: '/' });
     expect(stack).toHaveLength(30);
     expect(stack[0].from).toBe('/10');
+  });
+});
+
+describe('parseBackStack', () => {
+  it('形の合う記録だけを残す', () => {
+    const ok = { from: '/works', label: 'Works', to: '/works/a' };
+    expect(parseBackStack([ok, null, 1, { from: '/x' }, { ...ok, label: 2 }])).toEqual([ok]);
+  });
+
+  it('配列でなければ空にする', () => {
+    expect(parseBackStack({ from: '/works' })).toEqual([]);
+    expect(parseBackStack(null)).toEqual([]);
   });
 });

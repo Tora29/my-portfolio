@@ -6,11 +6,12 @@
  * ここでは日付だけを渡し、判定はブラウザ側（HomeScene.astro のスクリプト）で行う。
  */
 import { getCollection } from 'astro:content';
-import { totalCount } from '@/lib/graph/build-graph';
+import { hasRecords } from '@/lib/graph/build-graph';
 import { loadGraph } from '@/lib/graph/load-graph';
 import { formatShortDate, toDateString } from '@/lib/format-date';
 import { loadActivityItems } from '@/lib/load-activity';
-import { findLink, type loadProfile } from '@/lib/load-profile';
+import type { loadProfile } from '@/lib/load-profile';
+import { findLink } from '@/lib/profile-links';
 import { PLANET_ORDER, type PlanetId } from '@/lib/orbit';
 import { SECTIONS } from '@/lib/sections';
 
@@ -58,7 +59,7 @@ export async function loadHomePage(
     .map((note) => toDateString(note.data.date))
     .toSorted()
     .at(-1);
-  const visibleTech = [...graph.tech.values()].filter((node) => totalCount(node) > 0).length;
+  const visibleTech = [...graph.tech.values()].filter(hasRecords).length;
 
   // 更新の印は、作品は Activity、記事は投稿日で判定する。
   // 職歴と Tech は日々更新されるものではないため、印を出さない（モックと同じ）

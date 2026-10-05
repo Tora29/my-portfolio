@@ -2,7 +2,7 @@
  * Activity の表示に使う値（Works・About・Activity で共通）
  */
 import type { CollectionEntry } from 'astro:content';
-import type { IconName } from '@/components/ui/Icon.astro';
+import type { IconName } from '@/lib/icons';
 
 export type ActivityType = CollectionEntry<'activity'>['data']['type'];
 

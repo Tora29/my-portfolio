@@ -15,6 +15,12 @@ import { parse } from 'yaml';
 import { techIdsFromTopics, topicToTechId, zennPublishedDate, zennSlugFromFile } from '@/lib/zenn';
 
 /**
+ * 1件ずつのデータを並べた配列（data/*.yml・activity.json の形）。
+ * 各項目の中身は各コレクションのスキーマで検証するため、ここでは配列であることだけを確かめる
+ */
+const entryList = z.array(z.record(z.string(), z.unknown()));
+
+/**
  * YAML の配列を読み込み、記述順を order として持たせる。
  *
  * getCollection は記述順を保証しない（id のアルファベット順で返ることがある）。
@@ -22,8 +28,7 @@ import { techIdsFromTopics, topicToTechId, zennPublishedDate, zennSlugFromFile }
  */
 const orderedYaml = (fileName: string) =>
   file(fileName, {
-    parser: (text) =>
-      (parse(text) as Record<string, unknown>[]).map((item, order) => ({ ...item, order })),
+    parser: (text) => entryList.parse(parse(text)).map((item, order) => ({ ...item, order })),
   });
 
 /**
@@ -93,7 +98,10 @@ const works = defineCollection({
  * スキーマの検証中は他のコレクションを読めないため、tech.yml を直接読む
  */
 const techByTopic = topicToTechId(
-  (parse(readFileSync('data/tech.yml', 'utf8')) as { id: string }[]).map((t) => t.id),
+  z
+    .array(z.object({ id: z.string() }))
+    .parse(parse(readFileSync('data/tech.yml', 'utf8')))
+    .map((t) => t.id),
 );
 
 /**
@@ -176,8 +184,7 @@ const career = defineCollection({
  */
 const activity = defineCollection({
   loader: file('data/activity.json', {
-    parser: (text) =>
-      (JSON.parse(text) as Record<string, unknown>[]).map((item, order) => ({ ...item, order })),
+    parser: (text) => entryList.parse(JSON.parse(text)).map((item, order) => ({ ...item, order })),
   }),
   schema: z.object({
     // ファイル内の順番（0 が最新）

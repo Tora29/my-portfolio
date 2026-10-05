@@ -10,6 +10,7 @@ import type { GetStaticPaths } from 'astro';
 import { loadTechDetails, type TechDetail as TechDetailData } from '@/features/tech/load-tech';
 import TechDetail from '@/features/tech/TechDetail.astro';
 import SectionLayout from '@/layouts/SectionLayout.astro';
+import { SECTIONS } from '@/lib/sections';
 
 // ビルド時に、詳細ページを作る Tech の一覧を返す。表示用のデータもここで渡す（ページごとに集計し直さない）
 export const getStaticPaths = (async () => {
@@ -27,7 +28,7 @@ const { tech } = Astro.props;
 <SectionLayout
   section="tech"
   title={tech.name}
-  back={{ href: '/tech', label: 'All Tech' }}
+  back={{ href: SECTIONS.tech.href, label: `All ${SECTIONS.tech.title}` }}
   description={`${tech.name} を使った作品・記事・職歴・開発活動`}
 >
   <TechDetail tech={tech} />

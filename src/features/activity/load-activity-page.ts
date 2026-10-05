@@ -18,6 +18,7 @@ export interface ActivityPage {
   total: number;
 }
 
+/** Activity 一覧に表示するデータを読み込む（ビルド時）。Activity は新しい順 */
 export async function loadActivityPage(): Promise<ActivityPage> {
   const items = await loadActivityItems();
 
