@@ -14,6 +14,9 @@ export function daysSince(date: string, today: Date): number {
   return Math.round((todayUtc - Date.UTC(y, m - 1, d)) / 86_400_000);
 }
 
+/** 「最近の更新」とみなす日数。最新 Activity の live と、惑星のラベルの点で同じ基準を使う */
+export const FRESH_DAYS = 7;
+
 /**
  * 最新 Activity の表示の状態。
  * - live：7日以内。緑の点が脈動し「Latest」
@@ -22,8 +25,9 @@ export function daysSince(date: string, today: Date): number {
  */
 export type Freshness = 'live' | 'recent' | 'stale';
 
+/** 更新からの日数に応じた表示の状態 */
 export function freshnessOf(days: number): Freshness {
-  if (days <= 7) return 'live';
+  if (days <= FRESH_DAYS) return 'live';
   if (days <= 30) return 'recent';
   return 'stale';
 }

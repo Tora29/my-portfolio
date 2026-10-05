@@ -10,7 +10,7 @@
  * （ルートに data-scene が付くと、group-data-scene/home の指定に切り替わる）。
  */
 import Icon from '@/components/ui/Icon.astro';
-import { freshnessOf, daysSince } from '@/lib/freshness';
+import { FRESH_DAYS, freshnessOf, daysSince } from '@/lib/freshness';
 import type { HomePage, PlanetId } from './load-home';
 
 interface Props {
@@ -114,7 +114,7 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
             {planet.title}
             {planet.updated && (
               <span
-                hidden
+                hidden={daysSince(planet.updated, buildDate) > FRESH_DAYS}
                 data-fresh={planet.updated}
                 class="ml-[0.2em] inline-block size-[5px] animate-live rounded-full bg-emerald-400 align-middle motion-reduce:animate-none"
               />
@@ -277,7 +277,7 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
 </style>
 
 <script>
-  import { daysSince, freshnessOf } from '@/lib/freshness';
+  import { daysSince, FRESH_DAYS, freshnessOf } from '@/lib/freshness';
   import { createIntro, runIntro } from './scene/intro';
   import { startScene } from './scene/scene';
 
@@ -289,9 +289,9 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
     const today = new Date();
     const latest = document.querySelector<HTMLElement>('[data-latest]');
     if (latest) latest.dataset.freshness = freshnessOf(daysSince(latest.dataset.latest!, today));
-    // 惑星のラベルの点は、7日以内に更新があったときだけ出す
+    // 惑星のラベルの点は、FRESH_DAYS 日以内に更新があったときだけ出す
     for (const dot of document.querySelectorAll<HTMLElement>('[data-fresh]')) {
-      dot.hidden = daysSince(dot.dataset.fresh!, today) > 7;
+      dot.hidden = daysSince(dot.dataset.fresh!, today) > FRESH_DAYS;
     }
   }
 

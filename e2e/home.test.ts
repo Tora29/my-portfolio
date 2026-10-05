@@ -14,6 +14,36 @@ test.describe('イントロ', () => {
     await expect(home).not.toHaveAttribute('data-intro');
   });
 
+  test('クリックで飛ばしたとき、そのクリックでは下の名前（About へのリンク）を開かない', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    const home = page.locator('[data-home]');
+    await expect(home).toHaveAttribute('data-intro', /.+/);
+
+    // 画面の中央は名前（About へのリンク）
+    const size = page.viewportSize()!;
+    await page.mouse.click(size.width / 2, size.height / 2);
+    await expect(home).not.toHaveAttribute('data-intro');
+    await expect(page).toHaveURL('/');
+
+    // 打ち消すのは飛ばしたクリックだけで、次のクリックでは開ける
+    await page.getByRole('heading', { level: 1 }).click();
+    await expect(page).toHaveURL('/about');
+  });
+
+  test('右クリックで飛ばしたあとも、次のクリックを打ち消さない', async ({ page }) => {
+    await page.goto('/');
+    const home = page.locator('[data-home]');
+    await expect(home).toHaveAttribute('data-intro', /.+/);
+
+    // 右クリックには click が続かないため、打ち消しが残ると次の左クリックが消えていた
+    await page.mouse.click(10, 10, { button: 'right' });
+    await expect(home).not.toHaveAttribute('data-intro');
+    await page.getByRole('heading', { level: 1 }).click();
+    await expect(page).toHaveURL('/about');
+  });
+
   test('別のページから入り、閉じるで Home に来たときは再生しない', async ({ page }) => {
     await page.goto('/about');
     await page.getByRole('link', { name: '閉じて Home に戻る' }).click();

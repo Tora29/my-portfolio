@@ -52,6 +52,12 @@ export const createIntro = (start: number): IntroTimeline => ({
 });
 
 /**
+ * スキップした押下に続く click を待つ時間（ミリ秒）。pointerup のあと、この時間内に click が来なければ打ち消しをやめる。
+ * click はふつう pointerup の直後に来るが、タッチ端末では少し遅れることがあるため、余裕を持たせる
+ */
+const SKIP_CLICK_GRACE_MS = 500;
+
+/**
  * イントロを進める。返り値の関数で途中で止める（タイマーとイベントリスナーを解除する）。
  * 1. 時刻に合わせて root の data-intro を dark → charge → bang と進める（見た目は HomeScene.astro の CSS）
  * 2. settle の時刻、またはクリック・キー操作で終える（data-intro を消し、操作できるようにする）。
@@ -60,6 +66,8 @@ export const createIntro = (start: number): IntroTimeline => ({
 export function runIntro(root: HTMLElement, intro: IntroTimeline): () => void {
   const timers: number[] = [];
   const at = (sec: number, fn: () => void) => timers.push(window.setTimeout(fn, sec * 1000));
+  /** スキップした押下に続く click の打ち消しをやめる。打ち消しを始めていなければ何もしない */
+  let releaseClickGuard = () => {};
 
   const cleanup = () => {
     timers.forEach(clearTimeout);
@@ -75,17 +83,39 @@ export function runIntro(root: HTMLElement, intro: IntroTimeline): () => void {
   function skip(event: Event) {
     intro.skipped = true;
     finish();
-    // スキップのためのクリックで、その下の惑星が開かないようにする（直後の click を1回だけ打ち消す）
-    if (event.type === 'pointerdown') {
-      window.addEventListener(
-        'click',
-        (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-        },
-        { capture: true, once: true },
-      );
-    }
+    // click が続くのは主ボタン（左クリック・タップ）だけ。右・中クリックでは打ち消さない
+    if (event instanceof PointerEvent && event.button === 0) guardClick(event);
+  }
+
+  /**
+   * スキップのための押下で、その下の惑星が開かないようにする（押下に続く click を1回だけ打ち消す）。
+   * 主ボタンでも、長押し・スワイプ・macOS の Ctrl+クリックなど、押下のあとに click が来ない押し方がある。
+   * 打ち消しを残すと、後の無関係なクリック（ページ遷移の後も含む）を消してしまうため、
+   * click が来ないと分かった時点（pointercancel、または pointerup から一定時間）でやめる
+   */
+  function guardClick(down: PointerEvent) {
+    let timer: number | undefined;
+    const swallow = (e: MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      releaseClickGuard();
+    };
+    const end = (e: PointerEvent) => {
+      // 別の指の操作は無視する
+      if (e.pointerId !== down.pointerId) return;
+      if (e.type === 'pointercancel') releaseClickGuard();
+      else timer = window.setTimeout(releaseClickGuard, SKIP_CLICK_GRACE_MS);
+    };
+    releaseClickGuard = () => {
+      clearTimeout(timer);
+      window.removeEventListener('click', swallow, { capture: true });
+      window.removeEventListener('pointerup', end, { capture: true });
+      window.removeEventListener('pointercancel', end, { capture: true });
+      releaseClickGuard = () => {};
+    };
+    window.addEventListener('click', swallow, { capture: true });
+    window.addEventListener('pointerup', end, { capture: true });
+    window.addEventListener('pointercancel', end, { capture: true });
   }
 
   // 1.
@@ -96,5 +126,8 @@ export function runIntro(root: HTMLElement, intro: IntroTimeline): () => void {
   window.addEventListener('pointerdown', skip);
   window.addEventListener('keydown', skip);
 
-  return cleanup;
+  return () => {
+    cleanup();
+    releaseClickGuard();
+  };
 }
