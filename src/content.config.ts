@@ -12,7 +12,7 @@ import { defineCollection, reference } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { parse } from 'yaml';
-import { techIdsFromTopics, zennSlugFromFile } from '@/lib/zenn';
+import { techIdsFromTopics, topicToTechId, zennPublishedDate, zennSlugFromFile } from '@/lib/zenn';
 
 /**
  * YAML の配列を読み込み、記述順を order として持たせる。
@@ -92,7 +92,9 @@ const works = defineCollection({
  * Tech の id の一覧。記事の topics を Tech に読み替えるために使う。
  * スキーマの検証中は他のコレクションを読めないため、tech.yml を直接読む
  */
-const techIds = (parse(readFileSync('data/tech.yml', 'utf8')) as { id: string }[]).map((t) => t.id);
+const techByTopic = topicToTechId(
+  (parse(readFileSync('data/tech.yml', 'utf8')) as { id: string }[]).map((t) => t.id),
+);
 
 /**
  * 記事（articles/<スラッグ>.md）。本文は Zenn で公開し、サイトには一覧と Tech・作品とのつながりだけを出す。
@@ -116,8 +118,21 @@ const notes = defineCollection({
       // 公開 Repository のため、main に置くと published: false でも GitHub 上で読めてしまう。
       // 公開前の記事は作業ブランチの上で書き、main の articles/ には公開する記事だけを置く
       published: z.literal(true),
-      // 公開日。Zenn では任意だが、書かないと Zenn に同期した時刻が公開日になり、サイトからは分からないため必須にする
-      published_at: z.coerce.date(),
+      // 公開日。Zenn では任意だが、書かないと Zenn に同期した時刻が公開日になり、サイトからは分からないため必須にする。
+      // 引用符で囲んだ文字列で書く（Zenn の検証が文字列を前提にしているため。囲まないと YAML が日付として読み込む）
+      published_at: z
+        .string({ error: 'published_at は引用符で囲み、"YYYY-MM-DD" の形で書く' })
+        .transform((value, ctx) => {
+          const date = zennPublishedDate(value);
+          if (date === undefined) {
+            ctx.addIssue({
+              code: 'custom',
+              message: `published_at は "YYYY-MM-DD" または "YYYY-MM-DD hh:mm" で書く：${value}`,
+            });
+            return z.NEVER;
+          }
+          return date;
+        }),
       // サイトだけで使う項目（Zenn は知らない項目を無視する）。この記事が扱う作品（作品ページの Related Notes に優先して表示される）
       works: z.array(reference('works')).default([]),
     })
@@ -126,7 +141,10 @@ const notes = defineCollection({
       date: published_at,
       topics,
       // reference('tech') と同じ形にする。読み替えた id は tech.yml にあるものだけなので、存在の確認は要らない
-      tags: techIdsFromTopics(topics, techIds).map((id) => ({ collection: 'tech' as const, id })),
+      tags: techIdsFromTopics(topics, techByTopic).map((id) => ({
+        collection: 'tech' as const,
+        id,
+      })),
     })),
 });
 
