@@ -14,6 +14,10 @@ import { newestCareerFirst, newestNoteFirst } from '@/lib/order';
 import { techHref, workHref } from '@/lib/urls';
 import { zennArticleUrl } from '@/lib/zenn';
 
+/** 作品をタイトル順に並べる（Tech 一覧の関連コンテンツ名・Tech 詳細の Works） */
+const byTitle = (a: { data: { title: string } }, b: { data: { title: string } }) =>
+  a.data.title.localeCompare(b.data.title, 'ja');
+
 /** Tech 一覧の関連コンテンツ名は1行で省略表示するため、それ以上は渡さない */
 const LIST_RELATED_CONTENTS = 4;
 
@@ -90,11 +94,22 @@ export async function loadTechList(): Promise<TechGenre[]> {
       career: node.total.career.length,
       activity: node.total.activity.length,
     },
-    // Activity は件数が多く名前も作品名と重なるため、作品・記事・職歴の名前だけを並べる
+    // Activity は件数が多く名前も作品名と重なるため、作品・記事・職歴の名前だけを並べる。
+    // 種類の中は Tech 詳細と同じ順（作品はタイトル順、記事・職歴は新しい順）。
+    // 集計結果の id の順は getCollection の返す順のままで、ビルドごとに変わりうるため並べ直す
     relatedContents: [
-      ...node.total.works.map((id) => index.works.get(id)!.data.title),
-      ...node.total.notes.map((id) => index.notes.get(id)!.data.title),
-      ...node.total.career.map((id) => index.career.get(id)!.data.org),
+      ...node.total.works
+        .map((id) => index.works.get(id)!)
+        .toSorted(byTitle)
+        .map((e) => e.data.title),
+      ...node.total.notes
+        .map((id) => index.notes.get(id)!)
+        .toSorted(newestNoteFirst)
+        .map((e) => e.data.title),
+      ...node.total.career
+        .map((id) => index.career.get(id)!)
+        .toSorted(newestCareerFirst)
+        .map((e) => e.data.org),
     ].slice(0, LIST_RELATED_CONTENTS),
   });
 
@@ -120,7 +135,7 @@ export async function loadTechDetails(): Promise<TechDetail[]> {
     childNames: childNamesOf(node, graph),
     works: node.total.works
       .map((id) => index.works.get(id)!)
-      .toSorted((a, b) => a.data.title.localeCompare(b.data.title, 'ja'))
+      .toSorted(byTitle)
       .map((e) => ({ href: workHref(e.id), title: e.data.title, summary: e.data.summary })),
     // 記事・職歴・Activity は新しい順
     notes: node.total.notes
