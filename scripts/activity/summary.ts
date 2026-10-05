@@ -32,6 +32,16 @@ function toPlainText(paragraph: string): string {
   );
 }
 
+/**
+ * Git の trailer（`Co-Authored-By: …`・`Signed-off-by: …` など）と、生成ツールの署名（`🤖 Generated with …`）だけの段落。
+ * 本文に要約を書かずに署名だけが残った PR で、署名が要約として公開されないようにする
+ */
+const TRAILER_LINE = /^[A-Za-z][A-Za-z0-9-]*: \S/;
+const isSignature = (paragraph: string) =>
+  paragraph
+    .split('\n')
+    .every((line) => TRAILER_LINE.test(line.trim()) || line.trim().startsWith('🤖 Generated with'));
+
 /** 長すぎる要約を切る。途中で切ったことが分かるよう末尾に … を付ける */
 function truncate(text: string): string {
   const chars = [...text];
@@ -44,7 +54,7 @@ function truncate(text: string): string {
  * 本文から要約を取り出す。
  * 1. HTML コメント（テンプレートの書き方の説明）を除く
  * 2. 最初の見出しより前だけを対象にする
- * 3. 段落（空行区切り）のうち、箇条書き・チェックリスト・引用・表・コードではない最初のものを選ぶ
+ * 3. 段落（空行区切り）のうち、箇条書き・チェックリスト・引用・表・コード・署名ではない最初のものを選ぶ
  * 4. 見つからない、または定型文のままなら fallback（見出し）を使う
  */
 export function extractSummary(body: string | null, fallback: string): string {
@@ -62,7 +72,7 @@ export function extractSummary(body: string | null, fallback: string): string {
   const paragraph = beforeHeading
     .split(/\n\s*\n/)
     .map((p) => p.trim())
-    .find((p) => p !== '' && !isNotProse.test(p));
+    .find((p) => p !== '' && !isNotProse.test(p) && !isSignature(p));
   const plain = paragraph ? toPlainText(paragraph) : '';
 
   // 4.
