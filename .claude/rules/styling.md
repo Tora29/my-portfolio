@@ -5,7 +5,7 @@ paths:
 
 # スタイルルール
 
-Tailwind CSS v4 を使う。デザインの基準はモック（`.users/mock/portfolio_welcome.html`）と `.users/requirements/screens.md`。
+Tailwind CSS v4 を使う。デザインの基準は、実装済みの画面と `src/styles/` のデザイントークン。
 
 ## 基本方針
 
@@ -55,4 +55,4 @@ Tailwind CSS v4 を使う。デザインの基準はモック（`.users/mock/por
 
 - すべてのアニメーション・トランジションは `prefers-reduced-motion: reduce` で無効化または簡略化する
 - 自動で5秒以上動き続けるもの（Home の宇宙のシーン）には、止める手段を置く（`accessibility.md`）
-- ホバーで要素の大きさ・行の高さを変えない（レイアウトのずれ・ちらつきを防ぐ）
+- ホバーで、周りのレイアウトを動かす大きさ（幅・高さ・余白・行の高さ・文字の大きさ）を変えない（レイアウトのずれ・ちらつきを防ぐ）。`transform`（`scale` など）での拡大は、周りを動かさないため使ってよい

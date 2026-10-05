@@ -56,7 +56,8 @@ const { name, href } = Astro.props;
 
 - 初期化処理は `document.addEventListener('astro:page-load', …)` の中で行う（遷移後に再実行されるように）
 - イベントリスナー・タイマー・`requestAnimationFrame` は、`astro:before-swap` などで解除し、遷移のたびに重複させない
-- Homeの宇宙のCanvasなど、遷移をまたいで残す要素には `transition:persist` を付ける
+- 遷移をまたいで残す要素には `transition:persist` を付ける（例：開閉の演出の粒子の Canvas。`SectionTransition`）
+- Homeの宇宙のシーンは残さない。Home を離れるとき（`astro:before-swap`）に止め、戻ったときに作り直す。離れた時点の公転の角度を sessionStorage に保存して引き継ぐ（セクションを開いている間は公転を止め、開いた位置と閉じて戻る位置を揃えるため。`lib/orbit.ts`）
 - スクリプトから参照する要素は `data-*` 属性で取得する（クラス名はスタイル用とし、処理の目印に使わない）
 
 ## データの受け渡し

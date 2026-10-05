@@ -39,7 +39,7 @@ paths:
 
 - `e2e/` に置き、ビルド済みのサイト（`astro preview`）に対して実行する
 - 確認するのは次の範囲に留める
-  - すべての画面（`.claude/users/requirements/screens.md` §2）が表示される
+  - すべての画面（`.users/requirements/screens.md` §2）が表示される
   - 一覧から詳細へ、詳細から関連コンテンツへ遷移できる
   - JavaScriptなしでも各ページの本文が読める
 - 見た目の比較（スクリーンショット比較）は行わない
