@@ -183,7 +183,7 @@ const SPHERES = { full: buildSphere(900), small: buildSphere(450) };
 const FORM_DELAY = 0.1;
 /**
  * 集まりきってからイントロが終わるまでの余裕（秒）。
- * イントロが終わると完成した状態で描くため、形成の途中で終わると最後に惑星が跳ぶように縮んでしまう
+ * 惑星を押せるようになった時点で、惑星が形になっているようにする
  */
 const FORM_MARGIN = 0.1;
 /**

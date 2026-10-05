@@ -36,6 +36,9 @@ const NEBULAE: [number, number, string, number][] = [
  */
 const BACKDROP_SCALE = 0.5;
 
+/** 星・銀河が広がりきってから、Career の軌跡と Tech の点線が現れきるまでの秒数 */
+const LINKS_FADE_IN = 0.6;
+
 interface Star {
   x: number;
   y: number;
@@ -206,8 +209,10 @@ export function createSky(canvas: HTMLCanvasElement): Sky {
     ctx.drawImage(backdrop, 0, 0, W, H);
 
     ctx.globalCompositeOperation = 'lighter';
-    // 流れ始めるのはビッグバンから（爆発は中心から広がって見えるように）
-    const driftT = intro.done ? t : Math.max(0, it - intro.bang);
+    // 流れ始めるのはビッグバンから（爆発は中心から広がって見えるように）。
+    // イントロの前後で同じ基準の時刻を使う。終わった後だけ t（ページを開いてからの秒数）に切り替えると、
+    // ページの読み込みにかかった秒数の分だけ、すべての星が一斉に跳んでしまう
+    const driftT = Math.max(0, t - intro.start - intro.bang);
     // 星ごとに色の文字列を作ると負荷が大きいため、色は固定し、またたきは globalAlpha で表す
     const baseAlpha = ctx.globalAlpha;
     for (const s of stars) {
@@ -245,7 +250,10 @@ export function createSky(canvas: HTMLCanvasElement): Sky {
       ctx.stroke();
       ctx.globalCompositeOperation = 'lighter';
     }
-    if (e >= 1) {
+    // 広がりきってから、軌跡と点線をフェードインさせる（いきなり現れると、そこで画面が切り替わったように見えるため）
+    const reveal = clamp01((it - intro.bang - intro.expand) / LINKS_FADE_IN);
+    if (reveal > 0) {
+      ctx.globalAlpha = reveal;
       drawCareerTrail(orbit, planets);
       drawTechLinks(planets, t);
     }
