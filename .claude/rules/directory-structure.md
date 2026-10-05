@@ -83,6 +83,7 @@ pages/
 ### src/components/ui/
 
 - 特定の機能やコンテンツ構造に依存しない部品のみを置く（例：Chip、ShowMore、BackButton）
+- 例外：複数の機能で同じコンテンツを同じ形で表示する部品は、機能間の import を避けるためここに置く（例：About と Activity で使う `ActivityTimeline`）。依存するデータの型は `lib/` から import する
 
 ### src/lib/
 
@@ -92,6 +93,7 @@ pages/
 ### src/layouts/
 
 - ページの外枠のみを置く（例：`BaseLayout`、タブ・見出し・Prev / Nextを持つ `SectionLayout`）
+- すべてのページに常に置く、ページ遷移の演出も外枠に含める（例：`BaseLayout` が置く `SectionTransition`）
 
 ## 判断に迷ったとき
 
