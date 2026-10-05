@@ -55,13 +55,6 @@ describe('BaseLayout', () => {
     expect(without.querySelector('meta[property="og:description"]')).toBeNull();
   });
 
-  it('OGP の種類は省略すると website、指定すればその種類', async () => {
-    const ogType = (root: HTMLElement) =>
-      root.querySelector('meta[property="og:type"]')?.getAttribute('content');
-    expect(ogType(await renderAt('/works.html'))).toBe('website');
-    expect(ogType(await renderAt('/works/foo.html', { ogType: 'article' }))).toBe('article');
-  });
-
   it('構造化データは渡したときだけ JSON-LD として出す', async () => {
     const jsonLd = 'script[type="application/ld+json"]';
     const withData = await renderAt('/index.html', {

@@ -5,12 +5,13 @@
  * コンポーネントには、ここで組み立てた表示用の値だけを渡す（コンポーネントで getCollection を呼ばない）。
  */
 import { getCollection } from 'astro:content';
-import { groupByCategory, totalCount } from '@/lib/graph/build-graph';
+import { groupByCategory, hasRecords } from '@/lib/graph/build-graph';
 import { loadGraph, loadTechCategories } from '@/lib/graph/load-graph';
 import type { ContentKind, Graph, TechNode } from '@/lib/graph/types';
 import { toDateString } from '@/lib/format-date';
 import { formatPeriod } from '@/lib/format-period';
-import { techHref } from '@/lib/load-tech-tags';
+import { newestCareerFirst, newestNoteFirst } from '@/lib/order';
+import { techHref, workHref } from '@/lib/urls';
 import { zennArticleUrl } from '@/lib/zenn';
 
 /** Tech 一覧の関連コンテンツ名は1行で省略表示するため、それ以上は渡さない */
@@ -45,17 +46,11 @@ export interface TechDetail {
   related: { href: string; label: string }[];
 }
 
-/**
- * 表示するかどうか。実績（下位 Tech を含む）が1件もない Tech は一覧に出さず、詳細ページも作らない。
- * tech.yml に定義しただけで、まだ使っていない Tech が「実績 0」として並ぶのを避けるため
- */
-const isVisible = (node: TechNode) => totalCount(node) > 0;
-
 /** 実績のある下位 Tech の名前。実績のない下位 Tech まで出すと「含む」の意味が薄れるため除く */
 function childNamesOf(node: TechNode, graph: Graph): string[] {
   return node.children
     .map((id) => graph.tech.get(id)!)
-    .filter(isVisible)
+    .filter(hasRecords)
     .map((child) => child.name);
 }
 
@@ -110,7 +105,7 @@ export async function loadTechList(): Promise<TechGenre[]> {
     .map((group) => ({
       id: group.category,
       name: categoryName.get(group.category)!,
-      tech: group.tech.filter(isVisible).map(toItem),
+      tech: group.tech.filter(hasRecords).map(toItem),
     }))
     .filter((genre) => genre.tech.length > 0);
 }
@@ -126,11 +121,11 @@ export async function loadTechDetails(): Promise<TechDetail[]> {
     works: node.total.works
       .map((id) => index.works.get(id)!)
       .toSorted((a, b) => a.data.title.localeCompare(b.data.title, 'ja'))
-      .map((e) => ({ href: `/works/${e.id}`, title: e.data.title, summary: e.data.summary })),
+      .map((e) => ({ href: workHref(e.id), title: e.data.title, summary: e.data.summary })),
     // 記事・職歴・Activity は新しい順
     notes: node.total.notes
       .map((id) => index.notes.get(id)!)
-      .toSorted((a, b) => b.data.date.getTime() - a.data.date.getTime())
+      .toSorted(newestNoteFirst)
       .map((e) => ({
         href: zennArticleUrl(e.id),
         title: e.data.title,
@@ -138,7 +133,7 @@ export async function loadTechDetails(): Promise<TechDetail[]> {
       })),
     career: node.total.career
       .map((id) => index.career.get(id)!)
-      .toSorted((a, b) => b.data.period.start - a.data.period.start)
+      .toSorted(newestCareerFirst)
       .map((e) => ({ org: e.data.org, role: e.data.role, period: formatPeriod(e.data.period) })),
     activity: node.total.activity
       .map((id) => index.activity.get(id)!)
@@ -151,5 +146,5 @@ export async function loadTechDetails(): Promise<TechDetail[]> {
     related: node.related.map((id) => ({ href: techHref(id), label: graph.tech.get(id)!.name })),
   });
 
-  return [...graph.tech.values()].filter(isVisible).map(toDetail);
+  return [...graph.tech.values()].filter(hasRecords).map(toDetail);
 }

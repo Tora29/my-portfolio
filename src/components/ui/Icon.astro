@@ -4,15 +4,14 @@
  * 大きさはフォントサイズのクラス（text-lg 等）、色は文字色のクラスで指定する
  *
  * SVG をビルド時にインライン化するため、アイコン用の JavaScript やフォントを配信しない。
- * 使うアイコンだけを ICONS に登録する（登録したものだけがバンドルに含まれる）。
+ * 使うアイコンだけを ICONS に登録する（登録したものだけがバンドルに含まれる）。名前の一覧は lib/icons.ts。
  */
+import type { IconName } from '@/lib/icons';
 import ArrowLeft from '@phosphor-icons/core/regular/arrow-left.svg';
 import ArrowRight from '@phosphor-icons/core/regular/arrow-right.svg';
 import ArrowUpRight from '@phosphor-icons/core/regular/arrow-up-right.svg';
 import Code from '@phosphor-icons/core/regular/code.svg';
 import Cpu from '@phosphor-icons/core/regular/cpu.svg';
-import FolderSimplePlus from '@phosphor-icons/core/regular/folder-simple-plus.svg';
-import GitCommit from '@phosphor-icons/core/regular/git-commit.svg';
 import GitPullRequest from '@phosphor-icons/core/regular/git-pull-request.svg';
 import GithubLogo from '@phosphor-icons/core/regular/github-logo.svg';
 import SealCheck from '@phosphor-icons/core/regular/seal-check.svg';
@@ -25,14 +24,12 @@ import Pulse from '@phosphor-icons/core/regular/pulse.svg';
 import UserCircle from '@phosphor-icons/core/regular/user-circle.svg';
 import X from '@phosphor-icons/core/regular/x.svg';
 
-const ICONS = {
+const ICONS: Record<IconName, typeof X> = {
   'arrow-left': ArrowLeft,
   'arrow-right': ArrowRight,
   'arrow-up-right': ArrowUpRight,
   code: Code,
   cpu: Cpu,
-  'folder-simple-plus': FolderSimplePlus,
-  'git-commit': GitCommit,
   'git-pull-request': GitPullRequest,
   'github-logo': GithubLogo,
   'seal-check': SealCheck,
@@ -45,9 +42,6 @@ const ICONS = {
   'user-circle': UserCircle,
   x: X,
 };
-
-/** 使えるアイコンの名前。.ts からは import type で参照する（例：lib/sections.ts） */
-export type IconName = keyof typeof ICONS;
 
 interface Props {
   name: IconName;

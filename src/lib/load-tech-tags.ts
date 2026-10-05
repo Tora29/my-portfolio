@@ -5,12 +5,10 @@
  * ビルド時（ページの生成時）にのみ呼ぶ。ブラウザ向けのスクリプトから import しない。
  */
 import { getCollection } from 'astro:content';
-import { totalCount } from '@/lib/graph/build-graph';
+import { hasRecords } from '@/lib/graph/build-graph';
 import { loadGraph, loadTechCategories } from '@/lib/graph/load-graph';
 import { buildTechTags, type TechTagList, type TechTagSource } from './tech-tags';
-
-/** Tech 詳細のURL */
-export const techHref = (id: string) => `/tech/${id}`;
+import { techHref } from './urls';
 
 let cached: Promise<TechTagSource> | undefined;
 
@@ -23,11 +21,9 @@ async function loadSource(): Promise<TechTagSource> {
   return {
     tech: new Map(tech.map((e) => [e.id, { name: e.data.name, category: e.data.category.id }])),
     categories,
-    // Tech 詳細は実績のある Tech にだけ作られる（features/tech/load-tech.ts と同じ条件）。
+    // Tech 詳細は実績のある Tech にだけ作られる（hasRecords）。
     // プロフィールの Strengths のように、Engineering Graph の集計対象でない場所からも参照されるため確認する
-    linkable: new Set(
-      [...graph.tech.values()].filter((node) => totalCount(node) > 0).map((n) => n.id),
-    ),
+    linkable: new Set([...graph.tech.values()].filter(hasRecords).map((n) => n.id)),
     hrefOf: techHref,
   };
 }

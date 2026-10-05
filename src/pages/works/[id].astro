@@ -9,6 +9,7 @@ import type { GetStaticPaths } from 'astro';
 import { loadWorkDetails, type WorkDetail as WorkDetailData } from '@/features/works/load-works';
 import WorkDetail from '@/features/works/WorkDetail.astro';
 import SectionLayout from '@/layouts/SectionLayout.astro';
+import { SECTIONS } from '@/lib/sections';
 
 // ビルド時に、すべての作品のページを作る。表示用のデータもここで渡す
 export const getStaticPaths = (async () => {
@@ -27,7 +28,7 @@ const { work } = Astro.props;
   section="works"
   title={work.title}
   lead={work.summary}
-  back={{ href: '/works', label: 'All Works' }}
+  back={{ href: SECTIONS.works.href, label: `All ${SECTIONS.works.title}` }}
   description={work.summary}
 >
   <WorkDetail work={work} />

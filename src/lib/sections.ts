@@ -4,7 +4,7 @@
  * タブ・見出し・Prev / Next・アクセント色など、セクションをまたいで使う情報を1か所にまとめる。
  * 並び順はタブの順（.users/requirements/screens.md §3.2）。
  */
-import type { IconName } from '@/components/ui/Icon.astro';
+import type { IconName } from '@/lib/icons';
 
 export const SECTION_IDS = ['about', 'career', 'works', 'tech', 'notes', 'activity'] as const;
 

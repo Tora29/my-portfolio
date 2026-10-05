@@ -3,7 +3,7 @@
  *
  * コンポーネントには、ここで組み立てた表示用の値だけを渡す（コンポーネントで getCollection を呼ばない）。
  */
-import type { IconName } from '@/components/ui/Icon.astro';
+import type { IconName } from '@/lib/icons';
 import { groupByDate } from '@/lib/activity';
 import { loadActivityItems, type ActivityItem } from '@/lib/load-activity';
 import { loadExperience, loadProfile } from '@/lib/load-profile';
@@ -30,6 +30,7 @@ export interface AboutPage {
 const linkIcon = (href: string): IconName =>
   new URL(href).hostname === 'github.com' ? 'github-logo' : 'arrow-up-right';
 
+/** About に表示するデータを読み込む（ビルド時） */
 export async function loadAboutPage(): Promise<AboutPage> {
   const [profile, experience, activity] = await Promise.all([
     loadProfile(),

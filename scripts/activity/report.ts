@@ -6,6 +6,7 @@
  */
 import type { Activity } from './types.ts';
 
+/** まだ公開していない Activity の一覧と確認のしかたを、確認用 PR の本文（Markdown）にする */
 export function renderSummary(pending: Activity[]): string {
   const rows = pending.map(
     (a) =>

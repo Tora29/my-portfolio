@@ -20,6 +20,23 @@ export interface BackEntry {
   to: string;
 }
 
+/**
+ * sessionStorage から読んだ値を、記録の配列として使える形にする。
+ * 同じサイトのスクリプトしか書かない値だが、形の違う古い値・手で書き換えた値で戻るボタンの処理が止まらないよう、
+ * 配列でなければ空、形の合わない記録は取り除く
+ */
+export function parseBackStack(value: unknown): BackEntry[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter(
+    (entry): entry is BackEntry =>
+      typeof entry === 'object' &&
+      entry !== null &&
+      typeof entry.from === 'string' &&
+      typeof entry.label === 'string' &&
+      typeof entry.to === 'string',
+  );
+}
+
 /** 積む上限。行き来を繰り返しても sessionStorage が膨らみ続けないようにする */
 const MAX_ENTRIES = 30;
 

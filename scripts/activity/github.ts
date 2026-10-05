@@ -73,6 +73,7 @@ export async function fetchPullRequests(owner: string, repo: string): Promise<Pu
   }));
 }
 
+/** Release の一覧（下書き・プレリリースも含む。載せるかは convert.ts で判定する） */
 export async function fetchReleases(owner: string, repo: string): Promise<Release[]> {
   const releases = await fetchAll(`/repos/${owner}/${repo}/releases`, releaseSchema);
   return releases.map((release) => ({

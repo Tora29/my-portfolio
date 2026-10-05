@@ -7,6 +7,7 @@ import { getCollection } from 'astro:content';
 import { formatPeriod } from '@/lib/format-period';
 import { loadProfile } from '@/lib/load-profile';
 import { loadTechTags } from '@/lib/load-tech-tags';
+import { newestCareerFirst } from '@/lib/order';
 import type { TechTagList } from '@/lib/tech-tags';
 
 export interface CareerItem {
@@ -24,15 +25,10 @@ export interface CareerPage {
   extraCertifications: string[];
 }
 
+/** Career に表示するデータを読み込む（ビルド時）。職歴は新しい順 */
 export async function loadCareerPage(): Promise<CareerPage> {
   const [career, profile] = await Promise.all([getCollection('career'), loadProfile()]);
-  // 開始年が同じ場合は、終了年の新しいほう（現職の end: null を最新とする）を先にする
-  const endOf = (end: number | null) => end ?? Infinity;
-  const sorted = career.toSorted(
-    (a, b) =>
-      b.data.period.start - a.data.period.start ||
-      endOf(b.data.period.end) - endOf(a.data.period.end),
-  );
+  const sorted = career.toSorted(newestCareerFirst);
 
   return {
     career: await Promise.all(

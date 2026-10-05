@@ -7,10 +7,12 @@
 import type { ImageMetadata } from 'astro';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import { ACTIVITY_ICONS, activityHref } from '@/lib/activity';
-import type { IconName } from '@/components/ui/Icon.astro';
+import type { IconName } from '@/lib/icons';
 import { formatShortDate, toDateString } from '@/lib/format-date';
 import { loadTechTags } from '@/lib/load-tech-tags';
+import { newestNoteFirst } from '@/lib/order';
 import type { TechTagList } from '@/lib/tech-tags';
+import { workHref } from '@/lib/urls';
 import { zennArticleUrl } from '@/lib/zenn';
 
 type Work = CollectionEntry<'works'>;
@@ -21,8 +23,6 @@ const STATUS_LABELS: Record<Work['data']['status'], string> = {
   active: '運用中',
   archived: 'アーカイブ',
 };
-
-export const workHref = (id: string) => `/works/${id}`;
 
 export interface WorkListItem {
   id: string;
@@ -136,7 +136,7 @@ function relatedNotesOf(
     date: toDateString(note.data.date),
     reason,
   });
-  const byDate = notes.toSorted((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  const byDate = notes.toSorted(newestNoteFirst);
 
   // 1.
   const explicit = byDate.filter((note) => note.data.works.some((ref) => ref.id === work.id));
