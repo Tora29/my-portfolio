@@ -42,6 +42,9 @@
 - id: nestjs
   name: NestJS
   category: backend
+- id: bun
+  name: Bun
+  category: backend
 - id: fastapi
   name: FastAPI
   category: backend
