@@ -104,9 +104,9 @@
 </style>
 
 <script>
-  import { coverRadius, playBurst, type Circle } from '@/lib/burst';
+  import { coverRadius, playBurst } from '@/lib/burst';
   import { toRgbTriplet } from '@/lib/color';
-  import { entryCircle, loadOrbitAngle } from '@/lib/orbit';
+  import { entryCircle, loadOrbitAngle, type Circle } from '@/lib/orbit';
 
   /** 演出の長さ（ミリ秒）。CSS のアニメーションと揃える。粒子は少し長く残す */
   const DURATION = { open: 1000, close: 700 };

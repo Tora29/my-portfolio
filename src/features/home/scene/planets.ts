@@ -9,7 +9,8 @@
  * リンクそのものが押せる領域になるため、Canvas の上で当たり判定を計算しなくて済む。
  */
 import { toRgbTriplet } from '@/lib/color';
-import { approachRate, clamp01, easeOutCubic, pixelRatio } from './math';
+import { clamp01, easeOutCubic } from '@/lib/math';
+import { approachRate, pixelRatio } from './math';
 import {
   DEFAULT_ORBIT_ANGLE,
   ORBIT_PERIOD,
@@ -17,12 +18,15 @@ import {
   orbitGeometry,
   orbitPoint,
   planetAngle,
+  isPlanetId,
   type OrbitGeometry,
+  type PlanetId,
 } from '@/lib/orbit';
 import { introElapsed, type IntroTimeline } from './intro';
 
+/** 惑星の描画の状態（表示用のデータは load-home.ts の HomePlanet） */
 export interface Planet {
-  key: string;
+  key: PlanetId;
   wrap: HTMLElement;
   link: HTMLElement;
   canvas: HTMLCanvasElement;
@@ -57,7 +61,7 @@ export interface Planet {
  * spin・breathe（呼吸の周期）・phase を惑星ごとにずらし、4つが揃って動かないようにする
  */
 const TRAITS: Record<
-  string,
+  PlanetId,
   {
     spin: number;
     tilt: number;
@@ -88,7 +92,7 @@ const SMALL_PLANET = 120;
 const BREATHE_AMOUNT = 0.025;
 
 /** 呼吸による大きさの倍率。衛星の軌道も同じ倍率で動かす（moons.ts） */
-export function planetScale(key: string, t: number): number {
+export function planetScale(key: PlanetId, t: number): number {
   const trait = TRAITS[key];
   return 1 + BREATHE_AMOUNT * Math.sin((t * Math.PI * 2) / trait.breathe + trait.phase);
 }
@@ -373,6 +377,7 @@ export interface Orbit extends OrbitGeometry {
   last: number | null;
 }
 
+/** 画面の大きさに合わせた軌道を、公転の角度 angle から始める */
 export const createOrbit = (angle = DEFAULT_ORBIT_ANGLE): Orbit => ({
   ...orbitGeometry(innerWidth, innerHeight),
   angle,
@@ -385,8 +390,11 @@ export function createPlanets(root: HTMLElement): Planet[] {
   return [...root.querySelectorAll<HTMLElement>('[data-planet]')].map((wrap) => {
     const link = wrap.querySelector<HTMLElement>('a')!;
     const canvas = wrap.querySelector<HTMLCanvasElement>('[data-planet-canvas]')!;
+    const key = wrap.dataset.planet ?? '';
+    // data-planet は HomeScene.astro が PLANET_ORDER から出力する。食い違いは実装の誤りなので、すぐ気づけるよう止める
+    if (!isPlanetId(key)) throw new Error(`未知の惑星：${key}`);
     const planet: Planet = {
-      key: wrap.dataset.planet!,
+      key,
       wrap,
       link,
       canvas,

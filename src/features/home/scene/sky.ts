@@ -7,7 +7,8 @@
  * - イントロのビッグバン（閃光と衝撃波）。星・銀河は中心から広がるように現れる
  */
 import { introElapsed, type IntroTimeline } from './intro';
-import { clamp01, easeOutCubic, lerp, pixelRatio } from './math';
+import { clamp01, easeOutCubic, lerp } from '@/lib/math';
+import { pixelRatio } from './math';
 import { orbitPoint } from '@/lib/orbit';
 import type { Orbit, Planet } from './planets';
 
@@ -65,6 +66,7 @@ export interface Sky {
   draw(t: number, scene: { orbit: Orbit; planets: Planet[]; intro: IntroTimeline }): void;
 }
 
+/** 背景の Canvas に描く空を作る。resize で画面の大きさに合わせ直し、draw で毎フレーム描く */
 export function createSky(canvas: HTMLCanvasElement): Sky {
   const ctx = canvas.getContext('2d')!;
   let W = 0;

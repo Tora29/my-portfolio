@@ -10,18 +10,15 @@ import { totalCount } from '@/lib/graph/build-graph';
 import { loadGraph } from '@/lib/graph/load-graph';
 import { formatShortDate, toDateString } from '@/lib/format-date';
 import { loadActivityItems } from '@/lib/load-activity';
-import { findLink, loadProfile } from '@/lib/load-profile';
-import { SECTIONS, type SectionId } from '@/lib/sections';
+import { findLink, type loadProfile } from '@/lib/load-profile';
+import { PLANET_ORDER, type PlanetId } from '@/lib/orbit';
+import { SECTIONS } from '@/lib/sections';
 
 /** Tech の衛星の上限。技術の数は多く、すべてを衛星にすると惑星が埋もれるため */
 const TECH_MOON_LIMIT = 5;
 
-export type PlanetId = Extract<SectionId, 'career' | 'works' | 'tech' | 'notes'>;
-
-/** 公転の順（90°間隔。screens.md §4.2） */
-export const PLANET_IDS: PlanetId[] = ['career', 'works', 'tech', 'notes'];
-
-export interface Planet {
+/** Home の惑星の表示用データ（描画の状態は scene/planets.ts の Planet） */
+export interface HomePlanet {
   id: PlanetId;
   title: string;
   href: string;
@@ -36,14 +33,20 @@ export interface HomePage {
   name: string;
   role: string;
   github?: string;
-  planets: Planet[];
+  /** 公転の順（lib/orbit.ts の PLANET_ORDER）に並べる */
+  planets: HomePlanet[];
   /** 最新の Activity。まだなければ undefined（右下に何も出さない） */
   latest?: { date: string; label: string; text: string };
 }
 
-export async function loadHomePage(): Promise<HomePage> {
-  const [profile, works, notes, career, graph, activity] = await Promise.all([
-    loadProfile(),
+/**
+ * Home に表示するデータを読み込む（ビルド時）。
+ * プロフィールはページの title・構造化データにも使うため、ページで読み込んだものを受け取る
+ */
+export async function loadHomePage(
+  profile: Awaited<ReturnType<typeof loadProfile>>,
+): Promise<HomePage> {
+  const [works, notes, career, graph, activity] = await Promise.all([
     getCollection('works'),
     getCollection('notes'),
     getCollection('career'),
@@ -75,7 +78,7 @@ export async function loadHomePage(): Promise<HomePage> {
     name: profile.name,
     role: profile.role,
     github: findLink(profile.links, 'github.com'),
-    planets: PLANET_IDS.map((id) => ({
+    planets: PLANET_ORDER.map((id) => ({
       id,
       title: SECTIONS[id].title,
       href: SECTIONS[id].href,

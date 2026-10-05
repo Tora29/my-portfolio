@@ -10,8 +10,9 @@
  * （ルートに data-scene が付くと、group-data-scene/home の指定に切り替わる）。
  */
 import Icon from '@/components/ui/Icon.astro';
-import { FRESH_DAYS, freshnessOf, daysSince } from '@/lib/freshness';
-import type { HomePage, PlanetId } from './load-home';
+import { FRESH_DAYS, freshnessOf, daysSince } from './freshness';
+import type { PlanetId } from '@/lib/orbit';
+import type { HomePage } from './load-home';
 
 interface Props {
   page: HomePage;
@@ -116,7 +117,7 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
               <span
                 hidden={daysSince(planet.updated, buildDate) > FRESH_DAYS}
                 data-fresh={planet.updated}
-                class="ml-[0.2em] inline-block size-[5px] animate-live rounded-full bg-emerald-400 align-middle motion-reduce:animate-none"
+                class="ml-[0.2em] inline-block size-[5px] animate-live rounded-full bg-live align-middle motion-reduce:animate-none"
               />
             )}
           </span>
@@ -206,7 +207,7 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
       data-intro-hide
       class="group fixed right-4 bottom-5 left-4 z-10 flex items-center justify-center gap-2.5 text-xs text-white/60 transition-colors hover:text-white sm:right-10 sm:bottom-10 sm:left-auto sm:justify-end"
     >
-      <span class="size-1.5 shrink-0 rounded-full bg-emerald-400 group-data-[freshness=live]:animate-live group-data-[freshness=stale]:bg-white/30 motion-reduce:animate-none" />
+      <span class="size-1.5 shrink-0 rounded-full bg-live group-data-[freshness=live]:animate-live group-data-[freshness=stale]:bg-white/30 motion-reduce:animate-none" />
       <span class="shrink-0 tracking-[0.25em] text-white/55 uppercase">
         <span class="group-data-[freshness=stale]:hidden">Latest</span>
         <span class="hidden group-data-[freshness=stale]:inline">Last update</span>
@@ -277,7 +278,7 @@ const initialFreshness = page.latest && freshnessOf(daysSince(page.latest.date, 
 </style>
 
 <script>
-  import { daysSince, FRESH_DAYS, freshnessOf } from '@/lib/freshness';
+  import { daysSince, FRESH_DAYS, freshnessOf } from './freshness';
   import { createIntro, runIntro } from './scene/intro';
   import { startScene } from './scene/scene';
 

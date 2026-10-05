@@ -9,7 +9,7 @@
  */
 import { loadOrbitAngle, saveOrbitAngle } from '@/lib/orbit';
 import { finishedIntro, type IntroTimeline } from './intro';
-import { clamp01 } from './math';
+import { clamp01 } from '@/lib/math';
 import { createMoons, updateMoons } from './moons';
 import {
   createOrbit,

@@ -7,8 +7,17 @@
  * DOM に依存しない形でここに置く。
  */
 
-/** 公転の順（90°間隔） */
+/**
+ * Home の惑星になるセクションと、その公転の順（90°間隔）。
+ * Home の惑星の並び（load-home.ts）と、開閉の演出の行き先（entryCircle）の両方がこの順を使う。
+ * 別々に持つと、閉じたときに縮んでいく先が実際の惑星の位置とずれるため、ここだけで定義する
+ */
 export const PLANET_ORDER = ['career', 'works', 'tech', 'notes'] as const;
+
+export type PlanetId = (typeof PLANET_ORDER)[number];
+
+export const isPlanetId = (id: string): id is PlanetId =>
+  (PLANET_ORDER as readonly string[]).includes(id);
 
 /** 1周の秒数 */
 export const ORBIT_PERIOD = 110;
@@ -89,8 +98,8 @@ export interface Circle {
  * - それ以外（About）：中央の名前
  */
 export function entryCircle(section: string, width: number, height: number, angle: number): Circle {
-  const index = PLANET_ORDER.indexOf(section as (typeof PLANET_ORDER)[number]);
-  if (index >= 0) {
+  if (isPlanetId(section)) {
+    const index = PLANET_ORDER.indexOf(section);
     const orbit = orbitGeometry(width, height);
     const point = orbitPoint(orbit, planetAngle(angle, index));
     return { x: point.x, y: point.y, r: (orbit.size / 2) * depthScale(point.depth) };
@@ -121,6 +130,7 @@ export function loadOrbitAngle(): number {
   }
 }
 
+/** 公転の角度を保存する。保存できない環境では何もしない */
 export function saveOrbitAngle(angle: number) {
   try {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(angle));
