@@ -1,11 +1,33 @@
 [
   {
+    "id": "Tora29/my-portfolio#54",
+    "date": "2026-10-04",
+    "type": "docs",
+    "work": "personal-platform",
+    "headline": "testglass の紹介記事を公開",
+    "summary": "AI が書いた大量のテストを人間がレビューしやすくするために作った testglass について、Zenn に記事を書いた。テストを「名前・手順・期待結果・判定」の仕様書として並べる仕組みと、LLM を使わずに構文木から組み立てる設計の理由を紹介している。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/54"
+  },
+  {
+    "id": "Tora29/my-portfolio#53",
+    "date": "2026-10-04",
+    "type": "docs",
+    "work": "personal-platform",
+    "headline": "記事のルールを分け、下書きを作業ブランチで書くようにする",
+    "summary": "Zenn の記事の書き方を独立したルールにまとめ、下書き用のディレクトリをやめて作業ブランチの上で直接書く運用にした。Zenn と同じ表示で確かめてから公開できるようになった。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/53"
+  },
+  {
     "id": "Tora29/my-portfolio#50",
     "date": "2026-10-03",
     "type": "docs",
     "work": "personal-platform",
     "headline": "ポートフォリオ記事のタイトルを変更",
-    "summary": "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com> Claude-Session:",
+    "summary": "ポートフォリオ記事のタイトルを変更",
     "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
     "techSource": "work",
     "url": "https://github.com/Tora29/my-portfolio/pull/50"
