@@ -70,5 +70,13 @@ async function build(): Promise<Graph> {
   if (graph.unused.length > 0) {
     console.warn(`[graph] どのコンテンツからも参照されないTech：${graph.unused.join(', ')}`);
   }
+  // 技術記事なのに Tech に対応する topic が1つもないのは、topic の書き誤りのことが多い。
+  // アイデア記事（idea）は Tech がなくてもよいため、技術記事だけを、ビルドは止めずに警告する
+  const untagged = notes.filter((e) => e.data.type === 'tech' && e.data.tags.length === 0);
+  if (untagged.length > 0) {
+    console.warn(
+      `[graph] Tech に対応する topics がない技術記事：${untagged.map((e) => e.id).join(', ')}`,
+    );
+  }
   return graph;
 }

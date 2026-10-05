@@ -53,10 +53,13 @@ works: ["personal-platform"] # 任意。この記事が扱う作品の id（作�
 
 - 技術記事は Zenn に書き、サイトに同じ記事を置かない
 - `published: false` は使わない。公開 Repository のため、main にあれば `false` でも GitHub 上で読めてしまう。main に置く記事はすべて公開するものとして扱い、公開前の記事はブランチの上に置く
-- `published_at` は引用符で囲み、文字列として書く（Zenn の検証処理は文字列を前提にしているため）。空の文字列（`""`）にしない（Zenn が形式のエラーにする）
+- `published_at` は引用符で囲み、文字列として書く（Zenn の検証処理は文字列を前提にしているため。囲まないとビルドエラー）。空の文字列（`""`）にしない（Zenn が形式のエラーにする）
+  - 書式は `"YYYY-MM-DD"` か `"YYYY-MM-DD hh:mm"`（時刻は日本時間）。サイトの一覧には日付の部分だけを使う
 - `tags` を書かず、Zenn の `topics` だけを書く（Zenn は `tags` を使うと警告する）。`data/tech.yml` の id からハイフンを除いた topic（`claude-code` → `claudecode`）が、その Tech として扱われる
   - Zenn の topics には記号を使えないため、ハイフンを除いた形で対応させている
   - Tech に対応しない topics（「個人開発」など）は、Zenn で読者に届けるためだけに使われ、サイトでは無視される
+  - ハイフンを除くと同じになる Tech の id（`next-js` と `nextjs` など）は、記事がどちらの Tech か決まらないためビルドエラーになる
+  - 技術記事（`type: "tech"`）で Tech に対応する topic が1つもないと、ビルドで警告が出る（topic の書き誤りに気づけるように）
 
 ## 画像
 

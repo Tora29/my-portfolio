@@ -14,9 +14,8 @@ export function formatShortDate(date: string): string {
 }
 
 /**
- * Date を YYYY-MM-DD にする（記事の date など、frontmatter から Date として読み込まれる値）。
- * YAML の日付は UTC の 0 時として読み込まれるため、UTC で取り出す（日本時間で取ると同じ日になるが、
- * 実行環境のタイムゾーンに左右されないよう toISOString を使う）
+ * Date を YYYY-MM-DD にする（記事の date など、日付を UTC の 0 時の Date として持つ値）。
+ * 実行環境のタイムゾーンに左右されないよう、UTC で取り出す（toISOString）
  */
 export function toDateString(date: Date): string {
   return date.toISOString().slice(0, 10);

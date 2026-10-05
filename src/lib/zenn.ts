@@ -40,11 +40,50 @@ export const zennArticleUrl = (slug: string) => `${ZENN_ARTICLES_URL}/${slug}`;
 export const zennTopicOf = (techId: string) => techId.replaceAll('-', '');
 
 /**
+ * Zenn の topic から Tech の id を引く表。
+ * next-js と nextjs のように、ハイフンを除くと同じ topic になる id が2つあると、記事がどちらの Tech か決まらない。
+ * 黙って片方に寄せず、エラーを投げてビルドを止める（どちらかの id を変えてもらう）
+ */
+export function topicToTechId(techIds: string[]): Map<string, string> {
+  const byTopic = new Map<string, string>();
+  for (const id of techIds) {
+    const topic = zennTopicOf(id);
+    const other = byTopic.get(topic);
+    if (other !== undefined) {
+      throw new Error(
+        `Tech の id「${other}」と「${id}」は、Zenn の topic にすると同じ「${topic}」になる。どちらかの id を変える（data/tech.yml）`,
+      );
+    }
+    byTopic.set(topic, id);
+  }
+  return byTopic;
+}
+
+/**
  * 記事の topics のうち、Tech に対応するものの id を topics の順で返す。
  * Tech に対応しない topics（「個人開発」など Zenn で読者に届けるためのもの）は無視する。
  * TypeScript / typescript のような大文字・小文字の違いでつながりが切れないよう、小文字に揃えて照合する
+ *
+ * @param byTopic topicToTechId で作った表
  */
-export function techIdsFromTopics(topics: string[], techIds: string[]): string[] {
-  const byTopic = new Map(techIds.map((id) => [zennTopicOf(id), id]));
+export function techIdsFromTopics(topics: string[], byTopic: Map<string, string>): string[] {
   return [...new Set(topics.flatMap((topic) => byTopic.get(topic.toLowerCase()) ?? []))];
+}
+
+/** Zenn の published_at の書式（YYYY-MM-DD または YYYY-MM-DD hh:mm。時刻は日本時間） */
+const ZENN_PUBLISHED_AT = /^(\d{4})-(\d{2})-(\d{2})(?: \d{2}:\d{2})?$/;
+
+/**
+ * Zenn の published_at を、公開日（日本時間の日付）の UTC 0 時の Date にする。
+ * Date のまま文字列を解釈すると、時刻付き（YYYY-MM-DD hh:mm）はビルドするマシンのタイムゾーンで解釈され、
+ * 日本時間の手元と UTC の CI で日付がずれる。サイトでは日付だけを使うため、時刻を捨てて日付の部分だけを読む。
+ * 書式が合わなければ undefined
+ */
+export function zennPublishedDate(value: string): Date | undefined {
+  const match = ZENN_PUBLISHED_AT.exec(value);
+  if (!match) return undefined;
+  const [, y, m, d] = match.map(Number);
+  const date = new Date(Date.UTC(y, m - 1, d));
+  // 2026-02-30 のような存在しない日付は、翌月に繰り上がるため弾く
+  return date.getUTCDate() === d && date.getUTCMonth() === m - 1 ? date : undefined;
 }
