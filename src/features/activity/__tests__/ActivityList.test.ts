@@ -15,10 +15,17 @@ const item = (id: string): ActivityItem => ({
   tags: techTags('ts'),
 });
 
-const page = (total: number, filters: ActivityPage['filters'] = []): ActivityPage => ({
+const page = (
+  total: number,
+  filters: ActivityPage['filters'] = [],
+  { groups = 1, initialGroups = 1 } = {},
+): ActivityPage => ({
   filters,
-  groups: [{ date: '2026-09-24', items: [item('a')] }],
-  initialGroups: 1,
+  groups: Array.from({ length: groups }, (_, i) => ({
+    date: `2026-09-${String(24 - i).padStart(2, '0')}`,
+    items: [item(`a${i}`)],
+  })),
+  initialGroups,
   total,
 });
 
@@ -45,10 +52,22 @@ describe('ActivityList', () => {
     expect(root.querySelector('nav')).toBeNull();
   });
 
-  it('「もっと見る」は初期表示件数を超えるときだけ出す', async () => {
-    const few = await renderAstro(ActivityList, { props: { page: page(ACTIVITY_LIMIT) } });
+  it('「もっと見る」は初期表示で畳む日付があるときだけ出す', async () => {
+    const few = await renderAstro(ActivityList, {
+      props: { page: page(ACTIVITY_LIMIT, [], { groups: 2, initialGroups: 2 }) },
+    });
     expect(few.querySelector<HTMLElement>('[data-activity-more]')?.hidden).toBe(true);
-    const many = await renderAstro(ActivityList, { props: { page: page(ACTIVITY_LIMIT + 1) } });
+    const many = await renderAstro(ActivityList, {
+      props: { page: page(ACTIVITY_LIMIT + 1, [], { groups: 2, initialGroups: 1 }) },
+    });
     expect(many.querySelector<HTMLElement>('[data-activity-more]')?.hidden).toBe(false);
+  });
+
+  it('件数が初期表示件数を超えても、同じ日付の途中で区切らず畳むものがなければ「もっと見る」を出さない', async () => {
+    // 21件がすべて同じ日付だと、その日の最後まで初期表示に含まれ、残りは0件になる
+    const root = await renderAstro(ActivityList, {
+      props: { page: page(ACTIVITY_LIMIT + 1, [], { groups: 1, initialGroups: 1 }) },
+    });
+    expect(root.querySelector<HTMLElement>('[data-activity-more]')?.hidden).toBe(true);
   });
 });

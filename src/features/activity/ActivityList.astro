@@ -46,7 +46,7 @@ const filterClass =
     <button
       type="button"
       data-activity-more
-      hidden={page.total <= ACTIVITY_LIMIT}
+      hidden={page.initialGroups >= page.groups.length}
       class="mt-8 hidden w-full rounded-full border border-white/10 py-3 text-xs tracking-[0.2em] text-white/55 transition-colors hover:border-white/30 hover:text-white js:block"
     >
       もっと見る
@@ -75,6 +75,8 @@ const filterClass =
     const dates = [...root.querySelectorAll<HTMLElement>('[data-activity-date]')];
     const more = root.querySelector<HTMLElement>('[data-activity-more]')!;
     let expanded = false;
+    /** 畳んでいる最初の日付。「もっと見る」で展開したときのフォーカスの移り先 */
+    let firstFolded: HTMLElement | undefined;
 
     // URL の作品が存在しない（削除された等）ときは All として扱う
     const workFromUrl = () => {
@@ -93,6 +95,7 @@ const filterClass =
 
       let shown = 0;
       let rest = 0;
+      firstFolded = undefined;
       for (const date of dates) {
         // 1.
         let count = 0;
@@ -104,6 +107,7 @@ const filterClass =
         // 2. この日付より前ですでに limit 件に達していれば、この日付からは畳む
         const folded = !expanded && shown >= limit;
         date.hidden = count === 0 || folded;
+        if (folded && count > 0) firstFolded ??= date;
         if (folded) rest += count;
         else shown += count;
       }
@@ -124,8 +128,15 @@ const filterClass =
       });
     }
     more.addEventListener('click', () => {
+      // 押したボタンが消えるため、展開した最初の日付へフォーカスを移す。
+      // 畳む位置は絞り込みで変わるため、SSR の data-extra ではなく、展開する直前の畳み方から求める
+      const first = firstFolded;
       expanded = true;
       render(workFromUrl());
+      if (first) {
+        first.tabIndex = -1;
+        first.focus({ preventScroll: true });
+      }
     });
 
     render(workFromUrl());
