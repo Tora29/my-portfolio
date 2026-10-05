@@ -80,7 +80,7 @@ pages/
 
 - 1つの画面機能でのみ使うコンポーネント・ロジック・型は、その機能のディレクトリに置く
 - 機能間で直接importしない。2つ以上の機能で使うものは `components/ui/` または `lib/` へ移す
-- `features/home/` のCanvas（宇宙のシーン）はクライアントで動くIslandとして実装し、他の機能から独立させる
+- `features/home/` のCanvas（宇宙のシーン）は `HomeScene.astro` の `<script>`（`scene/`）としてクライアントでだけ動かし、他の機能から独立させる
 
 ### src/components/ui/
 

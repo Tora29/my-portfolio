@@ -27,7 +27,7 @@ export interface IntroTimeline {
 
 /**
  * イントロの時刻。訪問者の多く（採用の担当者など）は一度しか来ないため、初回から待たせない長さにする。
- * WELCOME を一度読める間（charge まで）だけ取り、約2秒で操作できるようにする
+ * WELCOME を一度読める間（charge まで）だけ取り、約2.3秒（settle）で操作できるようにする
  */
 export const INTRO = { charge: 0.9, bang: 1.2, expand: 1.2, settle: 2.3 };
 
