@@ -7,7 +7,7 @@
  * 技術記事は Zenn に書くため、末尾に Zenn への案内を置く。記事が0件でも出す
  */
 import ExternalLink from '@/components/ui/ExternalLink.astro';
-import Icon from '@/components/ui/Icon.astro';
+import MoreLink from '@/components/ui/MoreLink.astro';
 import ShowMore from '@/components/ui/ShowMore.astro';
 import TechTags from '@/components/ui/TechTags.astro';
 import type { NoteListItem } from './load-notes';
@@ -51,13 +51,7 @@ const { notes, zenn } = Astro.props;
 )}
 
 {zenn && (
-  <a
-    href={zenn}
-    target="_blank"
-    rel="noopener"
-    class="mt-10 inline-flex items-center gap-2 text-xs tracking-[0.2em] text-white/60 uppercase transition-colors hover:text-white"
-  >
+  <MoreLink href={zenn} external class="mt-10">
     Zenn の技術記事を見る
-    <Icon name="arrow-up-right" />
-  </a>
+  </MoreLink>
 )}

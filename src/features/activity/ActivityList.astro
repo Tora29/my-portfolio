@@ -10,6 +10,7 @@
  * 切り替えは URL を書き換えるだけで、戻るボタンの履歴には積まない（screens.md §5.9）
  */
 import ActivityTimeline from '@/components/ui/ActivityTimeline.astro';
+import PillLink from '@/components/ui/PillLink.astro';
 import type { ActivityPage } from './load-activity-page';
 import { ACTIVITY_LIMIT } from './load-activity-page';
 
@@ -18,8 +19,6 @@ interface Props {
 }
 
 const { page } = Astro.props;
-const filterClass =
-  'rounded-full border px-3 py-1.5 text-[11px] tracking-wide transition-colors border-white/10 text-white/50 hover:border-white/40 hover:text-white aria-[current=true]:border-(--accent)/60 aria-[current=true]:bg-(--accent)/12 aria-[current=true]:text-white';
 ---
 
 {page.total === 0 ? (
@@ -32,13 +31,13 @@ const filterClass =
         class="mb-10 hidden flex-wrap gap-2 js:flex"
         data-back-ignore
       >
-        <a href="/activity" class={filterClass} data-activity-filter="" aria-current="true">
+        <PillLink href="/activity" data-activity-filter="" aria-current="true">
           All
-        </a>
+        </PillLink>
         {page.filters.map((filter) => (
-          <a href={filter.href} class={filterClass} data-activity-filter={filter.workId}>
+          <PillLink href={filter.href} data-activity-filter={filter.workId}>
             {filter.label}
-          </a>
+          </PillLink>
         ))}
       </nav>
     )}

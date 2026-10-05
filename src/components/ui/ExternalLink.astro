@@ -1,21 +1,41 @@
 ---
 /**
- * 外部サイトへのリンク（Zenn の記事など）
+ * 外部サイトへのリンク（Zenn の記事・GitHub など）
  *
  * 新しいタブで開き、文字の後ろに外部リンクの印（↗）を付ける。サイト内のリンクと見分けられるようにするため。
+ * 新しいタブで開くリンク（target="_blank"）はこの部品だけで作る（rel="noopener" の付け忘れを防ぐため）。
  * 見た目（文字の大きさ・色）は呼び出し側が class で指定する
  */
+import type { IconName } from '@/lib/icons';
 import Icon from './Icon.astro';
 
 interface Props {
   href: string;
   class?: string;
+  /** 文字の前に置くサービスのアイコン（例：github-logo） */
+  icon?: IconName;
+  iconClass?: string;
+  /**
+   * 後ろの印（↗）を付けるか。前のアイコン自体が外部リンクの印になっているときは付けない
+   * （About の外部リンクの列のように、サービスの分からないリンクの前に ↗ を置く場合）
+   */
+  arrow?: boolean;
+  /** 後ろの印の見た目。省略時は文字より小さく薄くする。空にすると文字と同じ大きさ・色になる */
+  arrowClass?: string;
 }
 
-const { href, class: className } = Astro.props;
+const {
+  href,
+  class: className,
+  icon,
+  iconClass,
+  arrow = true,
+  arrowClass = 'inline text-xs text-white/55',
+} = Astro.props;
 ---
 
 <a href={href} target="_blank" rel="noopener" class={className}>
+  {icon && <Icon name={icon} class={iconClass} />}
   <slot />
-  <Icon name="arrow-up-right" class="inline text-xs text-white/55" />
+  {arrow && <Icon name="arrow-up-right" class={arrowClass} />}
 </a>

@@ -8,6 +8,7 @@
  */
 import ExternalLink from '@/components/ui/ExternalLink.astro';
 import Icon from '@/components/ui/Icon.astro';
+import MoreLink from '@/components/ui/MoreLink.astro';
 import Subheading from '@/components/ui/Subheading.astro';
 import TechTags from '@/components/ui/TechTags.astro';
 import type { WorkDetail } from './load-works';
@@ -28,16 +29,15 @@ const { Content } = work;
     {work.status}
   </span>
   {work.github && (
-    <a
+    <ExternalLink
       href={work.github.href}
-      target="_blank"
-      rel="noopener"
+      icon="github-logo"
+      iconClass="text-sm"
+      arrowClass="text-[10px]"
       class="flex items-center gap-1.5 transition-colors hover:text-white"
     >
-      <Icon name="github-logo" class="text-sm" />
       {work.github.label}
-      <Icon name="arrow-up-right" class="text-[10px]" />
-    </a>
+    </ExternalLink>
   )}
 </div>
 
@@ -85,13 +85,9 @@ const { Content } = work;
         </li>
       ))}
     </ol>
-    <a
-      href={work.activityHref}
-      class="mt-8 inline-flex items-center gap-2 text-xs tracking-[0.2em] text-white/60 uppercase transition-colors hover:text-white"
-    >
+    <MoreLink href={work.activityHref} class="mt-8">
       この作品の Activity を見る
-      <Icon name="arrow-right" />
-    </a>
+    </MoreLink>
   </section>
 )}
 

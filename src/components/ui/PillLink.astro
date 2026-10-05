@@ -1,0 +1,33 @@
+---
+/**
+ * 丸い枠のリンク（ジャンルへのジャンプ・作品での絞り込み・404 のセクションの入口）
+ *
+ * Tech タグ（Chip）より一回り大きく、押す対象として並べる。
+ * aria-current="true" のとき（絞り込みで選んでいるもの）は、セクションの色で塗って示す。
+ * data-* などの属性は、そのまま <a> に付ける
+ */
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'a'> {
+  href: string;
+  /** 他より目立たせる（404 の Home のように、最初に案内したい入口） */
+  emphasis?: boolean;
+}
+
+const { href, emphasis = false, class: className, ...attrs } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={[
+    'rounded-full border px-3 py-1.5 text-[11px] tracking-wide transition-colors hover:text-white',
+    emphasis
+      ? 'border-white/20 text-white/80 hover:border-white/50'
+      : 'border-white/10 text-white/50 hover:border-white/40',
+    'aria-[current=true]:border-(--accent)/60 aria-[current=true]:bg-(--accent)/12 aria-[current=true]:text-white',
+    className,
+  ]}
+  {...attrs}
+>
+  <slot />
+</a>

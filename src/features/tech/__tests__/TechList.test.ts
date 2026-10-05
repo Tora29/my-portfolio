@@ -19,6 +19,12 @@ const genres: TechGenre[] = [
 ];
 
 describe('TechList', () => {
+  it('Tech がなければ「まだありません」と表示し、ジャンルへのジャンプを出さない', async () => {
+    const root = await renderAstro(TechList, { props: { genres: [] } });
+    expect(root.textContent).toContain('まだありません');
+    expect(root.querySelector('nav')).toBeNull();
+  });
+
   it('ジャンルへのジャンプのリンク先に、そのジャンルの区切りがある', async () => {
     const root = await renderAstro(TechList, { props: { genres } });
     const anchors = [...root.querySelectorAll('nav a')].map((a) => a.getAttribute('href'));

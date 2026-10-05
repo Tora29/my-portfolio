@@ -3,7 +3,8 @@
  * 作品一覧（.users/requirements/screens.md §5.3）
  *
  * 初期表示は6件。残りは「もっと見る」で展開する（JavaScript なしでは全件表示）。
- * 最新の Activity は、押すとその作品で絞り込んだ Activity 一覧へ移動する
+ * 最新の Activity は、押すとその作品で絞り込んだ Activity 一覧へ移動する。
+ * 作品が1件もなければ「まだありません」と出す（他の一覧と揃える）
  */
 import Icon from '@/components/ui/Icon.astro';
 import ShowMore from '@/components/ui/ShowMore.astro';
@@ -19,47 +20,51 @@ const LIMIT = 6;
 const { works } = Astro.props;
 ---
 
-<ShowMore rest={Math.max(0, works.length - LIMIT)}>
-  <ul class="divide-y divide-white/10 border-t border-white/10">
-    {works.map((work, i) => (
-      <li class="flex gap-5 py-7 sm:gap-6 sm:py-8" data-extra={i >= LIMIT ? '' : undefined}>
-        <WorkThumb
-          cover={work.cover}
-          width={96}
-          class="size-16 shrink-0 sm:size-24"
-          iconClass="text-2xl sm:text-3xl"
-        />
-        <div class="min-w-0 flex-1">
-          <a href={work.href} class="group flex w-full items-baseline justify-between gap-4">
-            <h2 class="text-lg font-normal text-white transition-colors group-hover:text-(--accent) sm:text-xl">
-              {work.title}
-            </h2>
-            <Icon
-              name="arrow-right"
-              class="text-white/55 transition-colors group-hover:text-white"
-            />
-          </a>
-          <p class="mt-2 text-sm leading-relaxed text-white/60">{work.summary}</p>
-          <TechTags list={work.tags} class="mt-3" />
-          {work.latest && (
-            <a
-              href={work.latest.href}
-              class="group mt-4 flex items-center gap-2 text-xs text-white/50 transition-colors hover:text-white"
-            >
-              <span class="size-1.5 shrink-0 rounded-full bg-(--accent)" />
-              <span class="truncate">
-                <time datetime={work.latest.date}>{work.latest.label}</time> ·{' '}
-                {work.latest.headline}
-              </span>
-              <span class="flex shrink-0 items-center gap-1 text-white/55 transition-colors group-hover:text-(--accent)">
-                <span class="h-px w-3 bg-current" />
-                Activity
-                <Icon name="arrow-right" />
-              </span>
+{works.length === 0 ? (
+  <p class="text-sm text-white/55">まだありません</p>
+) : (
+  <ShowMore rest={Math.max(0, works.length - LIMIT)}>
+    <ul class="divide-y divide-white/10 border-t border-white/10">
+      {works.map((work, i) => (
+        <li class="flex gap-5 py-7 sm:gap-6 sm:py-8" data-extra={i >= LIMIT ? '' : undefined}>
+          <WorkThumb
+            cover={work.cover}
+            width={96}
+            class="size-16 shrink-0 sm:size-24"
+            iconClass="text-2xl sm:text-3xl"
+          />
+          <div class="min-w-0 flex-1">
+            <a href={work.href} class="group flex w-full items-baseline justify-between gap-4">
+              <h2 class="text-lg font-normal text-white transition-colors group-hover:text-(--accent) sm:text-xl">
+                {work.title}
+              </h2>
+              <Icon
+                name="arrow-right"
+                class="text-white/55 transition-colors group-hover:text-white"
+              />
             </a>
-          )}
-        </div>
-      </li>
-    ))}
-  </ul>
-</ShowMore>
+            <p class="mt-2 text-sm leading-relaxed text-white/60">{work.summary}</p>
+            <TechTags list={work.tags} class="mt-3" />
+            {work.latest && (
+              <a
+                href={work.latest.href}
+                class="group mt-4 flex items-center gap-2 text-xs text-white/50 transition-colors hover:text-white"
+              >
+                <span class="size-1.5 shrink-0 rounded-full bg-(--accent)" />
+                <span class="truncate">
+                  <time datetime={work.latest.date}>{work.latest.label}</time> ·{' '}
+                  {work.latest.headline}
+                </span>
+                <span class="flex shrink-0 items-center gap-1 text-white/55 transition-colors group-hover:text-(--accent)">
+                  <span class="h-px w-3 bg-current" />
+                  Activity
+                  <Icon name="arrow-right" />
+                </span>
+              </a>
+            )}
+          </div>
+        </li>
+      ))}
+    </ul>
+  </ShowMore>
+)}

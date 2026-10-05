@@ -1,0 +1,34 @@
+---
+/**
+ * セクションの末尾から、関連する一覧へ進むリンク（例：すべての Activity を見る）
+ *
+ * 英字のラベルと同じ小さな大文字で、後ろに矢印を付ける。サイト内は →、外部サイトは ↗（新しいタブで開く）。
+ * 上との間隔は呼び出し側が class で指定する
+ */
+import ExternalLink from './ExternalLink.astro';
+import Icon from './Icon.astro';
+
+interface Props {
+  href: string;
+  /** 外部サイトへのリンクか */
+  external?: boolean;
+  class?: string;
+}
+
+const { href, external = false, class: className } = Astro.props;
+const linkClass = [
+  'inline-flex items-center gap-2 text-xs tracking-[0.2em] text-white/60 uppercase transition-colors hover:text-white',
+  className,
+];
+---
+
+{external ? (
+  <ExternalLink href={href} class:list={linkClass} arrowClass="">
+    <slot />
+  </ExternalLink>
+) : (
+  <a href={href} class:list={linkClass}>
+    <slot />
+    <Icon name="arrow-right" />
+  </a>
+)}

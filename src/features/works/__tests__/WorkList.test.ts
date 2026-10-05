@@ -14,6 +14,12 @@ const work = (i: number, overrides: Partial<WorkListItem> = {}): WorkListItem =>
 });
 
 describe('WorkList', () => {
+  it('作品がなければ「まだありません」と表示する', async () => {
+    const root = await renderAstro(WorkList, { props: { works: [] } });
+    expect(root.textContent).toContain('まだありません');
+    expect(root.querySelector('ul')).toBeNull();
+  });
+
   it('7件目以降を畳む対象にし、「もっと見る」に残りの件数を出す', async () => {
     const works = Array.from({ length: 8 }, (_, i) => work(i));
     const root = await renderAstro(WorkList, { props: { works } });
