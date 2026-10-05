@@ -1,19 +1,21 @@
 period: { start: 2024, end: null }
 org: コンサルティング・開発会社
 role: Tech Lead
-summary: 要件定義から技術選定・設計までを担い、フロントエンドチームをリード。AI駆動開発ガイドラインを策定し、全社に展開。
+summary: テックリードとして、業務システム刷新やレガシー移行のPoCで設計と開発標準づくりを主導。生成AIチャットボット（RAG）を一人で開発したほか、AI駆動開発を全社に広めている。
 tech:
   [
     typescript,
-    nextjs,
+    sveltekit,
     python,
     azure,
     rag,
     claude-code,
+    nextjs,
     nestjs,
-    sveltekit,
     fastapi,
     postgresql,
+    prisma,
+    tailwind-css,
     azure-openai,
     azure-ai-search,
     cosmos-db,
@@ -23,6 +25,7 @@ tech:
     github-actions,
     vitest,
     playwright,
+    pytest,
     codex,
     cursor,
   ]

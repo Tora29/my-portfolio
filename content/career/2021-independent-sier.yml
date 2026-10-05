@@ -1,5 +1,5 @@
 period: { start: 2021, end: 2023 }
 org: 独立系SIer
 role: Software Engineer
-summary: サービスのヘルプデスク対応、Webアプリケーションの小規模な機能開発・保守運用を担当。
+summary: 官公庁向けシステムの保守と、Webサービスの法人向けAPIの改修・運用を担当。自社メンバーのまとめ役として、チームの進捗管理と新メンバーの立ち上げを支えた。
 tech: [java, spring-boot, php, sql]
