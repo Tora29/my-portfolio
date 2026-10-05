@@ -1,0 +1,28 @@
+version: 2
+updates:
+  # 個人で見られる量に抑えるため月1回にする。脆弱性の修正（security updates）は頻度に関係なくすぐ届く
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+      timezone: Asia/Tokyo
+    # 件名を .claude/rules/git-workflow.md の形式にする（chore(deps): …）
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      # minor・patch は 1 つの PR にまとめる。major は変更点を確かめたいので個別の PR にする
+      npm-minor-and-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+      timezone: Asia/Tokyo
+    commit-message:
+      prefix: ci
+      include: scope
+    groups:
+      actions:
+        update-types: [minor, patch]
