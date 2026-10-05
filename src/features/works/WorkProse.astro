@@ -24,7 +24,7 @@ const { class: className } = Astro.props;
     // 段落・リンク
     '[&_p]:mt-4 [&_p:first-child]:mt-0',
     '[&_a]:text-white [&_a]:underline [&_a]:decoration-white/30 [&_a]:underline-offset-4 [&_a:hover]:decoration-white',
-    // 箇条書きは、行頭に短い線を置く（モックの Architecture）
+    // 箇条書きは、行頭にセクションの色の短い線を置く
     '[&_ul]:mt-4 [&_ul]:space-y-3 [&_ul>li]:relative [&_ul>li]:pl-6',
     "[&_ul>li]:before:absolute [&_ul>li]:before:top-[0.8em] [&_ul>li]:before:left-0 [&_ul>li]:before:h-px [&_ul>li]:before:w-3 [&_ul>li]:before:bg-(--accent)/60 [&_ul>li]:before:content-['']",
     '[&_ol]:mt-4 [&_ol]:list-decimal [&_ol]:space-y-2 [&_ol]:pl-5',

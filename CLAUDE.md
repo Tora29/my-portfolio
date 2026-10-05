@@ -15,6 +15,8 @@
 | `.users/requirements/screens.md` | 画面要件（画面一覧・URL・各画面の仕様・公開する情報の範囲） |
 | `.users/design/engineering-graph.md` | Tech・Engineering Graphの設計（スキーマ・検証・集計） |
 | `.users/design/activity-pipeline.md` | GitHub Activityの取得・変換・確認用PR・自動マージ |
+| `.users/test/test-cases.md` | テストケースの一覧 |
+| `.users/plan/development-plan.md` | 開発計画と経緯 |
 
 設計書は手元にしかないため、コードのコメント・テスト・ルールだけから仕様を逆引きできる状態を保つ（`.claude/rules/code-comments.md`）。
 

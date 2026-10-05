@@ -62,7 +62,7 @@ export async function loadHomePage(
   const visibleTech = [...graph.tech.values()].filter(hasRecords).length;
 
   // 更新の印は、作品は Activity、記事は投稿日で判定する。
-  // 職歴と Tech は日々更新されるものではないため、印を出さない（モックと同じ）
+  // 職歴と Tech は日々更新されるものではないため、印を出さない
   const moons: Record<PlanetId, number> = {
     career: career.length + profile.certifications.length,
     works: works.length,
