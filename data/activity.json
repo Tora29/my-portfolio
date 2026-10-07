@@ -1,5 +1,27 @@
 [
   {
+    "id": "Tora29/my-claude-tools#10",
+    "date": "2026-10-07",
+    "type": "fix",
+    "work": "my-claude-tools",
+    "headline": "報告や質問が Claude Code の画面と二重に出て見づらい問題を修正",
+    "summary": "ねこ部屋で同じ報告や質問の文が二重に出ていたのを整理して、猫の詳細と回答待ちの質問を読みやすくした。",
+    "tech": ["typescript", "bun", "claude-code"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-claude-tools/pull/10"
+  },
+  {
+    "id": "Tora29/my-claude-tools#9",
+    "date": "2026-10-07",
+    "type": "feature",
+    "work": "my-claude-tools",
+    "headline": "作業中の猫がキョロキョロ・まばたきし、報告に行くときにひと言しゃべるようにした",
+    "summary": "作業中の子猫が気まぐれに左右を見たりまばたきしたりして、働いている様子が伝わるようにした。報告に行く子猫は「ボスへ報告ニャ！」などとしゃべりながら歩く。",
+    "tech": ["typescript", "bun", "claude-code"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-claude-tools/pull/9"
+  },
+  {
     "id": "Tora29/my-claude-tools#8",
     "date": "2026-10-05",
     "type": "feature",
