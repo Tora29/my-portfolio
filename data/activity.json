@@ -1,5 +1,38 @@
 [
   {
+    "id": "Tora29/home-hub#86",
+    "date": "2026-10-09",
+    "type": "feature",
+    "work": "home-hub",
+    "headline": "選択月の精算額（承認済み支出の折半）をモーダルで確認できるようにする",
+    "summary": "選択月の精算額（承認済み支出の折半）をモーダルで確認できるようにする",
+    "tech": [
+      "typescript",
+      "sveltekit",
+      "tailwind-css",
+      "cloudflare",
+      "cloudflare-d1",
+      "drizzle-orm",
+      "terraform",
+      "vitest",
+      "playwright",
+      "github-actions"
+    ],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/home-hub/pull/86"
+  },
+  {
+    "id": "Tora29/my-claude-tools#11",
+    "date": "2026-10-09",
+    "type": "feature",
+    "work": "my-claude-tools",
+    "headline": "回答待ちの質問の解説を、色分けした見やすい表示にした",
+    "summary": "回答待ちの質問の解説が全部同じ黄色で読みづらかったので、節ごとに色を分け、選択肢とおすすめがひと目で分かるようにした。",
+    "tech": ["typescript", "bun", "claude-code"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-claude-tools/pull/11"
+  },
+  {
     "id": "Tora29/my-claude-tools#10",
     "date": "2026-10-07",
     "type": "fix",
