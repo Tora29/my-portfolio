@@ -14,6 +14,13 @@ updates:
       # minor・patch は 1 つの PR にまとめる。major は変更点を確かめたいので個別の PR にする
       npm-minor-and-patch:
         update-types: [minor, patch]
+    # 依存の peer 制約で保留中のメジャー更新は PR 自体を作らせない（閉じても次の版で再提案されるため）。
+    # 制約が解けたらここから外す
+    ignore:
+      # @astrojs/check（astro check）が typescript ^5 || ^6、typescript-eslint が <6.1 のみ対応。
+      # TS 7 の npm パッケージは JS のコンパイラ API を含まないため、--legacy-peer-deps でも動かない（#72）
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
 
   - package-ecosystem: github-actions
     directory: /
