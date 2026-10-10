@@ -14,3 +14,6 @@ dist/
 ## test
 playwright-report/
 test-results/
+
+# 紹介動画などの動画（Zenn もサイトも使わないため、リポジトリに入れない）
+*.mp4
