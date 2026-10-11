@@ -1,5 +1,27 @@
 [
   {
+    "id": "Tora29/my-portfolio#76",
+    "date": "2026-10-10",
+    "type": "docs",
+    "work": "personal-platform",
+    "headline": "ねこエージェントの紹介記事を追加し、Works にサムネイルを付ける",
+    "summary": "Claude Code のサブエージェントを猫に見立てて見守るツール「ねこエージェント」の紹介記事を Zenn に公開し、Works の一覧に各作品のサムネイル画像を表示するようにした。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/76"
+  },
+  {
+    "id": "Tora29/my-claude-tools#12",
+    "date": "2026-10-10",
+    "type": "feature",
+    "work": "my-claude-tools",
+    "headline": "ビューアの見出しを「ねこエージェント」にして、ツール名とそろえた",
+    "summary": "ビューアの画面の 1 行目を「ねこ部屋」から「ねこエージェント」に変え、コマンド名（neko-agents）や紹介記事での呼び名と同じにした。",
+    "tech": ["typescript", "bun", "claude-code"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-claude-tools/pull/12"
+  },
+  {
     "id": "Tora29/home-hub#86",
     "date": "2026-10-09",
     "type": "feature",
