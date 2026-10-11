@@ -22,28 +22,6 @@
     "url": "https://github.com/Tora29/my-claude-tools/pull/12"
   },
   {
-    "id": "Tora29/home-hub#86",
-    "date": "2026-10-09",
-    "type": "feature",
-    "work": "home-hub",
-    "headline": "選択月の精算額（承認済み支出の折半）をモーダルで確認できるようにする",
-    "summary": "選択月の精算額（承認済み支出の折半）をモーダルで確認できるようにする",
-    "tech": [
-      "typescript",
-      "sveltekit",
-      "tailwind-css",
-      "cloudflare",
-      "cloudflare-d1",
-      "drizzle-orm",
-      "terraform",
-      "vitest",
-      "playwright",
-      "github-actions"
-    ],
-    "techSource": "work",
-    "url": "https://github.com/Tora29/home-hub/pull/86"
-  },
-  {
     "id": "Tora29/my-claude-tools#11",
     "date": "2026-10-09",
     "type": "feature",
@@ -141,28 +119,6 @@
     "tech": ["typescript", "bun", "claude-code"],
     "techSource": "work",
     "url": "https://github.com/Tora29/my-claude-tools/pull/2"
-  },
-  {
-    "id": "Tora29/home-hub#75",
-    "date": "2026-10-05",
-    "type": "feature",
-    "work": "home-hub",
-    "headline": "種目選択時に前回トレーニング日のMAXを表示",
-    "summary": "種目選択時に前回トレーニング日のMAXを表示",
-    "tech": [
-      "typescript",
-      "sveltekit",
-      "tailwind-css",
-      "cloudflare",
-      "cloudflare-d1",
-      "drizzle-orm",
-      "terraform",
-      "vitest",
-      "playwright",
-      "github-actions"
-    ],
-    "techSource": "work",
-    "url": "https://github.com/Tora29/home-hub/pull/75"
   },
   {
     "id": "Tora29/my-portfolio#67",
@@ -748,28 +704,6 @@
     "url": "https://github.com/Tora29/my-portfolio/pull/6"
   },
   {
-    "id": "Tora29/home-hub#62",
-    "date": "2026-09-27",
-    "type": "fix",
-    "work": "home-hub",
-    "headline": "モーダルをネイティブ dialog 化し、LINE 通知を waitUntil でバックグラウンド実行",
-    "summary": "モーダルをネイティブ dialog 化し、LINE 通知を waitUntil でバックグラウンド実行",
-    "tech": [
-      "typescript",
-      "sveltekit",
-      "tailwind-css",
-      "cloudflare",
-      "cloudflare-d1",
-      "drizzle-orm",
-      "terraform",
-      "vitest",
-      "playwright",
-      "github-actions"
-    ],
-    "techSource": "work",
-    "url": "https://github.com/Tora29/home-hub/pull/62"
-  },
-  {
     "id": "Tora29/my-portfolio#5",
     "date": "2026-09-27",
     "type": "feature",
@@ -801,115 +735,5 @@
     "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
     "techSource": "work",
     "url": "https://github.com/Tora29/my-portfolio/pull/1"
-  },
-  {
-    "id": "Tora29/home-hub#25",
-    "date": "2026-06-03",
-    "type": "feature",
-    "work": "home-hub",
-    "headline": "ALLOWED_EMAILS によるメール許可リスト機能を追加",
-    "summary": "ALLOWED_EMAILS によるメール許可リスト機能を追加",
-    "tech": [
-      "typescript",
-      "sveltekit",
-      "tailwind-css",
-      "cloudflare",
-      "cloudflare-d1",
-      "drizzle-orm",
-      "terraform",
-      "vitest",
-      "playwright",
-      "github-actions"
-    ],
-    "techSource": "work",
-    "url": "https://github.com/Tora29/home-hub/pull/25"
-  },
-  {
-    "id": "Tora29/home-hub#21",
-    "date": "2026-06-03",
-    "type": "feature",
-    "work": "home-hub",
-    "headline": "メール/パスワード認証をGoogle OAuth認証に移行",
-    "summary": "メール/パスワード認証をGoogle OAuth認証に移行",
-    "tech": [
-      "typescript",
-      "sveltekit",
-      "tailwind-css",
-      "cloudflare",
-      "cloudflare-d1",
-      "drizzle-orm",
-      "terraform",
-      "vitest",
-      "playwright",
-      "github-actions"
-    ],
-    "techSource": "work",
-    "url": "https://github.com/Tora29/home-hub/pull/21"
-  },
-  {
-    "id": "Tora29/home-hub#18",
-    "date": "2026-05-20",
-    "type": "feature",
-    "work": "home-hub",
-    "headline": "Cloudflare インフラの Terraform 管理移行",
-    "summary": "Cloudflare インフラの Terraform 管理移行",
-    "tech": [
-      "typescript",
-      "sveltekit",
-      "tailwind-css",
-      "cloudflare",
-      "cloudflare-d1",
-      "drizzle-orm",
-      "terraform",
-      "vitest",
-      "playwright",
-      "github-actions"
-    ],
-    "techSource": "work",
-    "url": "https://github.com/Tora29/home-hub/pull/18"
-  },
-  {
-    "id": "Tora29/home-hub#13",
-    "date": "2026-04-15",
-    "type": "fix",
-    "work": "home-hub",
-    "headline": "D1 トランザクション非対応による LINE 通知 500 エラーを修正",
-    "summary": "D1 トランザクション非対応による LINE 通知 500 エラーを修正",
-    "tech": [
-      "typescript",
-      "sveltekit",
-      "tailwind-css",
-      "cloudflare",
-      "cloudflare-d1",
-      "drizzle-orm",
-      "terraform",
-      "vitest",
-      "playwright",
-      "github-actions"
-    ],
-    "techSource": "work",
-    "url": "https://github.com/Tora29/home-hub/pull/13"
-  },
-  {
-    "id": "Tora29/home-hub#6",
-    "date": "2026-04-08",
-    "type": "feature",
-    "work": "home-hub",
-    "headline": "PWA対応を追加",
-    "summary": "PWA対応を追加",
-    "tech": [
-      "typescript",
-      "sveltekit",
-      "tailwind-css",
-      "cloudflare",
-      "cloudflare-d1",
-      "drizzle-orm",
-      "terraform",
-      "vitest",
-      "playwright",
-      "github-actions"
-    ],
-    "techSource": "work",
-    "url": "https://github.com/Tora29/home-hub/pull/6"
   }
 ]
