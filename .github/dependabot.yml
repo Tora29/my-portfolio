@@ -6,6 +6,10 @@ updates:
     schedule:
       interval: monthly
       timezone: Asia/Tokyo
+    # 公開直後の版を取り込まない（乗っ取られたパッケージの版は数日のうちに見つかり取り下げられることが多いため）。
+    # 脆弱性の修正（security updates）には適用されない
+    cooldown:
+      default-days: 7
     # 件名を .claude/rules/git-workflow.md の形式にする（chore(deps): …）
     commit-message:
       prefix: chore
@@ -27,6 +31,8 @@ updates:
     schedule:
       interval: monthly
       timezone: Asia/Tokyo
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: ci
       include: scope
