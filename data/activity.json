@@ -1,5 +1,38 @@
 [
   {
+    "id": "Tora29/testglass@v0.2.0",
+    "date": "2026-10-11",
+    "type": "release",
+    "work": "testglass",
+    "headline": "v0.2.0 をリリース",
+    "summary": "細工したテストファイルで解析が止まる問題（ReDoS）を直した。Markdown 出力のエスケープ漏れもなくした。testglass を CI で使っていて、信頼できない PR を受け付けている場合は更新を勧める。",
+    "tech": ["typescript", "vitest", "playwright", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/testglass/releases/tag/v0.2.0"
+  },
+  {
+    "id": "Tora29/my-claude-tools#13",
+    "date": "2026-10-11",
+    "type": "fix",
+    "work": "my-claude-tools",
+    "headline": "部屋のファイルに入った制御文字で、ターミナルが操作されないようにした",
+    "summary": "部屋のファイルに入った制御文字で、neko-room のターミナルが操作されないようにした。あわせて、部屋のファイルを自分だけが読めるようにした。細工したファイル名やプロンプトを使って、クリップボードを書き換えたり画面を偽装したりすることはできなくなった。",
+    "tech": ["typescript", "bun", "claude-code"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-claude-tools/pull/13"
+  },
+  {
+    "id": "Tora29/testglass#26",
+    "date": "2026-10-11",
+    "type": "fix",
+    "work": "testglass",
+    "headline": "細工したテストファイルで解析が止まらないようにした",
+    "summary": "細工したテストファイルで解析が数秒〜数分止まる問題（ReDoS）を直し、Markdown 出力のエスケープ漏れもなくした。testglass を CI で使っている場合に、信頼できない PR に含まれるファイルで CI が止められないようになった。",
+    "tech": ["typescript", "vitest", "playwright", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/testglass/pull/26"
+  },
+  {
     "id": "Tora29/my-portfolio#76",
     "date": "2026-10-10",
     "type": "docs",
