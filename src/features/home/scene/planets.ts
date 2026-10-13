@@ -68,6 +68,8 @@ const TRAITS: Record<
     roll: number;
     breathe: number;
     phase: number;
+    /** ホバー中に自転を何倍にするか（省略時は HOVER_SPIN） */
+    hoverSpin?: number;
     ring?: boolean;
     lines?: boolean;
     spiral?: boolean;
@@ -75,13 +77,25 @@ const TRAITS: Record<
   }
 > = {
   works: { spin: 1, tilt: 0.38, roll: -0.25, breathe: 9.5, phase: 0, ring: true },
-  notes: { spin: 1.9, tilt: 0.12, roll: 0.35, breathe: 7.2, phase: 1.7, lines: true },
+  // Notes の模様は、行の上を単語が流れることでしか回転が分からないため、ほかより速く回す。
+  // そのぶんホバーでの加速は控えめにする（ほかと同じ倍率では目で追えない速さになるため）
+  notes: {
+    spin: 6,
+    tilt: 0.32,
+    roll: 0.12,
+    breathe: 7.2,
+    phase: 1.7,
+    hoverSpin: 1.5,
+    lines: true,
+  },
   career: { spin: 0.6, tilt: 0.55, roll: 0.1, breathe: 12.8, phase: 3.9, spiral: true },
   tech: { spin: -1.3, tilt: 0.25, roll: -0.45, breathe: 10.6, phase: 5.2, network: true },
 };
 
 /** 自転の基本の速さ（rad/s） */
 const SPIN = 0.16;
+/** ホバー中の自転の倍率 */
+const HOVER_SPIN = 3.5;
 /**
  * これより小さい惑星（px）は、粒子の少ない並び（SPHERES.small）で描く。
  * 小さな惑星では粒子が詰まっていて半分にしても見た目がほとんど変わらず、スマートフォンでの描画の負荷が下がるため
@@ -117,11 +131,11 @@ interface SpherePoint {
   proj?: { x: number; y: number; depth: number };
 }
 
-// Works の輪の粒子
-const RING_POINTS = Array.from({ length: 320 }, () => ({
+// Works の輪の粒子。輪は惑星の外に細く広がるため、粒子が少ないと途切れて輪に見えない
+const RING_POINTS = Array.from({ length: 560 }, () => ({
   ang: Math.random() * Math.PI * 2,
   r: 1.5 + Math.random() ** 1.5 * 0.4,
-  size: Math.random() * 0.8 + 0.4,
+  size: Math.random() * 0.8 + 0.6,
   white: Math.random() < 0.2,
 }));
 
@@ -241,8 +255,8 @@ function drawRing(p: Planet, R: number, c: number, back: boolean, alpha: number)
     const y = sa * q.r * R * 0.26;
     const s = q.size * dpr * (back ? 0.8 : 1.1);
     ctx.fillStyle = q.white
-      ? `rgba(255,255,255,${alpha * (back ? 0.25 : 0.6)})`
-      : `rgba(${rgb},${alpha * (back ? 0.3 : 0.75)})`;
+      ? `rgba(255,255,255,${alpha * (back ? 0.4 : 0.9)})`
+      : `rgba(${rgb},${alpha * (back ? 0.45 : 1)})`;
     ctx.fillRect(c + x * cr - y * sr - s / 2, c + x * sr + y * cr - s / 2, s, s);
   }
 }
@@ -278,11 +292,65 @@ function drawNetwork(p: Planet, alpha: number) {
   }
 }
 
+// Notes の文章の行の緯度（rad）。惑星はほぼ真横から見ているため、正面を通る帯に行を集める
+const TEXT_ROWS = [-0.54, -0.27, 0, 0.27, 0.54];
+
+/**
+ * Notes の単語。行ごとに、経度（rad）の始まりと長さを並べる。
+ * 単語の長さと間隔をばらつかせ、行ごとに切れ目の位置がずれるようにする（揃うと縦の縞に見えるため）
+ */
+const TEXT_WORDS = TEXT_ROWS.map(() => {
+  const words: { start: number; len: number }[] = [];
+  let lon = Math.random() * 0.5;
+  while (lon < Math.PI * 2 - 0.4) {
+    const len = Math.min(0.2 + Math.random() * 0.5, Math.PI * 2 - 0.2 - lon);
+    words.push({ start: lon, len });
+    lon += len + 0.14 + Math.random() * 0.12;
+  }
+  return words;
+});
+
+/** 単語の線を区切る細かさ（rad）。球面に沿って曲がって見える程度に刻む */
+const TEXT_STEP = 0.08;
+/** 単語の線の明るさ。粒子より太く連なって見えるため、粒子と同じ濃さではほかの惑星より目立ちすぎる */
+const TEXT_ALPHA = 0.6;
+
+/**
+ * Notes の文章の行。単語を球面に沿った線で描き、手前ほど太く明るくする。
+ * 粒子の濃淡で行を表すと、粒子の並び（フィボナッチ格子）に埋もれて行にも回転にも見えないため、線で描く。
+ * 奥側は惑星に隠れるため描かない
+ */
+function drawText(p: Planet, R: number, c: number, alpha: number) {
+  const { ctx, rgb, dpr } = p;
+  const { tilt, roll } = TRAITS[p.key];
+  ctx.lineCap = 'round';
+  TEXT_ROWS.forEach((lat, row) => {
+    for (const { start, len } of TEXT_WORDS[row]) {
+      const steps = Math.max(1, Math.round(len / TEXT_STEP));
+      let prev = sphere(lat, start, p.spin, tilt, roll);
+      for (let i = 1; i <= steps; i++) {
+        const v = sphere(lat, start + (len * i) / steps, p.spin, tilt, roll);
+        const z = (prev.z + v.z) / 2;
+        if (z > 0) {
+          const la = alpha * TEXT_ALPHA * Math.min(1, 0.15 + z * z * (1 + 0.5 * p.hover));
+          ctx.strokeStyle = `rgba(${rgb},${la})`;
+          ctx.lineWidth = (0.8 + 1.8 * z) * dpr;
+          ctx.beginPath();
+          ctx.moveTo(c + prev.x * R, c + prev.y * R);
+          ctx.lineTo(c + v.x * R, c + v.y * R);
+          ctx.stroke();
+        }
+        prev = v;
+      }
+    }
+  });
+}
+
 /**
  * 1つの惑星を描く。
  * 1. 背景を暗くする円と、惑星の色のにじみ（星や銀河の上でも粒子が見えるように）
  * 2. 表面の粒子。中心に向いた面を明るく、奥の粒子を暗く小さくする。セクションごとの模様を濃淡で付ける
- * 3. Tech のネットワークと Works の輪の手前側
+ * 3. Tech のネットワーク・Notes の文章の行・Works の輪の手前側
  */
 function drawPlanet(p: Planet, t: number, intro: IntroTimeline) {
   const { ctx, px, rgb, light, dpr } = p;
@@ -342,7 +410,8 @@ function drawPlanet(p: Planet, t: number, intro: IntroTimeline) {
     const depth = (v.z + 1) / 2;
     const lit = 0.65 + 0.7 * Math.max(0, v.x * light.x + v.y * light.y);
     let a = Math.min(1, (0.3 + 1.15 * depth * depth) * lit) * f;
-    if (trait.lines) a *= Math.cos(q.lat * 15) > 0.15 ? 1.2 : 0.3;
+    // 文章の行を目立たせるため、表面の粒子は控えめにする
+    if (trait.lines) a *= 0.55;
     // 螺旋の帯は、帯に沿ってゆっくり流れる
     if (trait.spiral)
       a = Math.min(1, a * (Math.cos(q.lon - q.lat * 5 + t * 0.6) > 0.55 ? 1.6 : 0.3));
@@ -362,6 +431,9 @@ function drawPlanet(p: Planet, t: number, intro: IntroTimeline) {
 
   // 3.
   if (trait.network) drawNetwork(p, shape);
+  // 文章の行は粒子と違って完成した位置に描くため、粒子がほぼ集まってから現れるようにする。
+  // ホバー中は粒子と同じだけ膨らませる（膨らんだ粒子の内側に沈んで見えないように）
+  if (trait.lines) drawText(p, R * (1 + 0.1 * h), c, easeOutCubic(clamp01((form - 0.7) / 0.3)));
   if (trait.ring) drawRing(p, R, c, false, shape);
   ctx.globalCompositeOperation = 'source-over';
 }
@@ -477,7 +549,8 @@ export function drawPlanets(planets: Planet[], t: number, dt: number, intro: Int
   for (const p of planets) {
     p.hover += (p.target - p.hover) * approachRate(0.08, dt);
     // ホバー中は自転を速めて、押せることを伝える
-    p.spin += dt * SPIN * TRAITS[p.key].spin * (1 + 2.5 * p.hover);
+    const { spin, hoverSpin = HOVER_SPIN } = TRAITS[p.key];
+    p.spin += dt * SPIN * spin * (1 + (hoverSpin - 1) * p.hover);
     p.ctx.clearRect(0, 0, p.px, p.px);
     drawPlanet(p, t, intro);
   }
