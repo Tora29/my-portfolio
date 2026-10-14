@@ -1,5 +1,16 @@
 [
   {
+    "id": "Tora29/my-portfolio#88",
+    "date": "2026-10-13",
+    "type": "fix",
+    "work": "personal-platform",
+    "headline": "Notes の惑星の模様が回って見えるようにし、Works の輪を見えやすくする",
+    "summary": "Home の Notes の惑星に、球に沿って流れる文章の行を描き、模様が見えて自転していることが分かるようにした。あわせて、Works の惑星の輪が途切れずに見えるようにした。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/88"
+  },
+  {
     "id": "Tora29/testglass@v0.2.0",
     "date": "2026-10-11",
     "type": "release",
