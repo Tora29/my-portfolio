@@ -22,6 +22,9 @@
   category: language
 
 # Frontend
+- id: html
+  name: HTML
+  category: frontend
 - id: react
   name: React
   category: frontend
