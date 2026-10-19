@@ -28,7 +28,7 @@ HTTP/2 200
 content-type: text/html; charset=utf-8
 ```
 
-`curl -I <URL>` や、開発者ツールの Network パネルで確かめられます。Network パネルでページを再読み込みし、一覧から HTML の行を選ぶと、Response headers に `Content-Type` が出ています。
+`curl -I <URL>` や、開発者ツールの Network パネルで確かめられます。たとえば [example.com](https://example.com)（説明用に用意されているドメインです）を開き、Network パネルを表示したままページを再読み込みします。一覧から `example.com` の行を選ぶと、Response headers に `Content-Type` が出ています。
 
 ![開発者ツールの Network パネルで example.com のレスポンスヘッダーを表示した画面。Content-Type が text/html; charset=utf-8 になっている](/images/how-browser-renders-html/devtools-network.webp)
 
