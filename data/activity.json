@@ -1,5 +1,16 @@
 [
   {
+    "id": "Tora29/my-portfolio#90",
+    "date": "2026-10-20",
+    "type": "docs",
+    "work": "personal-platform",
+    "headline": "HTML がブラウザで DOM になるまでを追う記事を公開",
+    "summary": "ブラウザが HTML を受け取ってから DOM という木構造を組み立てるまでを、スクリーンショットと図で追う記事（3回シリーズの HTML 編）を Zenn に公開した。あわせて Tech に HTML を加え、HTML のページから記事をたどれるようにした。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/90"
+  },
+  {
     "id": "Tora29/my-portfolio#88",
     "date": "2026-10-13",
     "type": "fix",
