@@ -1,5 +1,16 @@
 [
   {
+    "id": "Tora29/my-portfolio#93",
+    "date": "2026-10-20",
+    "type": "docs",
+    "work": "personal-platform",
+    "headline": "HTML 編の記事で、CSS を書かなくても HTML が表示される理由を正しく説明",
+    "summary": "「HTML ってなんで描画されるの？」HTML 編で、「DOM だけでは画面に何も描かれない」としていた不正確な説明を直した。CSS を書かなくても表示されるのはブラウザ標準のスタイルシートがあるからで、JavaScript は描画に必須ではないことが分かるようにした。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/93"
+  },
+  {
     "id": "Tora29/my-portfolio#90",
     "date": "2026-10-20",
     "type": "docs",
