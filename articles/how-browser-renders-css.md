@@ -4,7 +4,7 @@ emoji: "🎨"
 type: "tech"
 topics: ["css", "html", "browser", "frontend"]
 published: true
-published_at: "2026-10-19"
+published_at: "2026-10-27"
 ---
 
 [HTML 編](https://zenn.dev/tora29/articles/how-browser-renders-html)では、HTML の文字列が DOM という木構造になるまでを追いかけました。今回の CSS 編では、CSS が読み込まれ、DOM と合わせて画面に描かれるまでを見ていきます。

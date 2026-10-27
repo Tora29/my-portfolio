@@ -25,6 +25,9 @@
 - id: html
   name: HTML
   category: frontend
+- id: css
+  name: CSS
+  category: frontend
 - id: react
   name: React
   category: frontend
