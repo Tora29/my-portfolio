@@ -30,9 +30,17 @@ jobs:
       - run: npm run test
       - run: npm run build
 
+  # ブラウザの依存パッケージ（ライブラリ・フォント）が入った Playwright の公式イメージで動かす。
+  # ランナー上で --with-deps を使うと毎回 apt でミラーから取得し、ミラーが遅いと10分以上かかるため
   e2e:
     name: E2E
     runs-on: ubuntu-latest
+    container:
+      # 版は package-lock.json の @playwright/test に合わせる。Dependabot はこのイメージを更新しないため、
+      # Playwright を上げたら手で更新する（ずれている間は下の install がブラウザだけを取り直す）
+      image: mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27
+      # ワークスペースの所有者（ランナーのユーザー）と同じ uid で動かす
+      options: --user 1001
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -42,7 +50,8 @@ jobs:
           node-version-file: .node-version
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      # イメージに同じ版のブラウザがあれば何もしない
+      - run: npx playwright install chromium
       - run: npm run test:e2e
 
   semgrep:
