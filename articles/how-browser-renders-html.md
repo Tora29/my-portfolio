@@ -232,7 +232,7 @@ flowchart TD
   F["JavaScript<br>（なくてもよい）"] -.->|"DOM を書き換える"| B
 ```
 
-- **CSS 編**：CSS が CSSOM になり、DOM と合わせて画面に描かれるまで
+- **[CSS 編](https://zenn.dev/tora29/articles/how-browser-renders-css)**：CSS が CSSOM になり、DOM と合わせて画面に描かれるまで
 - **JavaScript 編**：スクリプトが HTML の解析を止める理由と、DOM を書き換えたときに起きること
 
 ## まとめ
