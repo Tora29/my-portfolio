@@ -1,5 +1,16 @@
 [
   {
+    "id": "Tora29/my-portfolio#96",
+    "date": "2026-10-27",
+    "type": "docs",
+    "work": "personal-platform",
+    "headline": "CSS がどう読み込まれ、どのスタイルが当たるかを追う記事を公開",
+    "summary": "「HTML ってなんで描画されるの？」シリーズの CSS 編を Zenn に公開した。CSS の読み込まれ方、どのスタイルが当たるかを決めるカスケード、FOUC、描画の工程を図とスクリーンショットで説明している。あわせて Tech に CSS を加え、HTML 編から CSS 編へたどれるようにした。",
+    "tech": ["typescript", "astro", "tailwind-css", "github-actions"],
+    "techSource": "work",
+    "url": "https://github.com/Tora29/my-portfolio/pull/96"
+  },
+  {
     "id": "Tora29/my-portfolio#93",
     "date": "2026-10-20",
     "type": "docs",
