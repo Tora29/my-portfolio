@@ -46,13 +46,11 @@ test('記事の Tech タグから Tech 詳細へ移動でき、その記事が�
 
 // 転送の一覧は astro.config.mjs の redirects をそのまま使う（転送を追加したときにテストの更新を忘れないように）。
 // GitHub Pages ではサーバー側で転送できず、Astro が転送用の HTML（meta refresh と canonical）を出力するため、
-// ページを開いて Zenn まで移動するのではなく、出力された HTML の転送先を確かめる（テストで外部へ通信しない）
+// ページを開いて転送先まで移動するのではなく、出力された HTML の転送先を確かめる（テストで外部へ通信しない）
 for (const [from, to] of Object.entries(astroConfig.redirects ?? {})) {
   const destination = typeof to === 'string' ? to : to.destination;
 
-  test(`以前の記事ページの URL（${from}）は転送先（${destination}）へ転送する`, async ({
-    request,
-  }) => {
+  test(`転送元の URL（${from}）は転送先（${destination}）へ転送する`, async ({ request }) => {
     const response = await request.get(from);
     expect(response.ok()).toBe(true);
     const html = await response.text();
